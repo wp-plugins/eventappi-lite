@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Ticketing and Event Management For The Win
 
 == Description ==
-## Craft events like a pro, broadcast with swag, and run them like a boss.
+**Craft events like a pro, broadcast with swag, and run them like a boss.**
 
 EventAppi Lite is an easy-to-use WordPress plugin that offers powerful event management in an affordable ticketing app. With a user-friendly control panel, marketing, reports, and top-notch customer support, win with EventAppi Lite and conquer the stage from your pocket.
 
