@@ -1,0 +1,122 @@
+#eventappi-wrapper .process-credit-card,
+#eventappi-wrapper .pay-with-paypal {
+  width: 49.5%;
+}
+#eventappi-wrapper .remove,
+#eventappi-wrapper .go-back,
+#eventappi-wrapper .go-back-to-cart,
+#eventappi-wrapper .pay {
+  width: 100%;
+}
+#eventappi-wrapper .categories {
+  float: left;
+  margin-left: 20px;
+}
+#eventappi-wrapper .clear {
+  width: 100%;
+  clear: both;
+}
+#eventappi-wrapper #important-info {
+  font-weight: bold;
+}
+#eventappi-wrapper #ticket td {
+  font-size: 16px;
+}
+#eventappi-wrapper #ticket .stripe {
+  border-top: 5px solid inherit;
+  border-bottom: 5px solid inherit;
+}
+#eventappi-wrapper #ticket .quantity {
+  float: left;
+  max-width: 150px;
+  border: 1px solid #CCC;
+}
+#eventappi-wrapper #ticket .buy {
+  float: right;
+  vertical-align: middle;
+  margin: -24px 0 0 0;
+}
+#eventappi-wrapper .hidden-form,
+#eventappi-wrapper .hidden {
+  display: none;
+}
+#eventappi-wrapper .event div {
+  float: left;
+  width: 100%;
+}
+#eventappi-wrapper .event .name {
+  font-size: 24px;
+  font-weight: bold;
+}
+#eventappi-wrapper .event .start {
+  margin: 10px 0;
+}
+#eventappi-wrapper .event .end {
+  margin: 10px 0;
+}
+#eventappi-wrapper .event .tickets {
+  margin: 10px 0;
+}
+#eventappi-wrapper .event .tickets .proceed {
+  float: right;
+}
+#eventappi-wrapper .event .red-highlight {
+  background-color: #fdf2ee;
+}
+#eventappi-wrapper .event-list td {
+  border-top: 5px solid #5bd2a0;
+}
+#eventappi-wrapper .event-list div {
+  float: left;
+}
+#eventappi-wrapper .event-list .titleHolder .title {
+  font-size: 24px;
+  padding: 35px;
+}
+#eventappi-wrapper .event-list .titleHolder .thumbnail {
+  border: 1px solid #ccc;
+}
+#eventappi-wrapper .event-list .date {
+  width: 150px;
+  line-height: 28px;
+}
+#eventappi-wrapper .event-list .date .day,
+#eventappi-wrapper .event-list .date .month,
+#eventappi-wrapper .event-list .date .year {
+  width: 100%;
+  clear: both;
+  text-align: center;
+  vertical-align: middle;
+}
+#eventappi-wrapper .event-list .date .day {
+  font-size: 28px;
+}
+#eventappi-wrapper .event-list .date .month {
+  font-size: 20px;
+}
+#eventappi-wrapper .event-list .date .year {
+  font-size: 14px;
+}
+#eventappi-wrapper form[name="event"] input {
+  margin: auto;
+}
+#eventappi-wrapper form[name="event"] table th {
+  width: 30%;
+}
+#eventappi-wrapper .add-more-tickets,
+#eventappi-wrapper #add-event,
+#eventappi-wrapper .toggle-show,
+#eventappi-wrapper #category_name {
+  margin: auto;
+}
+#eventappi-wrapper #container .item {
+  width: 25%;
+  background-color: #FA00EE;
+}
+#eventappi-wrapper #container .item.w2 {
+  width: 50%;
+  background-color: #FA0EEC;
+}
+#eventappi-wrapper #eventappi-checkout input[type=submit] {
+  float: right;
+}

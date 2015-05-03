@@ -1,0 +1,122 @@
+#eventappi-wrapper #ea-reports div#ea-reports-tabs-container {
+  border-bottom: 1px solid #808080;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-tabs-container div {
+  border-left: 1px solid #808080;
+  border-right: 1px solid #808080;
+  border-top: 1px solid #808080;
+  margin-right: 10px;
+  padding: 5px 15px;
+  display: inline-block;
+  -webkit-border-top-left-radius: 5px;
+  border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  -webkit-border-top-right-radius: 5px;
+  border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-bottom-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  -moz-border-radius-bottomleft: 0px;
+  -webkit-border-bottom-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  -moz-border-radius-bottomright: 0px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-tabs-container div.ea-reports-active {
+  background-color: #d24152;
+  color: #ffffff;
+  cursor: default;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-tabs-container div:not(.ea-reports-active):hover {
+  background-color: #e6e6e6;
+  cursor: pointer;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div {
+  display: none;
+  margin-top: 20px;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-range-subtabs-container {
+  display: inline-block;
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-range-subtabs-container div {
+  border: 1px solid #808080;
+  font-size: 80%;
+  padding: 5px 15px;
+  display: inline-block;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-range-subtabs-container div.ea-reports-active {
+  background-color: #d24152;
+  color: #ffffff;
+  cursor: default;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-range-subtabs-container div:not(.ea-reports-active):hover {
+  background-color: #e6e6e6;
+  cursor: pointer;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-range-subtabs-container div:first-child {
+  -webkit-border-top-left-radius: 5px;
+  border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  -webkit-border-top-right-radius: 0px;
+  border-top-right-radius: 0px;
+  -moz-border-radius-topright: 0px;
+  -webkit-border-bottom-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  -webkit-border-bottom-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  -moz-border-radius-bottomright: 0px;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-range-subtabs-container div:not(:first-child) {
+  border-left: 0px;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-range-subtabs-container div:last-child {
+  -webkit-border-top-left-radius: 0px;
+  border-top-left-radius: 0px;
+  -moz-border-radius-topleft: 0px;
+  -webkit-border-top-right-radius: 5px;
+  border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -webkit-border-bottom-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  -moz-border-radius-bottomleft: 0px;
+  -webkit-border-bottom-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-custom-range-container {
+  display: none;
+  font-size: 90%;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-custom-range-container > div {
+  background-color: #e6e6e6;
+  color: #000000;
+  cursor: pointer;
+  display: inline-block;
+  min-width: 120px;
+  padding: 3px 12px;
+  position: relative;
+  text-align: center;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-custom-range-container > div:hover {
+  background-color: #f0c1c7;
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-custom-range-container > div .ui-datepicker-inline {
+  left: 0px;
+  position: absolute;
+  top: 40px;
+  z-index: 100;
+  -webkit-box-shadow: 0px 15px 40px 0px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px 15px 40px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 15px 40px 0px rgba(0, 0, 0, 0.3);
+}
+#eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-custom-range-container > span {
+  margin: 0 10px;
+}

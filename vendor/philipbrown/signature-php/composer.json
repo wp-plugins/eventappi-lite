@@ -1,0 +1,29 @@
+{
+    "name": "philipbrown/signature-php",
+    "description": "HMAC-SHA authentication",
+    "keywords": ["HMAC-SHA", "authentication"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philip Brown",
+            "email": "phil@ipbrown.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "PhilipBrown\\Signature\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhilipBrown\\Signature\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "nesbot/Carbon": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    }
+}
