@@ -29,19 +29,19 @@ EventAppi Lite includes:
 * EventAppi plugin customer support
 
 
-=== Cost Effective ===
+**Cost Effective**
 
 *Don’t just save money, make money!*
 
 Simple ticketing means you’ll be up and running (and selling) fast. Compared to companies like EventBrite, we crush it on competitive prices so you can win, event after event. This is all because we’re here to help you build up momentum.
 
-=== Mobile App ===
+**Mobile App**
 
 *On the go and always on point*
 
 Give your attendees the best possible experience by quickly and efficiently checking them in or out of an event. Know exactly how many people you have checked in and either scan people’s tickets or find their name from a list and manually check them in.
 
-=== Scalable ===
+**Scalable**
 
 *World domination for the win*
 
