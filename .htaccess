@@ -1,0 +1,11 @@
+Order Deny,Allow
+Deny from all
+
+<FilesMatch "^(.+)\.(css|js)$">
+	Allow from all
+</FilesMatch>
+
+# Allow acess to images
+<FilesMatch "^(.+)\.(png|jpg|jpeg|gif|cur)$">
+	Allow from all
+</FilesMatch>
