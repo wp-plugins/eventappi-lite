@@ -3,8 +3,8 @@ Contributors: EventAppi Development Team
 URL: http://EventAppi.com/
 Tags: wordpress, events, plugin
 Requires at least: 4.0
-Tested up to: 4.0
-Stable tag: @@VERSION
+Tested up to: 4.2.1
+Stable tag: 1.0.4 LITE
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,6 @@ EventAppi Lite includes:
 * Social sharing
 * Customer refunds
 * EventAppi plugin customer support
-
 
 **Cost Effective**
 
