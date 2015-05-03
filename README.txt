@@ -59,7 +59,8 @@ Installing the EventAppi WordPress plugin can be done by using the following ste
 
 == Screenshots ==
 
-*Coming soon*
+1. Creating your event couldn't be more simple
+2. Add Event details, add tickets. DONE!
 
 == FAQs ==
 
