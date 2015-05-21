@@ -1,3 +1,21 @@
+#eventappi-wrapper input.page-box {
+  width: 50px;
+}
+#eventappi-wrapper ul.subsubsub li {
+  display: inline;
+}
+#eventappi-wrapper h2.event-title {
+  margin: -10px 0 25px 0 !important;
+}
+#eventappi-wrapper table.attendee {
+  margin-bottom: 35px;
+}
+#eventappi-wrapper .event-type-area {
+  margin-bottom: 20px;
+}
+#eventappi-wrapper .loading.changing-status {
+  display: none;
+}
 #eventappi-wrapper .process-credit-card,
 #eventappi-wrapper .pay-with-paypal {
   width: 49.5%;
@@ -15,6 +33,16 @@
 #eventappi-wrapper .clear {
   width: 100%;
   clear: both;
+}
+#eventappi-wrapper .alert.alert-success {
+  border: 1px solid green;
+  padding: 10px;
+  margin: 10px 0;
+}
+#eventappi-wrapper .alert.alert-error {
+  border: 1px solid #cc0000;
+  padding: 10px;
+  margin: 10px 0;
 }
 #eventappi-wrapper #important-info {
   font-weight: bold;

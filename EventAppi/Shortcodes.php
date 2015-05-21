@@ -18,6 +18,7 @@ class Shortcodes
      * @var Shortcodes|null
      */
     private static $singleton = null;
+    private $sortArrayKey;
 
     /**
      *
@@ -57,12 +58,12 @@ class Shortcodes
             return $this->myAccountPage();
         }
 
-        $status = '';
+        $data = [];
         if (isset($_GET['failed_login'])) {
-            $status = 'Failed Login.';
+            $data['status'] = 'Failed Login.';
         }
 
-        return Parser::instance()->parseTemplate('login-frontend');
+        return Parser::instance()->parseTemplate('login-frontend', $data);
     }
 
 
@@ -91,7 +92,7 @@ GETPURCHASESSQL;
 
         if ($_POST) {
 
-            $update_status             = 'Profile Updated.';
+            $update_status             = __('Profile Updated.', EVENTAPPI_PLUGIN_NAME);
             $password_change_requested = false;
             $update_array              = array();
             $api_update_array          = array();
@@ -104,7 +105,10 @@ GETPURCHASESSQL;
 
             if ($pass1 !== '') {
                 if ($pass1 !== $pass2) {
-                    $update_status = 'Sorry but your New Password and Repeat New Password do not match.';
+                    $update_status = __(
+                        'Sorry, but your New Password and Repeat New Password do not match.',
+                        EVENTAPPI_PLUGIN_NAME
+                    );
 
                     return $this->myAccount($current_user, $update_status, $event_list);
                 } else {
@@ -129,7 +133,7 @@ GETPURCHASESSQL;
             $user_id = wp_update_user($update_array);
             if (is_wp_error($user_id)) {
                 // There was an error, probably that user doesn't exist.
-                $update_status = 'Sorry your profile could not be updated.';
+                $update_status = __('Sorry your profile could not be updated.', EVENTAPPI_PLUGIN_NAME);
 
             } else {
 
@@ -146,13 +150,16 @@ GETPURCHASESSQL;
                         // if we can't update the user on the API, rather display an error than
                         // try to continue resetting the password on WordPress
                         $password_change_requested = false;
-                        $update_status = 'There was an error updating your details on the EventAppi API.';
+                        $update_status = __(
+                            'There was an error updating your details on the EventAppi API.',
+                            EVENTAPPI_PLUGIN_NAME
+                        );
                     }
                 }
 
                 if ($password_change_requested) {
                     wp_set_password($pass1, $current_user->ID);
-                    wp_redirect(get_permalink(get_page_by_path(EVENTAPPI_PLUGIN_NAME . '-login/')->ID));
+                    wp_redirect(get_permalink(Settings::instance()->getPageId('login')));
                 }
             }
         }
@@ -182,8 +189,8 @@ GETPURCHASESSQL;
             'ticketList'            => array()
         );
 
-        if (array_key_exists('attendee', $user->caps) || array_key_exists('manage_' . EVENTAPPI_PLUGIN_NAME,
-                $user->allcaps)
+        if (array_key_exists('attendee', $user->caps) ||
+            array_key_exists('manage_' . EVENTAPPI_PLUGIN_NAME, $user->allcaps)
         ) {
             $table_name    = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases';
             $sql           = <<<CLAIMEDSQL
@@ -217,37 +224,38 @@ TICKETSSQL;
                         'status'      => '',
                         'actionLinks' => ''
                     );
+
                     if ($purchase->isClaimed === '1' && is_null($purchase->assignedTo)) {
-                        $ticket['status'] = 'Claimed. This is your ticket.';
+                        $ticket['status'] = __('Claimed. This is your ticket.', EVENTAPPI_PLUGIN_NAME);
                     } elseif ($purchase->isClaimed) {
-                        $ticket['status'] = "Claimed by {$purchase->assignedTo}";
+                        $ticket['status'] = sprintf(__('Claimed by %s'), $purchase->assignedTo);
                     } elseif ($purchase->isAssigned === '1') {
-                        $ticket['status'] = "This ticket is assigned to {$purchase->assignedTo}.";
+                        $ticket['status'] = sprintf(__('This ticket is assigned to %s.'), $purchase->assignedTo);
                     } elseif ($purchase->isSent === '1' && $purchase->sentTo != $user->data->user_email) {
-                        $ticket['status'] = "This ticket has been sent to {$purchase->sentTo}.";
+                        $ticket['status'] = sprintf(__('This ticket has been sent to %s.'), $purchase->sentTo);
                     } else {
                         if ($purchase->isSent === '1') {
-                            $ticket['status'] = 'This ticket has been sent to you.<br>';
+                            $ticket['status'] = __('This ticket has been sent to you.', EVENTAPPI_PLUGIN_NAME).'<br>';
                         }
                         if (is_string($purchase->purchased_ticket_hash) &&
                             strlen($purchase->purchased_ticket_hash) > 2
                         ) {
                             if (!in_array($purchase->event_id, $claimedEvents)) {
                                 $ticket['actionLinks'] = $this->buildActionLink(
-                                        $purchase->purchased_ticket_hash,
-                                        'claim'
-                                    ) . '<br>';
+                                    $purchase->purchased_ticket_hash,
+                                    'claim'
+                                ) . '<br>';
                             }
                             $ticket['actionLinks'] .= $this->buildActionLink(
-                                    $purchase->purchased_ticket_hash,
-                                    'assign'
-                                ) . '<br>';
+                                $purchase->purchased_ticket_hash,
+                                'assign'
+                            ) . '<br>';
                             $ticket['actionLinks'] .= $this->buildActionLink(
                                 $purchase->purchased_ticket_hash,
                                 'send'
                             );
                         } else {
-                            $ticket['actionLinks'] .= 'There is an error with this ticket.';
+                            $ticket['actionLinks'] .= __('There is an error with this ticket.', EVENTAPPI_PLUGIN_NAME);
                         }
                     }
                     $data['ticketList'][] = $ticket;
@@ -274,13 +282,12 @@ TICKETSSQL;
     }
 
     /**
-     * @param  int|null $id         If supplied, only fetch the event with this ID
-     * @param  int|null $pageSize   If supplied, limit results by page size
-     * @param  int|null $pageNumber If supplied, limit results by page number (starting at page 1)
+     * @param  int|null $pageSize - If supplied, limit results by page size
+     * @param  int|null $pageNumber - If supplied, limit results by page number (starting at page 1)
      *
      * @return array
      */
-    protected function loadDatabaseEvents($id = null, $pageSize = null, $pageNumber = null)
+    protected function loadDatabaseEvents($pageSize = null, $pageNumber = null)
     {
         global $current_user;
 
@@ -298,203 +305,42 @@ TICKETSSQL;
             return;
         }
 
-        global $wpdb;
+        $offset = 0; // Default (Page 1 or All)
 
-        $posts    = $wpdb->prefix . 'posts';
-        $users    = $wpdb->prefix . 'users';
-        $postmeta = $wpdb->prefix . 'postmeta';
+        if ($pageSize && $pageNumber > 1) {
+            $offset = (int)(($pageNumber - 1) * $pageSize);
+        }
 
-        $sql = "
-            CREATE TEMPORARY TABLE
-            IF NOT EXISTS `organiser_events` (
-            `id` INT (10) UNSIGNED NOT NULL UNIQUE,
-            `order` INT (10) UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE
-            );
-        ";
+        if (!$pageSize) {
+            $pageSize = -1; // Get all if no number is set
+        }
 
-        $wpdb->query($sql);
+        // See if the request is being made for upcoming events or the past ones & append the arguments accordingly
 
-        $sql = "
-            INSERT IGNORE INTO `organiser_events` (
-            `id`
-            ) SELECT
-                $posts.ID
-            FROM
-                $posts
-            INNER JOIN $users ON $posts.post_author = $users.ID
-            WHERE
-                $posts.post_type = '" . EVENTAPPI_POST_NAME . "'
-            AND $posts.post_status IN ('publish')
-            AND STR_TO_DATE(
-                CONCAT(
-                    STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_date'
-                            LIMIT 1
-                        ),
-                        '%Y-%m-%d'
-                    ),
-                    STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_time'
-                            LIMIT 1
-                        ),
-                        '%H:%i:%s'
-                    )
-                ),
-                '%Y-%m-%d %H:%i:%s'
-            ) >= NOW()
-            AND
-                $users.ID = '" . $current_user->ID . "'
-            ORDER BY
-            STR_TO_DATE(
-                CONCAT(
-                    STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_date'
-                            LIMIT 1
-                        ),
-                        '%Y-%m-%d'
-                    ),
-                    STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_time'
-                            LIMIT 1
-                        ),
-                        '%H:%i:%s'
-                    )
-                ),
-                '%Y-%m-%d %H:%i:%s'
-            ) ASC;
-        ";
+        // Upcoming or Past Events?
+        $type = ($_GET['type']);
 
-        $wpdb->query($sql);
+        $args = array(
+            'post_type'      => EVENTAPPI_POST_NAME,
+            'posts_per_page' => $pageSize,
+            'offset'         => $offset,
+            'orderby'        => 'meta_value_num',
+            'order'          => ($type == 'upcoming') ? 'ASC' : 'DESC',
+            'post_status'    => 'publish'
+        );
 
-        $sql = "
-            INSERT IGNORE INTO `organiser_events` (
-            `id`
-            ) SELECT
-                $posts.ID
-            FROM
-                $posts
-            INNER JOIN $users ON $posts.post_author = $users.ID
-            WHERE
-                $posts.post_type = '" . EVENTAPPI_POST_NAME . "'
-            AND $posts.post_status IN ('publish')
-            AND $users.ID = '$current_user->ID'
-            ORDER BY
-            STR_TO_DATE(
-                CONCAT(
-                    STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_date'
-                            LIMIT 1
-                        ),
-                        '%Y-%m-%d'
-                    ),
-                    STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_time'
-                            LIMIT 1
-                        ),
-                        '%H:%i:%s'
-                    )
-                ),
-                '%Y-%m-%d %H:%i:%s'
-            ) DESC;
-        ";
+        // Upcoming = Today and in the future
+        // Past = Yesterday and in the past
 
-        $wpdb->query($sql);
+        $args['meta_query'] = array(
+            array(
+                'key'   => EVENTAPPI_POST_NAME . '_start_date',
+                'value' => mktime(0, 0, 0, date('m'), date('d'), date('Y')), // Today Unix Timestamp
+                'compare' => ($type == 'upcoming') ? '>=' : '<'
+            )
+        );
 
-        $sql = "
-            SELECT
-                $posts.ID,
-                $posts.guid,
-                $posts.post_title,
-                $posts.post_content,
-                $posts.post_excerpt,
-                $users.user_nicename AS author,
-                (STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_date'
-                            LIMIT 1
-                        ),
-                        '%Y-%m-%d'
-                    )) AS start_date,
-                (STR_TO_DATE(
-                        (
-                            SELECT
-                                $postmeta.meta_value
-                            FROM
-                                $postmeta
-                            WHERE
-                                $postmeta.post_id = $posts.ID
-                            AND $postmeta.meta_key = '" . EVENTAPPI_POST_NAME . "_start_time'
-                            LIMIT 1
-                        ),
-                        '%H:%i:%s'
-                    )) AS start_time,
-                organiser_events.`order`
-            FROM
-                organiser_events
-            INNER JOIN $posts ON organiser_events.id = $posts.ID
-            INNER JOIN $users ON $posts.post_author = $users.ID
-            ORDER BY
-                organiser_events.`order` ASC;
-        ";
-
-        $result = $wpdb->get_results($sql);
-
-        $sql = "
-            DROP TABLE
-            IF EXISTS `organiser_events`;
-        ";
-
-        $wpdb->query($sql);
-
-        return $result;
+        return get_posts($args);
     }
 
 

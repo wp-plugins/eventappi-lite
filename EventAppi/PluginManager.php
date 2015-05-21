@@ -70,7 +70,7 @@ class PluginManager
      */
     public function addSettingsLink($links)
     {
-        array_unshift($links, '<a href="edit.php?post_type=eventappi_event&page=' . EVENTAPPI_PLUGIN_NAME .
+        array_unshift($links, '<a href="admin.php?page=' . EVENTAPPI_PLUGIN_NAME .
                               '-settings">' . __('Settings', EVENTAPPI_PLUGIN_NAME) . '</a>');
 
         return $links;
@@ -102,12 +102,7 @@ class PluginManager
     {
         global $wpdb;
 
-        $tableName = $wpdb->prefix . 'posts';
-        $sql       = <<<DEACSQL
-DELETE FROM {$tableName} WHERE post_title LIKE 'EventAppi %' AND post_type = 'page'
-DEACSQL;
-        $wpdb->query($sql);
-
+        // Drop the cart table; it will get recreated if the plugin is reactivated
         $tableName = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_cart';
         $sql       = <<<DEACSQL
 DROP TABLE {$tableName}
@@ -123,18 +118,18 @@ DEACSQL;
     private function checkCompatibility()
     {
         // First we check the PHP version - we need >= 5.4
-        if ( ! version_compare(phpversion(), '5.4.0', '>=')) {
+        if (!version_compare(phpversion(), '5.4.0', '>=')) {
             // no - we don't have what it takes
             $this->pluginActivationError('PHP version >= 5.4', phpversion());
         }
 
         // We should also verify the WordPress version
-        if ( ! version_compare($GLOBALS['wp_version'], '4.0', '>=')) {
+        if (!version_compare($GLOBALS['wp_version'], '4.0', '>=')) {
             $this->pluginActivationError('WordPress version >= 4.0', $GLOBALS['wp_version']);
         }
 
         // Also check extensions. We need MCrypt
-        if ( ! extension_loaded('MCrypt')) {
+        if (!extension_loaded('MCrypt')) {
             $this->pluginActivationError('MCrypt', null);
         }
     }
@@ -169,6 +164,61 @@ DEACSQL;
         );
     }
 
+    public function isPage($pageId) {
+        // Get Page DB ID based on $id
+        $pageDbId = get_option(EVENTAPPI_PLUGIN_NAME.'_'.$pageId.'_id');
+
+        return ( is_numeric($pageDbId) && is_page($pageDbId) );
+    }
+
+    /**
+     * This is where we keep the EventAppi Pages Information
+     * 'id' is only for internal usage - It is NOT THE SAME as the page slug which can be updated with any value
+     * 'label' is showing in "Events" -> "Settings" -> "Pages"
+     *
+     * @param $customPages
+     */
+    public function customPages() {
+        return [
+            array(
+                'post_title'   => 'EventAppi Cart',
+                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_cart]',
+                'id'           => 'cart',
+                'label'        => __('Cart', EVENTAPPI_PLUGIN_NAME)
+            ),
+            array(
+                'post_title'   => 'EventAppi Checkout',
+                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_checkout]',
+                'id'            => 'checkout',
+                'label'        => __('Checkout', EVENTAPPI_PLUGIN_NAME)
+            ),
+            array(
+                'post_title'   => 'EventAppi Analytics',
+                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_analytics]',
+                'id'             => 'analytics',
+                'label'        => __('Analytics', EVENTAPPI_PLUGIN_NAME)
+            ),
+            array(
+                'post_title'   => 'EventAppi Login',
+                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_login]',
+                'id'           => 'login',
+                'label'        => __('Login', EVENTAPPI_PLUGIN_NAME)
+            ),
+            array(
+                'post_title'   => 'EventAppi My Account',
+                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_my_account]',
+                'id'           => 'my-account',
+                'label'        => __('My Account', EVENTAPPI_PLUGIN_NAME)
+            ),
+            array(
+                'post_title'   => 'EventAppi Thank You',
+                'post_content' => 'Thank you for your purchase! Your confirmation of your order will be emailed to you.',
+                'id'           => 'thank-you',
+                'label'        => __('Thank You', EVENTAPPI_PLUGIN_NAME)
+            )
+        ];
+    }
+
     /**
      * Creates Pages for Plugin use
      *
@@ -176,40 +226,44 @@ DEACSQL;
      */
     private function createPages()
     {
-        $customPages = array(
-            array(
-                'post_title'   => 'EventAppi Cart',
-                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_cart]'
-            ),
-            array(
-                'post_title'   => 'EventAppi Checkout',
-                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_checkout]'
-            ),
-            array(
-                'post_title'   => 'EventAppi Analytics',
-                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_analytics]'
-            ),
-            array(
-                'post_title'   => 'EventAppi Login',
-                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_login]'
-            ),
-            array(
-                'post_title'   => 'EventAppi My Account',
-                'post_content' => '[' . EVENTAPPI_PLUGIN_NAME . '_my_account]'
-            )
-        );
+        $customPages = $this->customPages();
 
         foreach ($customPages as $page) {
-            $this->createPage($page);
+            $pageDbId = $this->createPage($page);
+
+            // Only proceed if the page was created
+            if($pageDbId) {
+                // Once the page is created, we'll associate it where it belongs in "Settings" - "Pages"
+                update_option(EVENTAPPI_PLUGIN_NAME.'_'.$page['id'].'_id', $pageDbId);
+            }
         }
     }
 
     /**
      * @param $data - the data we need to create the page
+     * @return - Page Database ID
      */
     private function createPage($data)
     {
-        if ( ! get_page_by_title($data['post_title'])) {
+        // Get internal ID and see if the page does exist by verifying the association
+        $pageId = $data['id'];
+
+        $createPage = false; // default
+
+        $pageDbId = get_option(EVENTAPPI_PLUGIN_NAME.'_'.$pageId.'_id');
+
+        if( ! $pageDbId ) {
+            // There is no association; the page was either deassociated or never existed
+            $createPage = true;
+        }
+
+        if( $pageDbId ) {
+            if( FALSE === get_post_status( $pageDbId ) ) { // Page do not exist anymore or never existed
+                $createPage = true;
+            }
+        }
+
+        if ( $createPage ) {
 
             // we override a few settings to be sure the pages we need are in place
             $data['post_name']      = strtolower(str_replace(' ', '-', $data['post_title']));
@@ -219,20 +273,8 @@ DEACSQL;
             $data['post_category']  = array();
             $data['comment_status'] = 'closed';
 
-            wp_insert_post($data);
+            return wp_insert_post($data);
         }
-    }
-
-    public function getPageId($pageSlug)
-    {
-        $posts = get_posts([
-            'name'           => $pageSlug,
-            'post_type'      => 'page',
-            'post_status'    => 'publish',
-            'posts_per_page' => 1
-        ]);
-
-        return get_page_link($posts[0]->ID);
     }
 
     /**
@@ -243,7 +285,7 @@ DEACSQL;
         global $wp_roles;
 
         if (class_exists('WP_Roles')) {
-            if ( ! isset($wp_roles)) {
+            if (!isset($wp_roles)) {
                 $wp_roles = new WP_Roles();
             }
         }
@@ -489,11 +531,13 @@ TABLESQL;
         // first we look at the option table for the old 'chirrpy' prefix...
         global $wpdb;
 
-        $optionTable = $wpdb->prefix . 'options';
-        $sql         = <<<OPTIONSQL
+        $optionTable   = $wpdb->prefix . 'options';
+        $postMetaTable = $wpdb->prefix . 'postmeta';
+
+        $sql     = <<<OPTIONSQL
 SELECT option_name, option_value FROM {$optionTable} WHERE option_name LIKE 'chirrpy%';
 OPTIONSQL;
-        $options     = $wpdb->get_results($sql);
+        $options = $wpdb->get_results($sql);
 
         foreach ($options as $option) {
             $optionName = substr($option->option_name, 7);
@@ -637,6 +681,26 @@ UPDATESQL;
             $venueId = intval(substr($venue->option_name, 16, - 14));
             $wpdb->query($wpdb->prepare($updateSql, $venue->option_value, $venueId));
             delete_option($venue->option_name);
+        }
+
+        // Convert Event Start/End Dates to Unix Timestamps
+        $sql   = 'SELECT meta_id, meta_value FROM `' . $postMetaTable .
+                 '` WHERE meta_key IN ("' .
+                 EVENTAPPI_POST_NAME . '_start_date", "' . EVENTAPPI_POST_NAME . '_end_date")';
+        $dates = $wpdb->get_results($sql);
+
+        foreach ($dates as $val) {
+            $metaId    = $val->meta_id;
+            $metaValue = $val->meta_value;
+
+            // Only convert if we have a non numeric value
+            if (!is_numeric($metaValue)) {
+                $metaUnixValue = strtotime($metaValue);
+
+                $updateSql = "UPDATE `" . $postMetaTable .
+                             "` SET meta_value='" . $metaUnixValue . "' WHERE meta_id='%d'";
+                $wpdb->query($wpdb->prepare($updateSql, $metaId));
+            }
         }
     }
 

@@ -3,8 +3,8 @@ Contributors: EventAppi Development Team
 URL: http://EventAppi.com/
 Tags: wordpress, events, plugin
 Requires at least: 4.0
-Tested up to: 4.2.1
-Stable tag: 1.0.4 LITE
+Tested up to: 4.2.2
+Stable tag: 1.0.5
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,13 +56,14 @@ Installing the EventAppi WordPress plugin can be done by using the following ste
 1. If your system unzips the plugin, please re-zip it.
 1. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard
 1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Enter your [EventAppi.com API key](http://eventappi.com/pricing) to activate the plugin
 
 == Screenshots ==
 
 1. Creating your event couldn't be more simple
 2. Add Event details, add tickets. DONE!
 
-== FAQs ==
+== Frequently Asked Questions ==
 
 **What is EventAppi Lite?**
 
@@ -133,6 +134,15 @@ Payment gateways included:
 == Change Log ==
 
 
+= 1.0.5 =
+
+* Improved activation process
+* More page flexibility for you to customise to your heart's content
+* Prepare code for translation [for multi-language support]
+* New settings tab for page associations
+* Remove test code from the release
+* PSR-2 code improvements
+
 = 1.0.4 =
 
 * Initial WordPress.org release
@@ -163,4 +173,3 @@ Payment gateways included:
 = 1.0.0 =
 
 * Limited audience public release (MVP)
-

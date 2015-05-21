@@ -61,7 +61,8 @@ $(document).ready(function () {
                 type: 'POST',
                 data: sendData
             });
-            location.assign("eventappi-my-account");
+            
+            location.assign(eventappi_ajax_obj.my_account_url);
         }
 
         var sendDialog = $('#dialog-form-send').dialog({
@@ -89,7 +90,7 @@ $(document).ready(function () {
                 var theName = $(this).attr('name');
                 var theValue = $(this).val();
                 if (theName && !theValue) {
-                    alert('Please fill in all values before claiming the ticket.');
+                    alert(eventappi_ajax_obj.text.assign_ticket_error);
                     throw '';
                 }
                 assignData.push({'name': theName, 'value': theValue});
@@ -100,7 +101,7 @@ $(document).ready(function () {
                 type: 'POST',
                 data: assignData
             });
-            location.assign("eventappi-my-account");
+            location.assign(eventappi_ajax_obj.my_account_url);
         }
 
         var assignDialog = $('#dialog-form-assign').dialog({
@@ -128,7 +129,7 @@ $(document).ready(function () {
                 var theName = $(this).attr('name');
                 var theValue = $(this).val();
                 if (theName && !theValue) {
-                    alert('Please fill in all values before claiming the ticket.');
+                    alert(eventappi_ajax_obj.text.claim_ticket_error);
                     throw '';
                 }
                 claimData.push({'name': theName, 'value': theValue});
@@ -139,7 +140,7 @@ $(document).ready(function () {
                 type: 'POST',
                 data: claimData
             });
-            location.assign("eventappi-my-account");
+            location.assign(eventappi_ajax_obj.my_account_url);
         }
 
         var claimDialog = $('#dialog-form-claim').dialog({
@@ -202,7 +203,7 @@ $(document).ready(function () {
                     success: function (data) {
                         var json = JSON.parse(data);
                         if (json == 'require login') {
-                            location.assign("/eventappi-login/");
+                            location.assign(eventappi_ajax_obj.login_url);
                         }
                         userId = json.user_id;
                     }
@@ -240,7 +241,7 @@ $(document).ready(function () {
                     wants = 0;
                 }
                 if (parseInt(wants) > parseInt(avail)) {
-                    alert('There are not enough tickets available. Extra tickets have been removed.');
+                    alert(eventappi_ajax_obj.text.not_enough_tickets);
                     $(this).parent().find('.ticket-quantity').val(avail);
                     return false;
                 }
@@ -285,7 +286,7 @@ $(document).ready(function () {
         }
 
         if (self.find('.tickets').length) {
-            self.find('.event').after('<div id="dialog" title="Purchase Successful!"><p>Thank you for your purchase your confirmation of your order will be emailed to you.</p></div>');
+            self.find('.event').after('<div id="dialog" title="'+ eventappi_ajax_obj.text.purchase_successful_title +'"><p>'+ eventappi_ajax_obj.text.thank_you_purchase +'</p></div>');
         }
 
         self.find('.go-back').on('click', function (event) {
@@ -296,7 +297,7 @@ $(document).ready(function () {
 
         self.find('.go-back-to-cart').on('click', function (event) {
             event.preventDefault();
-            location.assign(eventappi_ajax_obj.eventappi_cart);
+            location.assign(eventappi_ajax_obj.cart_url);
             return false;
         });
 
@@ -304,7 +305,7 @@ $(document).ready(function () {
 
             self.find('#go-to-checkout').on('click', function (event) {
                 event.preventDefault();
-                location.assign("/eventappi-checkout/");
+                location.assign(eventappi_ajax_obj.checkout_url);
             });
 
             self.find('#eventappi-cart .remove').on('click', function (event) {
@@ -340,14 +341,15 @@ $(document).ready(function () {
                             self.find('.total').text(oldTotal);
                             target.closest('tr').remove();
                         } else {
-                            alert('1Sorry we could not remove this item, please try again.');
+                            alert('1: ' + eventappi_ajax_obj.text.cart_item_fail_del);
                         }
                     },
                     error: function () {
-                        alert('2Sorry we could not remove this item, please try again.');
+                        alert('2: '+ eventappi_ajax_obj.text.cart_item_fail_del);
                     }
                 });
             });
         }
+        
     }
 });
