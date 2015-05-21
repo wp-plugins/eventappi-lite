@@ -47,11 +47,13 @@ class Tickets
         $data = array(
             'recipient_email' => $_POST['recipient'],
             'recipient_name'  => $_POST['name'],
-            'login_url'       => PluginManager::instance()->getPageId('eventappi-my-account')
+            'login_url'       => get_permalink(Settings::instance()->getPageId('my-account'))
         );
+        
         $hash = substr($_POST['hash'], 1);
-
+                        
         $result = ApiClient::instance()->sendTicketToThirdParty($hash, $data);
+        
         if ($result['message'] !== 'OK') {
             return false;
         }

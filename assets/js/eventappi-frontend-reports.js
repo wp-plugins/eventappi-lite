@@ -3,6 +3,7 @@
     'use strict';
 
     var $ = jQuery;
+    var LANG = eventappi_reports_ajax_obj.text;
 
     /**
      * EventAppi Reports
@@ -179,11 +180,11 @@
 
             switch (range) {
                 case EAReports.RANGE_WEEK:
-                    return 'Week';
+                    return LANG.week;
                 case EAReports.RANGE_MONTH:
-                    return 'Month';
+                    return LANG.month;
                 case EAReports.RANGE_CUSTOM:
-                    return 'Custom';
+                    return LANG.custom;
             }
 
         }
@@ -198,7 +199,7 @@
         /**
          * Perform a GET request
          *
-         * eventappi_ajax_obj is created by wp_localize_script() in ChirrpyPublic::public_ajaxurl()
+         * eventappi_reports_ajax_obj is created by wp_localize_script() in ChirrpyPublic::public_ajaxurl()
          *
          * @param  {string} action
          * @param  {object} params
@@ -207,8 +208,8 @@
         get: function(action, params) {
 
             var data = {
-                'action':      eventappi_ajax_obj.plugin_name + '_' + action,
-                '_ajax_nonce': eventappi_ajax_obj.nonce
+                'action':      eventappi_reports_ajax_obj.plugin_name + '_' + action,
+                '_ajax_nonce': eventappi_reports_ajax_obj.nonce
             };
 
             for (var p in params) {
@@ -218,7 +219,7 @@
             }
 
             return $.ajax({
-                url:      eventappi_ajax_obj.ajax_url,
+                url:      eventappi_reports_ajax_obj.ajax_url,
                 method:   'GET',
                 data:     data,
                 dataType: 'json'
@@ -601,9 +602,9 @@
 
         // Call parent constructor
         EAReportAbstract.call(
-            this,            // object to be used by parent constructor for "this"
-            'ticket-sales',  // id
-            'Ticket sales'   // name
+            this,             // object to be used by parent constructor for "this"
+            'ticket-sales',   // id
+            LANG.ticket_sales // name
         );
 
     }
@@ -788,15 +789,15 @@
         switch (range) {
             case EAReports.RANGE_WEEK:
                 chartData  = this.generateChartDataForWeek();
-                chartTitle = 'Tickets sold per event per day for this week';
+                chartTitle = LANG.tickets_sold_range_week;
                 break;
             case EAReports.RANGE_MONTH:
                 chartData  = this.generateChartDataForMonth();
-                chartTitle = 'Tickets sold per event per week for this month';
+                chartTitle = LANG.tickets_sold_range_month;
                 break;
             case EAReports.RANGE_CUSTOM:
                 chartData  = this.generateChartDataForCustomRange();
-                chartTitle = 'Tickets sold per event per day';
+                chartTitle = LANG.tickets_sold_range_day;
                 break;
             default:
                 return;
@@ -818,7 +819,7 @@
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Tickets sold'
+                    text: LANG.tickets_sold
                 }
             },
             series: chartData.series,
@@ -890,7 +891,7 @@
         var sourceData = EAReportsSourceData.ticketSales;
 
         var chartData = {
-            categories: ['Events'],
+            categories: [LANG.events],
             series:     []
         };
 
@@ -1024,15 +1025,15 @@
         switch (range) {
             case EAReports.RANGE_WEEK:
                 chartData  = this.generateChartDataForWeek();
-                chartTitle = 'Revenue per event for this week';
+                chartTitle = LANG.revenue_range_week;
                 break;
             case EAReports.RANGE_MONTH:
                 chartData  = this.generateChartDataForMonth();
-                chartTitle = 'Revenue per event for this month';
+                chartTitle = LANG.revenue_range_month;
                 break;
             case EAReports.RANGE_CUSTOM:
                 chartData  = this.generateChartDataForCustomRange();
-                chartTitle = 'Revenue per event';
+                chartTitle = LANG.revenue_range_custom;
                 break;
             default:
                 return;
@@ -1054,7 +1055,7 @@
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Revenue in $'
+                    text: LANG.revenue_in_currency
                 }
             },
             series: chartData.series,
@@ -1084,7 +1085,7 @@
         EAReportAbstract.call(
             this,                   // object to be used by parent constructor for "this"
             'ticket-availability',  // id
-            'Ticket availability'   // name
+            LANG.ticket_availability   // name
         );
 
     }
@@ -1126,7 +1127,7 @@
         var sourceData = EAReportsSourceData.ticketAvailability;
 
         var chartData = {
-            categories: ['Events'],
+            categories: [LANG.events],
             series:     []
         };
 
@@ -1165,7 +1166,7 @@
                 width: EAUtils.getReportsContainerWidth()
             },
             title: {
-                text: 'Ticket availability per event'
+                text: LANG.ticket_availability_per_event
             },
             xAxis: {
                 categories: chartData.categories
@@ -1173,7 +1174,7 @@
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Tickets available'
+                    text: LANG.tickets_available
                 }
             },
             series: chartData.series,
@@ -1238,7 +1239,7 @@
          */
         formatDatePretty: function(date, showYear) {
 
-            var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var monthNames = [LANG.jan, LANG.feb, LANG.mar, LANG.apr, LANG.may, LANG.jun, LANG.jul, LANG.aug, LANG.sep, LANG.oct, LANG.nov, LANG.dec];
 
             var day   = date.getDate();
             var month = date.getMonth();

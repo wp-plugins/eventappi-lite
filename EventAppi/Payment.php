@@ -58,7 +58,9 @@ class Payment
 
         //get items from cart
         $table_name    = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_cart';
-        $ticket_result = $wpdb->get_results("SELECT event_id, ticket_id, post_id, term, ticket_quantity FROM $table_name WHERE `session` = '$session';");
+        $ticket_result = $wpdb->get_results(
+            "SELECT event_id, ticket_id, post_id, term, ticket_quantity FROM $table_name WHERE `session` = '$session';"
+        );
 
         $tickets = array();
 
@@ -81,7 +83,7 @@ class Payment
             $selector = EVENTAPPI_PLUGIN_NAME . "_gateway_{$gatewaySelected}_";
             $sql      = "SELECT option_name, option_value FROM {$options} WHERE option_name LIKE '{$selector}%'";
             $result   = $wpdb->get_results($sql);
-            if ( ! empty($result)) {
+            if (!empty($result)) {
                 foreach ($result as $key => $value) {
                     $optKey                   = str_replace($selector, '', $value->option_name);
                     $gatewaySettings[$optKey] = $value->option_value;
@@ -97,16 +99,18 @@ class Payment
         $expiryMonth   = '';
         $expiryYear    = '';
 
-        if (isset($data['start_date']) && $data['start_date'] !== '' && strpos($data['start_date'],
-                '/') !== false
+        if (isset($data['start_date']) &&
+            $data['start_date'] !== '' &&
+            strpos($data['start_date'], '/') !== false
         ) {
             $start_date = explode('/', $data['start_date']);
             $startMonth = $start_date[0];
             $startYear  = $start_date[1];
         }
 
-        if (isset($data['expiry_date']) && $data['expiry_date'] !== '' && strpos($data['expiry_date'],
-                '/') !== false
+        if (isset($data['expiry_date']) &&
+            $data['expiry_date'] !== '' &&
+            strpos($data['expiry_date'], '/') !== false
         ) {
             $expiry_date = explode('/', $data['expiry_date']);
             $expiryMonth = $expiry_date[0];
@@ -121,7 +125,7 @@ class Payment
             $startYear = substr(date('Y'), 0, 2) . $startYear;
         }
 
-        if ( ! filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             exit();
         }
 
@@ -140,7 +144,6 @@ class Payment
             'startYear'   => isset($data['startYear']) ? $data['startYear'] : '',
         );
 
-        //PayPal Requires billing information inside card object which needs this custom implementation as OmniPay does not support it.
         $card['billingAddress1'] = $data['billing_address_1'];
         $card['billingCountry']  = $data['billing_country'];
         $card['billingCity']     = $data['billing_city'];
@@ -197,7 +200,7 @@ REMOVESQL;
 
                 // now, for the API we need to switch back to cents-only currency values
                 $data['amount']    = $centsAmount;
-                $data['login_url'] = PluginManager::instance()->getPageId('eventappi-my-account');
+                $data['login_url'] = get_permalink(Settings::instance()->getPageId('my-account'));
                 $returnTicket      = ApiClient::instance()->storePurchase($data);
 
                 foreach ($ticket_result as $key => $value) {
@@ -236,14 +239,14 @@ PURCHASESAVESQL;
                     }
                 }
 
-                echo 'Thank you, your payment was successful.';
+                echo __('Thank you, your payment was successful.', EVENTAPPI_PLUGIN_NAME);
                 exit();
             }
             $msg = $response->getMessage();
         } catch (Exception $e) {
-            $msg = "There was an error communicating with the Omipay Gateway.<br>{$e->getMessage()}";
+            $msg = sprintf(__('There was an error communicating with the Omipay Gateway.<br>%s', $e->getMessage()));
         }
-        echo "Sorry, your payment was unsuccessful.<br><em>{$msg}</em>";
+        echo __('Sorry, your payment was unsuccessful.', EVENTAPPI_PLUGIN_NAME)."<br><em>{$msg}</em>";
         exit();
     }
 }

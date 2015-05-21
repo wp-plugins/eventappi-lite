@@ -122,7 +122,7 @@ class User
         $api_update_array['email']          = $email;
 
         $apiId = get_user_meta($userId, EVENTAPPI_PLUGIN_NAME . '_user_id', true);
-        if ( ! empty($apiId)) {
+        if (!empty($apiId)) {
             ApiClient::instance()->updateUser($apiId, $api_update_array);
         }
     }
@@ -139,13 +139,13 @@ class User
         $result  = 0;
 
         // check if email is set
-        if ( ! isset($email)) {
+        if (!isset($email)) {
             echo $result;
             exit();
         }
 
         // validate email
-        if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             echo $result;
             exit();
         }
@@ -161,7 +161,7 @@ class User
         // new User!
         if (isset($user['error'])) {
 
-            if ( ! $skip_wp) {
+            if (!$skip_wp) {
                 $password = wp_generate_password();
 
                 $this->addToPasswordStore($email, $password);
@@ -184,7 +184,7 @@ class User
             }
 
             if (is_wp_error($wpUser)) {
-                if ( ! array_key_exists('existing_user_email', $wpUser->errors)) {
+                if (!array_key_exists('existing_user_email', $wpUser->errors)) {
                     echo $wpUser->get_error_message();
                     exit();
                 }
@@ -216,7 +216,7 @@ class User
         } else {
 
             if ($failOnNoPassword) {
-                wp_die('Unable to set the user password.');
+                wp_die(__('Unable to set the user password.', EVENTAPPI_PLUGIN_NAME));
             }
 
             $newPass = wp_generate_password(); // temp password ?
@@ -228,15 +228,15 @@ class User
             'preferred_name'    => $userData->data->display_name,
             'email'             => $userData->data->user_email,
             'password'          => $newPass,
-            'confirmation_link' => PluginManager::instance()->getPageId('eventappi-my-account')
+            'confirmation_link' => get_permalink(Settings::instance()->getPageId('my-account'))
         );
 
         // check whether the user exists
         $response = ApiClient::instance()->showUser($userData->data->user_email);
-        if ( ! array_key_exists('data', $response)) {
+        if (!array_key_exists('data', $response)) {
             $response = ApiClient::instance()->storeUser($newData);
 
-            if ( ! isset($response['data']['id'])) {
+            if (!isset($response['data']['id'])) {
                 return 0;
             }
         }
@@ -322,17 +322,28 @@ class User
         return false;
     }
 
-    public function addUserNotice(array $notice)
+    public function addUserNotice(array $newNotice)
     {
-        if (is_array($notice) && array_key_exists('class', $notice) && array_key_exists('message', $notice)) {
-            $notice = ['class' => $notice['class'], 'message' => $notice['message']];
-
+        if (is_array($newNotice)) {
             $notices = $this->getUserNotices();
             if (!is_array($notices)) {
                 $notices = array();
             }
 
-            $notices[] = $notice;
+            if (array_key_exists('class', $newNotice) && array_key_exists('message', $newNotice)) {
+                $newNotice = [
+                    'class'   => $newNotice['class'],
+                    'message' => htmlspecialchars($newNotice['message'])
+                ];
+            } elseif (array_key_exists('type', $newNotice)) {
+                $newNotice = [
+                    'type' => $newNotice['type']
+                ];
+            } else {
+                return;
+            }
+
+            $notices[md5(serialize($newNotice))] = $newNotice;
 
             update_user_meta(get_current_user_id(), EVENTAPPI_PLUGIN_NAME . '_user_notices', $notices);
         }
@@ -344,11 +355,15 @@ class User
 
         if (is_array($notices)) {
             foreach ($notices as $notice) {
-                if (in_array($notice['class'], ['updated', 'error', 'update-nag'])) {
-                    $outputMessage = $notice['message'];
+                $outputMessage = '';
 
-                    echo "<div class='{$notice['class']}'><p>{$outputMessage}</p></div>";
+                if (in_array($notice['class'], ['updated', 'error', 'update-nag'])) {
+                    $outputMessage = htmlspecialchars($notice['message']);
+                } elseif (array_key_exists('type', $notice)) {
+                    $outputMessage = Parser::instance()->parseEventAppiTemplate($notice['type']);
                 }
+
+                echo "<div class='{$notice['class']}'><p>{$outputMessage}</p></div>";
             }
         }
 

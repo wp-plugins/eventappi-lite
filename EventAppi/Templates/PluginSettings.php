@@ -1,5 +1,5 @@
 <div class="wrap" id="eventappi_settings">
-    <h2><?php echo __('Plugin Settings', EVENTAPPI_PLUGIN_NAME); ?></h2>
+    <h2><?php _e('Plugin Settings', EVENTAPPI_PLUGIN_NAME); ?></h2>
 
     <form method="post" action="options.php" enctype="multipart/form-data">
         <?php
@@ -8,8 +8,7 @@
         ?>
         <p class="submit">
             <input type="hidden" name="tab" value="<?php echo $tab ?>"/>
-            <input name="submit" type="submit" class="button-primary"
-                   value="<?php echo __('Save Settings', EVENTAPPI_PLUGIN_NAME) ?>"/>
+            <input name="submit" type="submit" class="button-primary" value="<?php _e('Save Settings', EVENTAPPI_PLUGIN_NAME); ?>" />
         </p>
     </form>
 </div>
