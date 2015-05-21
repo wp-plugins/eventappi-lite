@@ -56,7 +56,20 @@ Installing the EventAppi WordPress plugin can be done by using the following ste
 1. If your system unzips the plugin, please re-zip it.
 1. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Enter your [EventAppi.com API key](http://eventappi.com/pricing) to activate the plugin
+1. Enter your [EventAppi.com API key](http://eventappi.com/pricing)
+1. Make sure the API Endpoint is set to https://rest.eventappi.com/api/v1
+1. Save your settings to start using EventAppi
+
+
+_EventAppi requires at least_:
+
+* PHP version 5.4
+* WordPress version 4.0
+
+== Upgrade Notice ==
+
+= 1.0.5 =
+This version adds some flexibility to your event pages and fixes some activation problems.
 
 == Screenshots ==
 
