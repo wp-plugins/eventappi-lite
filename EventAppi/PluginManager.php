@@ -83,6 +83,25 @@ class PluginManager
     {
         Logger::instance()->log(__FILE__, __FUNCTION__, '', Logger::LOG_LEVEL_TRACE);
 
+        $hitCount = 0;
+        $activePlugins = get_plugins();
+        foreach ($activePlugins as $activePluginName => $activePluginData) {
+            if (strstr($activePluginName, EVENTAPPI_PLUGIN_NAME) !== false) {
+                if ($hitCount === 1) {
+                    wp_die(
+                        "<h2>{$activePluginData['Name']}</h2>" .
+                        "<p>Two versions of the EventAppi plugin have been detected.</p>" .
+                        "<p>Please delete the version of this plugin that you no longer wish to use.</p>" .
+                        "<p><small>Plugin version: {$activePluginData['Version']}</small></p>",
+                        'Plugin Activation Error',
+                        array('response' => 200, 'back_link' => true)
+                    );
+                } else {
+                    $hitCount++;
+                }
+            }
+        }
+
         EventPostType::instance()->createPostType();
 
         $this->checkCompatibility();
