@@ -50,7 +50,12 @@ class ClassLoader
 
         Parser::instance()->init();
         PluginManager::instance()->init();
+
+        Settings::instance()->init();
+
         EventPostType::instance()->init();
+
+
         LicenseKeyManager::instance()->init();
 
         Session::instance()->init();

@@ -1,7 +1,8 @@
-<?php namespace EventAppi\Helpers;
+<?php
+namespace EventAppi\Helpers;
 
-use EventAppi\PluginManager;
-
+use EventAppi\Helpers\Session;
+use EventAppi\Settings;
 /**
  * Class Session
  *
@@ -78,7 +79,7 @@ class Session
 
         $this->endSession();
 
-        wp_redirect(PluginManager::instance()->getPageId('eventappi-my-account'));
+        wp_redirect(get_permalink(Settings::instance()->getPageId('my-account')));
         exit(); // prevent WordPress from dragging us back to the WP login box.
     }
 
@@ -110,14 +111,14 @@ class Session
                     }
                 }
             }
-
-            return get_permalink(get_page_by_path(EVENTAPPI_PLUGIN_NAME . '-my-account/')->ID);
+            
+            return get_permalink(Settings::instance()->getPageId('my-account'));
 
         } else {
             //if credentials are incorrect and user comes from Frontend Login form redirect him back to frontend login form
             if (isset($_SERVER['HTTP_REFERER'])) {
                 if (strpos($_SERVER['HTTP_REFERER'], EVENTAPPI_PLUGIN_NAME . '-login') !== false) {
-                    wp_redirect(get_permalink(get_page_by_path(EVENTAPPI_PLUGIN_NAME . '-login/')->ID) . '?failed_login=1');
+                    wp_redirect(get_permalink(Settings::instance()->getPageId('login')) . '?failed_login=1');
                     exit();
                 }
             }
