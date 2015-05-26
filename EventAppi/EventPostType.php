@@ -3,7 +3,6 @@
 use Tax_Meta_Class;
 use EventAppi\Helpers\CountryList as CountryHelper;
 use EventAppi\Helpers\Logger;
-use EventAppi\Helpers\Options;
 
 /**
  * Class EventPostType
@@ -13,7 +12,7 @@ use EventAppi\Helpers\Options;
 class EventPostType
 {
     const MAX_LITE_TICKETS = 500;
-    const REGEX_SHA_1 = '/^[0-9a-f]{40}$/i'; // excatly 40 hex characters
+    const REGEX_SHA_1 = '/^[0-9a-f]{40}$/i'; // exactly 40 hex characters
 
     /**
      * @var EventPostType|null
@@ -49,7 +48,7 @@ class EventPostType
         add_action('add_meta_boxes', array($this, 'addTicketsMetabox'));
         add_action('admin_menu', array($this, 'removeDefaultVenueMetaBox'));
         add_action('save_post', array($this, 'savePost'));
-        add_action('admin_init', array($this, 'registerSettings'));
+        add_action('post_updated', array($this, 'postUpdated'), 10, 3);
 
         add_action('edit_venue', array($this, 'saveVenueEntry'), 10, 1);
         add_action('create_venue', array($this, 'saveVenueEntry'), 10, 1);
@@ -68,7 +67,24 @@ class EventPostType
             return $cmb_field_types;
         });
 
+        // A filter for DATE meta fields
+        add_filter('cmb_field_types', function ($cmb_field_types) {
+            $cmb_field_types['date_ea'] = 'EventAppi\Helpers\CMBDateField';
+
+            return $cmb_field_types;
+        });
+
+        // A filter for TIME meta fields
+        add_filter('cmb_field_types', function ($cmb_field_types) {
+            $cmb_field_types['time_ea'] = 'EventAppi\Helpers\CMBTimeField';
+
+            return $cmb_field_types;
+        });
+
         add_filter('the_content', array($this, 'filterThePostContent'));
+
+
+        add_action('wp_enqueue_scripts', array($this, 'loadScripts'));
     }
 
     public function overridePostDates()
@@ -112,11 +128,7 @@ class EventPostType
                 $this->customMetaBoxes();
             }
         } else {
-            User::instance()->addUserNotice([
-                'class'   => 'update-nag',
-                'message' => 'Please enter your EventAppi license key and payment gateway settings to use the plugin.<br>' .
-                             'Need a license key? Please visit <a href="http://eventappi.com/pricing/">EventAppi.com</a> for details.'
-            ]);
+            User::instance()->addUserNotice(['type' => 'LicenseKeyNotice']);
             $this->setupInactiveMenu();
         }
     }
@@ -125,7 +137,7 @@ class EventPostType
     {
         add_meta_box(
             EVENTAPPI_POST_NAME . '_tickets',
-            __('Tickets Management (add / edit / remove)', EVENTAPPI_POST_NAME),
+            __('Tickets Management (add / edit / remove)', EVENTAPPI_PLUGIN_NAME),
             array($this, 'prepareTicketMetabox'),
             EVENTAPPI_POST_NAME
         );
@@ -343,25 +355,29 @@ class EventPostType
     {
         $eventFields = array(
             array(
-                'name' => 'Start Date',
-                'desc' => 'Event start date',
-                'id'   => EVENTAPPI_POST_NAME . '_start_date',
-                'type' => 'date',
-                'cols' => '6'
+                'name'       => 'Start Date',
+                'desc'       => 'Event start date',
+                'id'         => EVENTAPPI_POST_NAME . '_start_date',
+                'type'       => 'date_ea',
+                'class'      => 'start_date event',
+                'attributes' => array('required' => 'required'),
+                'cols'       => '6'
             ),
             array(
-                'name' => 'Start Time',
-                'desc' => 'Event start time',
-                'id'   => EVENTAPPI_POST_NAME . '_start_time',
-                'type' => 'time',
-                'cols' => '6'
+                'name'       => 'Start Time',
+                'desc'       => 'Event start time',
+                'id'         => EVENTAPPI_POST_NAME . '_start_time',
+                'type'       => 'time_ea',
+                'attributes' => array('required' => 'required'),
+                'cols'       => '6'
             ),
             array(
-                'name' => 'End Date',
-                'desc' => 'Event end date',
-                'id'   => EVENTAPPI_POST_NAME . '_end_date',
-                'type' => 'date',
-                'cols' => '6'
+                'name'  => 'End Date',
+                'desc'  => 'Event end date',
+                'id'    => EVENTAPPI_POST_NAME . '_end_date',
+                'type'  => 'date_ea',
+                'class' => 'end_date event',
+                'cols'  => '6'
             ),
             array(
                 'name' => 'End Time',
@@ -371,18 +387,13 @@ class EventPostType
                 'cols' => '6'
             ),
             array(
-                'id'       => EVENTAPPI_POST_NAME . '_venue_select',
-                'name'     => 'Select Venue',
-                'type'     => 'taxonomy_select',
-                'taxonomy' => 'venue',
-                'multiple' => false,
-                'cols'     => '10'
-            ),
-            array(
-                'id'   => EVENTAPPI_POST_NAME . '_api_id',
-                'name' => '',
-                'type' => 'hidden',
-                'cols' => '1'
+                'id'         => EVENTAPPI_POST_NAME . '_venue_select',
+                'name'       => 'Select Venue',
+                'type'       => 'taxonomy_select',
+                'allow_none' => true,
+                'taxonomy'   => 'venue',
+                'multiple'   => false,
+                'cols'       => '10'
             )
         );
 
@@ -397,19 +408,19 @@ class EventPostType
         return $meta;
     }
 
-    function editColumns($columns)
+    public function editColumns($columns)
     {
         $columns = array(
             'cb'                                => '<input id="cb-select-all-1" type="checkbox">',
-            'title'                             => 'Event',
-            EVENTAPPI_POST_NAME . '_thumb'      => 'Featured Image',
-            EVENTAPPI_POST_NAME . '_categories' => 'Categories',
-            EVENTAPPI_POST_NAME . '_start_date' => 'Start Date',
-            EVENTAPPI_POST_NAME . '_start_time' => 'Start Time',
-            EVENTAPPI_POST_NAME . '_end_date'   => 'End Date',
-            EVENTAPPI_POST_NAME . '_end_time'   => 'End Time',
-            EVENTAPPI_POST_NAME . '_venue'      => 'Venue',
-            EVENTAPPI_POST_NAME . '_actions'    => 'Actions'
+            'title'                             => __('Event', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_thumb'      => __('Featured Image', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_categories' => __('Categories', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_start_date' => __('Start Date', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_start_time' => __('Start Time', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_end_date'   => __('End Date', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_end_time'   => __('End Time', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_venue'      => __('Venue', EVENTAPPI_PLUGIN_NAME),
+            EVENTAPPI_POST_NAME . '_actions'    => __('Actions', EVENTAPPI_PLUGIN_NAME)
         );
 
         return $columns;
@@ -444,7 +455,7 @@ class EventPostType
                 $start_date = '';
                 if (isset($custom[EVENTAPPI_POST_NAME . '_start_date'][0])) {
                     $start_date = $custom[EVENTAPPI_POST_NAME . '_start_date'][0];
-                    $start_date = date(get_option('date_format'), strtotime($start_date));
+                    $start_date = date(get_option('date_format'), $start_date);
                 }
                 echo '<em>' . $start_date . '</em>';
                 break;
@@ -453,7 +464,7 @@ class EventPostType
                 $start_time = '';
                 if (isset($custom[EVENTAPPI_POST_NAME . '_start_time'][0])) {
                     $start_time = $custom[EVENTAPPI_POST_NAME . '_start_time'][0];
-                    $start_time = date(get_option('time_format'), strtotime($start_time));
+                    $start_time = date(get_option('time_format'), $start_time);
                 }
                 echo '<em>' . $start_time . '</em>';
                 break;
@@ -462,7 +473,7 @@ class EventPostType
                 $end_date = '';
                 if (isset($custom[EVENTAPPI_POST_NAME . '_end_date'][0])) {
                     $end_date = $custom[EVENTAPPI_POST_NAME . '_end_date'][0];
-                    $end_date = date(get_option('date_format'), strtotime($end_date));
+                    $end_date = date(get_option('date_format'), $end_date);
                 }
                 echo '<em>' . $end_date . '</em>';
                 break;
@@ -471,7 +482,7 @@ class EventPostType
                 $end_time = '';
                 if (isset($custom[EVENTAPPI_POST_NAME . '_end_time'][0])) {
                     $end_time = $custom[EVENTAPPI_POST_NAME . '_end_time'][0];
-                    $end_time = date(get_option('time_format'), strtotime($end_time));
+                    $end_time = date(get_option('time_format'), $end_time);
                 }
                 echo '<em>' . $end_time . '</em>';
                 break;
@@ -516,14 +527,29 @@ class EventPostType
             return;
         }
 
-        if ($_REQUEST['action'] === 'trash') {
+        if (array_key_exists('action', $_REQUEST) && $_REQUEST['action'] === 'trash') {
             // TODO: we probably need to deal with deletions at some point
             return;
         }
 
-        if (!array_key_exists('post_title', $_REQUEST) && !array_key_exists('eventappi_event_name', $_POST)) {
+        if (!array_key_exists('post_title', $_REQUEST) && !array_key_exists(EVENTAPPI_POST_NAME . '_name', $_POST)) {
             // we don't have enough data to create an event.
             return;
+        }
+
+        foreach (array_keys($_POST) as $pKey) {
+            $findOne = '_sale_start';
+            $findTwo = '_sale_end';
+
+            if (
+                (substr($pKey, - strlen($findOne)) === $findOne) ||
+                (substr($pKey, - strlen($findTwo)) === $findTwo) &&
+                is_array($_POST[$pKey])
+            ) {
+                foreach (array_keys($_POST[$pKey]) as $pKey2) {
+                    $_POST[$pKey][$pKey2] = strtotime($_POST[$pKey][$pKey2]);
+                }
+            }
         }
 
         $apiUserKey = get_user_meta($current_user->data->ID, 'eventappi_user_id', true);
@@ -547,8 +573,8 @@ class EventPostType
         if (array_key_exists('post_title', $_REQUEST) && array_key_exists('content', $_REQUEST)) {
             $eventName = $_REQUEST['post_title'];
             $eventDesc = $_REQUEST['content'];
-        } elseif (array_key_exists('eventappi_event_name', $_POST) && array_key_exists('desc', $_POST)) {
-            $eventName = $_POST['eventappi_event_name'];
+        } elseif (array_key_exists(EVENTAPPI_POST_NAME . '_name', $_POST) && array_key_exists('desc', $_POST)) {
+            $eventName = $_POST[EVENTAPPI_POST_NAME . '_name'];
             $eventDesc = $_POST['desc'];
         }
 
@@ -560,8 +586,8 @@ class EventPostType
             }
         }
 
-        if (array_key_exists('eventappi_event_venue_name', $_POST) &&
-            !empty($_POST['eventappi_event_venue_name'])
+        if (array_key_exists(EVENTAPPI_POST_NAME . '_venue_name', $_POST) &&
+            !empty($_POST[EVENTAPPI_POST_NAME . '_venue_name'])
         ) {
             // we create a new venue
             $term = wp_insert_term($_POST[EVENTAPPI_POST_NAME . '_venue_name'], 'venue');
@@ -650,11 +676,11 @@ CHECKVENUESQL;
         }
 
         if (array_key_exists('ea_p_a', $_POST)) {
-            update_post_meta($postId, 'eventappi_event_start_date', $startDate);
-            update_post_meta($postId, 'eventappi_event_start_time', $startTime);
-            update_post_meta($postId, 'eventappi_event_end_date', $endDate);
-            update_post_meta($postId, 'eventappi_event_end_time', $endTime);
-            update_post_meta($postId, 'eventappi_event_venue_select', $venueId);
+            update_post_meta($postId, EVENTAPPI_POST_NAME . '_start_date', strtotime($startDate));
+            update_post_meta($postId, EVENTAPPI_POST_NAME . '_start_time', $startTime);
+            update_post_meta($postId, EVENTAPPI_POST_NAME . '_end_date', strtotime($endDate));
+            update_post_meta($postId, EVENTAPPI_POST_NAME . '_end_time', $endTime);
+            update_post_meta($postId, EVENTAPPI_POST_NAME . '_venue_select', $venueId);
         }
 
         $start = date('Y-m-d H:i:s', strtotime($startDate . ' ' . $startTime));
@@ -685,7 +711,7 @@ CHECKVENUESQL;
             Logger::LOG_LEVEL_DEBUG
         );
 
-        $apiEventId = get_post_meta($postId, 'eventappi_event_id', true);
+        $apiEventId = get_post_meta($postId, EVENTAPPI_POST_NAME . '_id', true);
         if (!empty($apiEventId)) {
             // we have something on the API
             $updateEvent = ApiClient::instance()->updateEvent($apiEventId, $eventData);
@@ -698,13 +724,25 @@ CHECKVENUESQL;
                 return;
             }
 
-            update_post_meta($postId, 'eventappi_event_id', $newEvent['data']['id']);
+            update_post_meta($postId, EVENTAPPI_POST_NAME . '_id', $newEvent['data']['id']);
         }
 
-        $this->saveTickets($postId);
+        $tickets = $_POST[EVENTAPPI_POST_NAME . '_ticket_name'];
+
+        if (!empty($tickets)) {
+            $this->saveTickets($postId, $tickets);
+        }
     }
 
-    public function saveTickets($postId)
+    public function postUpdated($post_ID, $post_after, $post_before)
+    {
+        // Only load this for the event post type
+        if (get_post_type($post_ID) !== EVENTAPPI_POST_NAME) {
+            return;
+        }
+    }
+
+    public function saveTickets($postId, $tickets)
     {
         Logger::instance()->log(__FILE__, __FUNCTION__, '', Logger::LOG_LEVEL_TRACE);
 
@@ -729,33 +767,35 @@ CHECKVENUESQL;
         }
         $apiEventId = get_post_meta($postId, EVENTAPPI_POST_NAME . '_id', true);
 
-        /* OK, it's safe for us to save the data now. */
-        $tickets = $_POST[EVENTAPPI_POST_NAME . '_ticket_name'];
-
         $ticketTotal = 0;
         foreach ($tickets as $index => $ticket) {
             $ticketTotal += intval($_POST[EVENTAPPI_POST_NAME . '_ticket_available'][$index]);
         }
         if ($ticketTotal > self::MAX_LITE_TICKETS) {
             User::instance()->addUserNotice([
-                'class' => 'error',
-                'message' => 'You cannot have more than ' . self::MAX_LITE_TICKETS . ' tickets per event.'
+                'class'   => 'error',
+                'message' => sprintf(
+                    __('You cannot have more than %d tickets per event.', EVENTAPPI_PLUGIN_NAME),
+                    self::MAX_LITE_TICKETS
+                )
             ]);
+
             return;
         }
 
         foreach ($tickets as $index => $ticket) {
+            $inputPostIndex = array_search($ticket, $_POST[EVENTAPPI_POST_NAME . '_ticket_name']);
 
             $term = wp_insert_term(
                 $ticket,
                 'ticket',
                 array(
-                    'description' => $_POST[EVENTAPPI_POST_NAME . '_ticket_description'][$index],
-                    'slug'        => $postId . '-ticket-' . $index
+                    'description' => $_POST[EVENTAPPI_POST_NAME . '_ticket_description'][$inputPostIndex],
+                    'slug'        => $postId . '-ticket-' . $inputPostIndex
                 )
             );
             if (is_a($term, 'WP_Error')) {
-                $term = get_term_by('slug', $postId . '-ticket-' . $index, 'ticket', ARRAY_A);
+                $term = get_term_by('slug', $postId . '-ticket-' . $inputPostIndex, 'ticket', ARRAY_A);
             }
 
             wp_set_object_terms(
@@ -765,23 +805,24 @@ CHECKVENUESQL;
                 ($index > 0)
             );
 
-            $saleStart = $_POST[EVENTAPPI_POST_NAME . '_ticket_sale_start'][$index];
+            $saleStart = $_POST[EVENTAPPI_POST_NAME . '_ticket_sale_start'][$inputPostIndex];
             if (empty($saleStart)) {
-                $saleStart = date('m/d/Y', strtotime('now'));
+                $saleStart = strtotime('now');
             }
+
             update_tax_meta(
                 $term['term_id'],
                 EVENTAPPI_POST_NAME . '_ticket_sale_start',
                 $saleStart
             );
 
-            $saleEnd = $_POST[EVENTAPPI_POST_NAME . '_ticket_sale_end'][$index];
+            $saleEnd = $_POST[EVENTAPPI_POST_NAME . '_ticket_sale_end'][$inputPostIndex];
             if (empty($saleEnd)) {
                 $eventStartDate = get_post_meta($postId, EVENTAPPI_POST_NAME . '_start_date', true);
                 if (empty($eventStartDate)) {
                     $eventStartDate = $_POST[EVENTAPPI_POST_NAME . '_start_date']['cmb-field-0'];
                 }
-                $saleEnd = date('m/d/Y', strtotime($eventStartDate));
+                $saleEnd = $eventStartDate;
             }
             update_tax_meta(
                 $term['term_id'],
@@ -792,38 +833,40 @@ CHECKVENUESQL;
             update_tax_meta(
                 $term['term_id'],
                 EVENTAPPI_POST_NAME . '_ticket_cost',
-                intval(floatval($_POST[EVENTAPPI_POST_NAME . '_ticket_cost'][$index]) * 100)
+                intval(floatval($_POST[EVENTAPPI_POST_NAME . '_ticket_cost'][$inputPostIndex]) * 100)
             );
             update_tax_meta(
                 $term['term_id'],
                 EVENTAPPI_POST_NAME . '_ticket_available',
-                $_POST[EVENTAPPI_POST_NAME . '_ticket_available'][$index]
+                $_POST[EVENTAPPI_POST_NAME . '_ticket_available'][$inputPostIndex]
             );
             update_tax_meta(
                 $term['term_id'],
                 EVENTAPPI_POST_NAME . '_ticket_sold',
-                $_POST[EVENTAPPI_POST_NAME . '_ticket_sold'][$index]
+                $_POST[EVENTAPPI_POST_NAME . '_ticket_sold'][$inputPostIndex]
             );
             update_tax_meta(
                 $term['term_id'],
                 EVENTAPPI_POST_NAME . '_ticket_price_type',
-                $_POST[EVENTAPPI_POST_NAME . '_ticket_price_type'][$index]
+                $_POST[EVENTAPPI_POST_NAME . '_ticket_price_type'][$inputPostIndex]
             );
 
-            $apiStartTime = date('Y-m-d H:i:s', strtotime(
-                get_tax_meta($term['term_id'], EVENTAPPI_POST_NAME . '_ticket_sale_start') . ' 00:00:00'
-            ));
-            $apiEndTime   = date('Y-m-d H:i:s', strtotime(
-                get_tax_meta($term['term_id'], EVENTAPPI_POST_NAME . '_ticket_sale_end') . ' 23:59:59'
-            ));
+            $apiStartTime = date(
+                'Y-m-d H:i:s',
+                get_tax_meta($term['term_id'], EVENTAPPI_POST_NAME . '_ticket_sale_start')
+            );
+            $apiEndTime   = date(
+                'Y-m-d H:i:s',
+                get_tax_meta($term['term_id'], EVENTAPPI_POST_NAME . '_ticket_sale_end')
+            );
             $ticketArray  = array(
                 'event_id'    => $apiEventId,
                 'name'        => $ticket,
-                'description' => $_POST[EVENTAPPI_POST_NAME . '_ticket_description'][$index],
-                'cost'        => intval(floatval($_POST[EVENTAPPI_POST_NAME . '_ticket_cost'][$index]) * 100),
-                'available'   => $_POST[EVENTAPPI_POST_NAME . '_ticket_available'][$index],
-                'sold'        => $_POST[EVENTAPPI_POST_NAME . '_ticket_sold'][$index],
-                'price_type'  => $_POST[EVENTAPPI_POST_NAME . '_ticket_price_type'][$index],
+                'description' => $_POST[EVENTAPPI_POST_NAME . '_ticket_description'][$inputPostIndex],
+                'cost'        => intval(floatval($_POST[EVENTAPPI_POST_NAME . '_ticket_cost'][$inputPostIndex]) * 100),
+                'available'   => $_POST[EVENTAPPI_POST_NAME . '_ticket_available'][$inputPostIndex],
+                'sold'        => intval($_POST[EVENTAPPI_POST_NAME . '_ticket_sold'][$inputPostIndex]),
+                'price_type'  => $_POST[EVENTAPPI_POST_NAME . '_ticket_price_type'][$inputPostIndex],
                 'sale_start'  => $apiStartTime,
                 'sale_end'    => $apiEndTime
             );
@@ -906,7 +949,7 @@ CHECKVENUESQL;
                 'Settings',
                 $capability,
                 EVENTAPPI_PLUGIN_NAME . '-settings',
-                array($this, 'settingsPage')
+                array(Settings::instance(), 'settingsPage')
             );
         }
 
@@ -917,7 +960,7 @@ CHECKVENUESQL;
             'Help',
             $capability,
             EVENTAPPI_PLUGIN_NAME . '-help',
-            array($this, 'helpPage')
+            array(Help::instance(), 'helpPage')
         );
     }
 
@@ -949,7 +992,7 @@ CHECKVENUESQL;
                 'Settings',
                 $capability,
                 EVENTAPPI_PLUGIN_NAME . '-settings',
-                array($this, 'settingsPage')
+                array(Settings::instance(), 'settingsPage')
             );
         }
 
@@ -960,1157 +1003,16 @@ CHECKVENUESQL;
             'Help',
             $capability,
             EVENTAPPI_PLUGIN_NAME . '-help',
-            array($this, 'helpPage')
+            array(Help::instance(), 'helpPage')
         );
     }
 
     public function inactiveNotice()
     {
-        wp_die('Looks like the EventAppi plugin is inactive. Please check your license key in the Settings menu.');
-    }
-
-    public function helpPage()
-    {
-        if (!current_user_can('manage_' . EVENTAPPI_PLUGIN_NAME)) {
-            wp_die('You do not have sufficient permissions to access this page.');
-        }
-
-        include 'Templates/pluginHelp.php';
-    }
-
-    public function settingsPage()
-    {
-        if (!current_user_can('manage_' . EVENTAPPI_PLUGIN_NAME)) {
-            wp_die('You do not have sufficient permissions to access this page.');
-        }
-
-        $settings  = $this->getSettingsArray();
-        $tabHeader = array();
-
-        // set up some bits for the template
-        $tab = '';
-        if (array_key_exists('tab', $_GET) && !empty($_GET['tab'])) {
-            $tab = $_GET['tab'];
-        } else {
-            $tab = 'General';
-        }
-
-        foreach ($settings as $section => $data) {
-            $class = 'nav-tab';
-            if ($section === $tab) {
-                $class .= ' nav-tab-active';
-            }
-
-            $link = add_query_arg(array('tab' => $section));
-            if (isset($_GET['settings-updated'])) {
-                $link = remove_query_arg('settings-updated', $link);
-            }
-
-            $url                 = site_url() . $link;
-            $tabHeader[$section] = "<a href=\"{$url}\" class=\"{$class}\">{$data['title']}</a>";
-        }
-
-        include __DIR__ . '/Templates/PluginSettings.php';
-    }
-
-    public function getSettingsArray()
-    {
-        return array(
-            'General' => array(
-                'title'       => __('General', EVENTAPPI_PLUGIN_NAME),
-                'description' => __('Here you can activate your EventAppi Plugin.', EVENTAPPI_PLUGIN_NAME),
-                'fields'      => array(
-                    array(
-                        'id'          => 'license_key',
-                        'label'       => __('License Key', EVENTAPPI_PLUGIN_NAME),
-                        'description' => __('Enter your License Key here.', EVENTAPPI_PLUGIN_NAME),
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => __('License Key', EVENTAPPI_PLUGIN_NAME)
-                    ),
-                    array(
-                        'id'          => 'api_endpoint',
-                        'label'       => __('EventAppi API Endpoint', EVENTAPPI_PLUGIN_NAME),
-                        'description' => __('This can be found on your license key confirmation email.',
-                            EVENTAPPI_PLUGIN_NAME),
-                        'type'        => 'text',
-                        'default'     => 'https://eventappi.com/api/v1',
-                        'placeholder' => 'https://eventappi.com/api/v1'
-                    ),
-                    array(
-                        'id'          => 'license_key_checkpoint',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => '1426768000',
-                        'force'       => true
-                    ),
-                    array(
-                        'id'          => 'license_key_status',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'invalid'
-                    ),
-                    //Outlines Section
-                    array(
-                        'id'          => 'upgrade',
-                        'label'       => '<h3>' . __('Upgrade', EVENTAPPI_PLUGIN_NAME) . '</h3>',
-                        'description' => 'You can view upgrade and pricing plans availiable to you at: <a href="http://eventappi.com/pricing">http://eventappi.com/pricing</a>',
-                        'type'        => '',
-                        'placeholder' => '',
-                    )
-                )
-            ),
-            'Gateway' => array(
-                'title'       => __('Gateway', EVENTAPPI_PLUGIN_NAME),
-                'description' => __('Here you can choose your gateway settings.', EVENTAPPI_PLUGIN_NAME),
-                'fields'      => array(
-                    array(
-                        'id'          => 'gateway',
-                        'label'       => __('Select a payment gateway', EVENTAPPI_PLUGIN_NAME),
-                        'description' => __('Choose your gateway.', EVENTAPPI_PLUGIN_NAME),
-                        'type'        => 'select',
-                        'options'     => array(
-                            ''               => '-- SELECT --',
-                            'twocheckout'    => '2Checkout',
-                            'authorizenet'   => 'Authorize.Net',
-                            'buckaroo'       => 'Buckaroo',
-                            'cardsave'       => 'CardSave',
-                            'coinbase'       => 'Coinbase',
-                            'dummy'          => 'Dummy',
-                            'eway'           => 'eWAY',
-                            'firstdata'      => 'First Data',
-                            'gocardless'     => 'GoCardless',
-                            'manual'         => 'Manual',
-                            'migs'           => 'Migs',
-                            'mollie'         => 'Mollie',
-                            'multisafepay'   => 'MultiSafepay',
-                            'netaxept'       => 'Netaxept (BBS)',
-                            'netbanx'        => 'Netbanx',
-                            'payfast'        => 'PayFast',
-                            'payflow'        => 'Payflow',
-                            'paymentexpress' => 'PaymentExpress (DPS)',
-                            'paypal'         => 'PayPal Rest',
-                            'pin'            => 'Pin Payments',
-                            'sagepay'        => 'Sage Pay',
-                            'securepay'      => 'SecurePay',
-                            'stripe'         => 'Stripe',
-                            'targetpay'      => 'TargetPay',
-                            'worldpay'       => 'WorldPay'
-                        ),
-                        'default'     => 'PayPal',
-                        'placeholder' => __('Gateway', EVENTAPPI_PLUGIN_NAME)
-                    ),
-                    array(
-                        'id'          => 'gateway_twocheckout_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'TwoCheckout'
-                    ),
-                    array(
-                        'id'          => 'gateway_twocheckout_accountNumber',
-                        'label'       => 'Account number',
-                        'description' => 'Your 2Checkout account number.',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_twocheckout_secretWord',
-                        'label'       => 'Secret word',
-                        'description' => 'Your 2Checkout secret word',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_twocheckout_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Process all transactions on the test gateway',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_authorizenet_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'AuthorizeNet_AIM'
-                    ),
-                    array(
-                        'id'          => 'gateway_authorizenet_apiLoginId',
-                        'label'       => 'API Login ID',
-                        'description' => 'Authorize.net API login ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_authorizenet_transactionKey',
-                        'label'       => 'Transaction Key',
-                        'description' => 'Authorize.net transaction key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_authorizenet_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Process all transactions on the test gateway',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_authorizenet_developerMode',
-                        'label'       => 'Developer mode',
-                        'description' => 'Authorize.net Developer Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_buckaroo_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Buckaroo'
-                    ),
-                    array(
-                        'id'          => 'gateway_buckaroo_websiteKey',
-                        'label'       => 'Website Key',
-                        'description' => 'Your Buckaroo website key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_buckaroo_secretKey',
-                        'label'       => 'Secret Key',
-                        'description' => 'Your Buckaroo secret key',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_buckaroo_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Buckaroo Developer Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_cardsave_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'CardSave'
-                    ),
-                    array(
-                        'id'          => 'gateway_cardsave_merchantId',
-                        'label'       => 'Merchant ID',
-                        'description' => 'Your Cardsave merchant ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_cardsave_password',
-                        'label'       => 'Password',
-                        'description' => 'Your CardSave password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_coinbase_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Coinbase'
-                    ),
-                    array(
-                        'id'          => 'gateway_coinbase_apiKey',
-                        'label'       => 'API Key',
-                        'description' => 'Your Coinbase API key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_coinbase_secret',
-                        'label'       => 'Secret',
-                        'description' => 'Your Coinbase secret',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_coinbase_accountId',
-                        'label'       => 'Account ID',
-                        'description' => 'Your Coinbase account ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_dummy_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Dummy'
-                    ),
-                    array(
-                        'id'          => 'gateway_dummy_info',
-                        'label'       => 'Note:',
-                        'description' => 'Card numbers ending in even numbers should result in successful payments. Payments with cards ending in odd numbers should fail.',
-                        'type'        => 'hidden',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_eway_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Eway_Rapid'
-                    ),
-                    array(
-                        'id'          => 'gateway_eway_apiKey',
-                        'label'       => 'API Key',
-                        'description' => 'Your eWAY API key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_eway_password',
-                        'label'       => 'Password',
-                        'description' => 'Your eWAY password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_eway_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'eWAY Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_firstdata_storeId',
-                        'label'       => 'Store ID',
-                        'description' => 'Your FirstData store ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_firstdata_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'FirstData_Connect'
-                    ),
-                    array(
-                        'id'          => 'gateway_firstdata_sharedSecret',
-                        'label'       => 'Shared Secret',
-                        'description' => 'Your FirstData shared secret',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_firstdata_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'First Data Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_gocardless_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'GoCardless'
-                    ),
-                    array(
-                        'id'          => 'gateway_gocardless_appId',
-                        'label'       => 'App ID',
-                        'description' => 'Your GoCardless App ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_gocardless_appSecret',
-                        'label'       => 'App Secret',
-                        'description' => 'Your GoCardless App secret',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_gocardless_merchantId',
-                        'label'       => 'Merchant ID',
-                        'description' => 'Your GoCardless merchant ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_gocardless_accessToken',
-                        'label'       => 'Access Token',
-                        'description' => 'Your GoCardless access token',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_gocardless_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'GoCardless Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_migs_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Migs_TwoParty'
-                    ),
-                    array(
-                        'id'          => 'gateway_migs_merchantId',
-                        'label'       => 'Merchant ID',
-                        'description' => 'Your MIGS merchant ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_migs_merchantAccessCode',
-                        'label'       => 'Merchant Access Code',
-                        'description' => 'Your MIGS merchant access code',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_migs_secureHash',
-                        'label'       => 'Secure Hash',
-                        'description' => 'Your MIGS secure hash',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_mollie_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Mollie'
-                    ),
-                    array(
-                        'id'          => 'gateway_mollie_apiKey',
-                        'label'       => 'API Key',
-                        'description' => 'Your Mollie API key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_multisafepay_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'MultiSafepay'
-                    ),
-                    array(
-                        'id'          => 'gateway_multisafepay_accountId',
-                        'label'       => 'Account ID',
-                        'description' => 'Your MultiSafepay account ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_multisafepay_siteId',
-                        'label'       => 'Site ID',
-                        'description' => 'Your MultiSafepay site ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_multisafepay_siteCode',
-                        'label'       => 'Site Code',
-                        'description' => 'Your MultiSafepay site code',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_multisafepay_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'MultiSafepay Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_netaxept_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Netaxept'
-                    ),
-                    array(
-                        'id'          => 'gateway_netaxept_merchantId',
-                        'label'       => 'Merchant ID',
-                        'description' => 'Your Netaxept merchant ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_netaxept_password',
-                        'label'       => 'Password',
-                        'description' => 'Your Netaxept password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_netaxept_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Netaxept Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_netbanx_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'NetBanx'
-                    ),
-                    array(
-                        'id'          => 'gateway_netbanx_accountNumber',
-                        'label'       => 'Account Number',
-                        'description' => 'Your NetBanx account number',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_netbanx_storeId',
-                        'label'       => 'Store ID',
-                        'description' => 'Your NetBanx store ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_netbanx_storePassword',
-                        'label'       => 'Store Password',
-                        'description' => 'Your NetBanx store password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_netbanx_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'NetBanx Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_payfast_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'PayFast'
-                    ),
-                    array(
-                        'id'          => 'gateway_payfast_merchantId',
-                        'label'       => 'Merchant ID',
-                        'description' => 'Your PayFast merchant ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_payfast_merchantKey',
-                        'label'       => 'Merchant Key',
-                        'description' => 'Your PayFast merchant key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_payfast_pdtKey',
-                        'label'       => 'PDT Key',
-                        'description' => 'Your PayFast PDT key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_payfast_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'PayFast Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_payflow_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Payflow_Pro'
-                    ),
-                    array(
-                        'id'          => 'gateway_payflow_username',
-                        'label'       => 'Username',
-                        'description' => 'Your Payflow username',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_payflow_password',
-                        'label'       => 'Password',
-                        'description' => 'Your Payflow password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_payflow_vendor',
-                        'label'       => 'Vendor',
-                        'description' => 'Your Payflow vendor',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_payflow_partner',
-                        'label'       => 'Partner',
-                        'description' => 'Your Payflow partner',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_payflow_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Payflow Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_paymentexpress_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'PaymentExpress_PxPost'
-                    ),
-                    array(
-                        'id'          => 'gateway_paymentexpress_username',
-                        'label'       => 'Username',
-                        'description' => 'Your PaymentExpress user name',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_paymentexpress_password',
-                        'label'       => 'Password',
-                        'description' => 'Your PaymentExpress password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_paypal_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'PayPal_Rest'
-                    ),
-                    array(
-                        'id'          => 'gateway_paypal_clientId',
-                        'label'       => 'Client ID',
-                        'description' => 'Your PayPal Rest client ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_paypal_secret',
-                        'label'       => 'Secret',
-                        'description' => 'Your PayPal Rest secret',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_paypal_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'PIN Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_pin_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Pin'
-                    ),
-                    array(
-                        'id'          => 'gateway_pin_secretKey',
-                        'label'       => 'Secret Key',
-                        'description' => 'Your Pin secret key',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_pin_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Pin Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_sagepay_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'SagePay_Server'
-                    ),
-                    array(
-                        'id'          => 'gateway_sagepay_vendor',
-                        'label'       => 'Vendor',
-                        'description' => 'Your Sage Pay vendor',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_sagepay_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Sage Pay Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_sagepay_simulatorMode',
-                        'label'       => 'Simulator mode',
-                        'description' => 'SagePay simulator mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_securepay_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'SecurePay'
-                    ),
-                    array(
-                        'id'          => 'gateway_securepay_merchantId',
-                        'label'       => 'Merchant ID',
-                        'description' => 'Your Securepay merchant id',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_securepay_transactionPassword',
-                        'label'       => 'Transaction Password',
-                        'description' => 'Your Securepay transaction password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_securepay_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'Secure Pay Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    ),
-                    array(
-                        'id'          => 'gateway_stripe_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'Stripe'
-                    ),
-                    array(
-                        'id'          => 'gateway_stripe_apiKey',
-                        'label'       => 'API Key',
-                        'description' => 'Your Stripe API key',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_targetpay_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'TargetPay_Ideal'
-                    ),
-                    array(
-                        'id'          => 'gateway_targetpay_subAccountId',
-                        'label'       => 'Sub Account ID',
-                        'description' => 'Your TargetPay sub-account ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_worldpay_fullGatewayName',
-                        'label'       => '',
-                        'description' => '',
-                        'type'        => 'hidden',
-                        'default'     => 'WorldPay'
-                    ),
-                    array(
-                        'id'          => 'gateway_worldpay_installationId',
-                        'label'       => 'Installation ID',
-                        'description' => 'Your WorldPay installation ID',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_worldpay_accountId',
-                        'label'       => 'Account ID',
-                        'description' => 'Your WorldPay account id',
-                        'type'        => 'text',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_worldpay_secretWord',
-                        'label'       => 'Secret Word',
-                        'description' => 'Your Worldpay secret word',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_worldpay_callbackPassword',
-                        'label'       => 'Callback Password',
-                        'description' => 'Your Worldpay callback password',
-                        'type'        => 'password',
-                        'default'     => '',
-                        'placeholder' => ''
-                    ),
-                    array(
-                        'id'          => 'gateway_worldpay_testMode',
-                        'label'       => 'Test mode',
-                        'description' => 'WorldPay Test Mode',
-                        'type'        => 'radio',
-                        'options'     => array(true => 'Yes', false => 'No'),
-                        'default'     => true
-                    )
-                )
-            )
-        );
-    }
-
-    public function registerSettings()
-    {
-        $settings = $this->getSettingsArray();
-
-        if (array_key_exists('tab', $_REQUEST)) {
-            $current_section = $_REQUEST['tab'];
-        } else {
-            $current_section = 'General';
-        }
-
-        foreach ($settings as $section => $data) {
-            if ($current_section !== $section) {
-                continue;
-            }
-
-            add_settings_section(
-                $section,
-                null,
-                array($this, 'settingsSection'),
-                EVENTAPPI_PLUGIN_NAME . '_settings'
-            );
-
-            foreach ($data['fields'] as $field) {
-                $validation = '';
-                if (array_key_exists('callback', $field)) {
-                    $validation = $field['callback'];
-                }
-
-                register_setting(
-                    EVENTAPPI_PLUGIN_NAME . '_settings',
-                    EVENTAPPI_PLUGIN_NAME . '_' . $field['id'],
-                    $validation
-                );
-
-                if ($field['id'] === 'license_key') {
-                    $license_key = Options::instance()->getPluginOption($field['id']);
-
-                    if (
-                        $license_key !== false &&
-                        $license_key !== '' &&
-                        LicenseKeyManager::instance()->checkLicenseKey()
-                    ) {
-                        $field['description'] = 'Your plugin is registered and currently ' .
-                                                '<span style="color:#009900;font-weight:bold;">Active</span>';
-
-                        if (!$_POST) {
-                            add_settings_error(
-                                'license_key',
-                                'settings_updated',
-                                'Your plugin was successfully Activated.',
-                                'updated'
-                            );
-                        }
-                    } else {
-                        $field['description'] = 'Your LicenseKey is currently ' .
-                                                '<span style="color:#990000;font-weight:bold;">Inactive</span>';
-
-                        if (!$_POST) {
-                            add_settings_error(
-                                'license_key',
-                                'settings_updated',
-                                'The license key you provided is invalid.<br>Please try again or contact EventAppi Support,' .
-                                ' using the following contact details:<br><ul><li>Telephone: 020202020202</li>' .
-                                '<li>Email: admin@webplunder.com</li></ul>'
-                            );
-                        }
-                    }
-                }
-
-                add_settings_field(
-                    $field['id'],
-                    $field['label'],
-                    array($this, 'displayField'),
-                    EVENTAPPI_PLUGIN_NAME . '_settings',
-                    $section,
-                    array('field' => $field, 'prefix' => EVENTAPPI_PLUGIN_NAME . '_')
-                );
-            }
-
-            if (!$current_section) {
-                break;
-            }
-        }
-    }
-
-    public function settingsSection($section)
-    {
-        $settings = $this->getSettingsArray();
-
-        if (array_key_exists('tab', $_GET)) {
-            $tab = $_GET['tab'];
-        } else {
-            $tab = 'General';
-        }
-        $html = '<h2 class="nav-tab-wrapper">';
-
-        foreach ($settings as $section => $data) {
-            $class = 'nav-tab';
-            if ($section == $tab) {
-                $class .= ' nav-tab-active';
-            }
-
-            $link = add_query_arg(array('tab' => $section));
-            if (isset($_GET['settings-updated'])) {
-                $link = remove_query_arg('settings-updated', $link);
-            }
-
-            $html .= "<a href=\"{$link}\" class=\"{$class}\">{$data['title']}</a>";
-        }
-
-        $html .= '</h2>';
-
-        echo $html;
-    }
-
-    public function displayField($data)
-    {
-        $field       = $data['field'];
-        $option_name = $data['prefix'] . $field['id'];
-
-        $option = get_option($option_name);
-
-        if (array_key_exists('default', $field) &&
-            ((array_key_exists('force', $field) && $field['force'] === true) ||
-             empty($option))
-        ) {
-            $option = $field['default'];
-        }
-
-        if (array_key_exists('class', $field)) {
-            $class = $field['class'];
-        } else {
-            $class = '';
-        }
-
-        $html = '';
-        switch ($field['type']) {
-
-            case 'text':
-            case 'url':
-            case 'email':
-                $html .= '<input id="' . esc_attr($field['id']) . '" class="' . esc_attr($class) .
-                         '" type="text" name="' . esc_attr($option_name) . '" placeholder="' .
-                         esc_attr($field['placeholder']) . '" value="' . esc_attr($option) . '" />';
-                break;
-
-            case 'password':
-            case 'number':
-            case 'hidden':
-                $min = '';
-                if (isset($field['min'])) {
-                    $min = ' min="' . esc_attr($field['min']) . '"';
-                }
-
-                $max = '';
-                if (isset($field['max'])) {
-                    $max = ' max="' . esc_attr($field['max']) . '"';
-                }
-                $html .= '<input id="' . esc_attr($field['id']) . '" type="' .
-                         esc_attr($field['type']) . '" name="' . esc_attr($option_name) .
-                         '" placeholder="' . esc_attr($field['placeholder']) . '" value="' .
-                         esc_attr($option) . '"' . $min . '' . $max . '/>';
-                break;
-
-            case 'text_secret':
-                $html .= '<input id="' . esc_attr($field['id']) . '" type="text" name="' .
-                         esc_attr($option_name) . '" placeholder="' .
-                         esc_attr($field['placeholder']) . '" value="" />';
-                break;
-
-            case 'textarea':
-                $html .= '<textarea id="' . esc_attr($field['id']) . '" rows="5" cols="50" name="' .
-                         esc_attr($option_name) . '" placeholder="' . esc_attr($field['placeholder']) .
-                         '">' . $option . '</textarea><br/>';
-                break;
-
-            case 'checkbox':
-                $checked = '';
-                if ($option && 'on' == $option) {
-                    $checked = 'checked="checked"';
-                }
-                $html .= '<input id="' . esc_attr($field['id']) . '" type="' . esc_attr($field['type']) .
-                         '" name="' . esc_attr($option_name) . '" ' . $checked . '/>' . "\n";
-                break;
-
-            case 'radio':
-                foreach ($field['options'] as $k => $v) {
-                    $checked = false;
-                    if ($k == $option) {
-                        $checked = true;
-                    }
-                    $html .= '<label for="' . esc_attr($field['id'] . '_' . $k) . '"><input type="radio" ' .
-                             checked($checked, true, false) . ' name="' . esc_attr($option_name) .
-                             '" value="' . esc_attr($k) . '" id="' . esc_attr($field['id'] . '_' . $k) .
-                             '" /> ' . $v . '</label> ';
-                }
-                break;
-
-            case 'select':
-                $html .= '<select name="' . esc_attr($option_name) . '" id="' . esc_attr($field['id']) . '">';
-                foreach ($field['options'] as $k => $v) {
-                    $html .= '<option ' . selected($k, $option,
-                            false) . ' value="' . esc_attr($k) . '">' . $v . '</option>';
-                }
-                $html .= '</select> ';
-                break;
-
-            case 'select_multi':
-                $html .= '<select name="' . esc_attr($option_name) . '[]" id="' . esc_attr($field['id']) .
-                         '" multiple="multiple">';
-                foreach ($field['options'] as $k => $v) {
-                    $selected = false;
-                    if (in_array($k, $option)) {
-                        $selected = true;
-                    }
-                    $html .= '<option ' . selected($selected, true,
-                            false) . ' value="' . esc_attr($k) . '">' . $v . '</option>';
-                }
-                $html .= '</select> ';
-                break;
-
-            case 'button':
-                $html .= '<button name="' . esc_attr($option_name) . '" id="' . esc_attr($field['id']) . '"> ' .
-                         esc_attr($field['label']) . ' </button>';
-                break;
-
-            case 'image':
-                $image_thumb = '';
-                if ($option) {
-                    $image_thumb = wp_get_attachment_thumb_url($option);
-                }
-                $html .= '<img id="' . $option_name . '_preview" class="image_preview" src="' . $image_thumb . '" /><br/>' . "\n";
-                $html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' . __('Upload an image',
-                        EVENTAPPI_PLUGIN_NAME) . '" data-uploader_button_text="' . __('Use image',
-                        EVENTAPPI_PLUGIN_NAME) . '" class="image_upload_button button" value="' . __('Upload new image',
-                        EVENTAPPI_PLUGIN_NAME) . '" />' . "\n";
-                $html .= '<input id="' . $option_name . '_delete" type="button" class="image_delete_button button" value="' . __('Remove image',
-                        EVENTAPPI_PLUGIN_NAME) . '" />' . "\n";
-                $html .= '<input id="' . $option_name . '" class="image_data_field" type="hidden" name="' . $option_name . '" value="' . $option . '"/><br/>' . "\n";
-                break;
-
-            case 'color':
-                ?>
-                <div class="color-picker" style="position:relative;">
-                    <input type="text" name="<?php esc_attr_e($option_name, EVENTAPPI_PLUGIN_NAME);?>" class="color"
-                           value="<?php esc_attr_e($option, EVENTAPPI_PLUGIN_NAME);?>"/>
-
-                    <div style="position:absolute;background:#FFF;z-index:99;border-radius:100%;"
-                         class="colorpicker"></div>
-                </div>
-                <?php
-                break;
-
-        }
-
-        switch ($field['type']) {
-
-            case 'radio':
-            case 'select_multi':
-                $html .= '<br/><span class="description">' . $field['description'] . '</span>';
-                break;
-
-            default:
-                $html .= '<label for="' . esc_attr($field['id']) . '">' .
-                         '<span class="description">' . $field['description'] . '</span>' .
-                         '</label>';
-                break;
-        }
-        echo $html;
+        wp_die(__(
+            'Looks like the EventAppi plugin is inactive. Please check your license key in the Settings menu.',
+            EVENTAPPI_PLUGIN_NAME
+        ));
     }
 
     private function csvFormattedLine($data)
@@ -2147,7 +1049,7 @@ CHECKVENUESQL;
         }
     }
 
-    public function updateAttendeeCheckinStatus($eventId, $purchasedTicketHash, $status)
+    public function updateAttendeeCheckinStatus($eventId, $purchasedTicketHash, $status, $ajax = false)
     {
         Logger::instance()->log(__FILE__, __FUNCTION__, '', Logger::LOG_LEVEL_TRACE);
 
@@ -2170,10 +1072,36 @@ CHECKVENUESQL;
             if (array_key_exists('error', $result) &&
                 $result['code'] === ApiClientInterface::RESPONSE_ALREADY_CHECKED_IN
             ) {
-                User::instance()->addUserNotice([
+                $error = array(
                     'class'   => 'error',
-                    'message' => 'The attendee is already checked in, and cannot be checked in again.'
-                ]);
+                    'message' => __(
+                        'The attendee is already checked in, and cannot be checked in again.',
+                        EVENTAPPI_PLUGIN_NAME
+                    )
+                );
+
+                if ($ajax) {
+                    // If there is an AJAX call, output the result in JSON format
+                    echo json_encode($error);
+                    exit;
+                } else {
+                    // No AJAX call is made, the page was refreshed in the Dashboard
+                    User::instance()->addUserNotice($error);
+
+                    return;
+                }
+            }
+
+            // AJAX call and no error? Echo the success in JSON format
+            if ($ajax) {
+                echo json_encode(array(
+                    'class'     => 'success',
+                    'state'     => (($status == 'in') ? 'Out' : 'In'),
+                    'link_text' => (($status == 'in')
+                        ? __('Check Out', EVENTAPPI_PLUGIN_NAME)
+                        : __('Check In', EVENTAPPI_PLUGIN_NAME)),
+                    'message'   => __('The attendee\'s status was changed', EVENTAPPI_PLUGIN_NAME)
+                ));
             }
         }
     }
@@ -2193,6 +1121,11 @@ CHECKVENUESQL;
         $attendeeTable = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases';
 
         $attendeeList = ApiClient::instance()->listEventAttendees($apiOrganiserId, $apiEventId);
+
+        if (empty($attendeeList)) {
+            return;
+        }
+
         if (array_key_exists('data', $attendeeList)) {
             $checkedInAttendees = array();
             $attendeeList       = $attendeeList['data'];
@@ -2270,12 +1203,12 @@ ATTENDEEQUERY;
 
         foreach ($queryResults as $attendee) {
             $attendeeData = array(
-                'Email'        => $attendee->user_email,
-                'First Name'   => $attendee->first_name,
-                'Last Name'    => $attendee->last_name,
-                'Display Name' => $attendee->display_name,
-                'Checked In'   => ($attendee->isCheckedIn === '1') ? 'Yes' : 'No',
-                'Assigned To'  => $attendee->assignedTo
+                __('Email', EVENTAPPI_PLUGIN_NAME)        => $attendee->user_email,
+                __('First Name', EVENTAPPI_PLUGIN_NAME)   => $attendee->first_name,
+                __('Last Name', EVENTAPPI_PLUGIN_NAME)    => $attendee->last_name,
+                __('Display Name', EVENTAPPI_PLUGIN_NAME) => $attendee->display_name,
+                __('Checked In', EVENTAPPI_PLUGIN_NAME)   => ($attendee->isCheckedIn === '1') ? __('Yes', EVENTAPPI_PLUGIN_NAME) : __('No', EVENTAPPI_PLUGIN_NAME),
+                __('Assigned To', EVENTAPPI_PLUGIN_NAME)  => $attendee->assignedTo
             );
             $extra        = unserialize($attendee->additionalAttendeeData);
             foreach ($extra as $key => $value) {
@@ -2302,23 +1235,61 @@ ATTENDEEQUERY;
     public function attendeesPage()
     {
         if (!current_user_can('manage_' . EVENTAPPI_PLUGIN_NAME)) {
-            wp_die('You do not have sufficient permissions to access this page.');
+            wp_die(__('You do not have sufficient permissions to access this page.', EVENTAPPI_PLUGIN_NAME));
         }
 
-        global $wpdb;
-
-        $data        = array();
-        $eventPostID = $_GET['post'];
+        $eventPostID = (int) $_GET['post'];
 
         $this->updateAllAttendeesCheckinStatusForEvent($eventPostID);
 
-        $data['customPost']     = get_post_type_object(EVENTAPPI_POST_NAME);
-        $data['postUrl']        = get_admin_url() . 'edit.php?post_type=' . EVENTAPPI_POST_NAME .
-                                  '&page=' . EVENTAPPI_PLUGIN_NAME . "-attendees&post={$eventPostID}";
-        $data['attendeesLabel'] = __('Attendees', EVENTAPPI_PLUGIN_NAME);
-        $data['exportUrl']      = get_admin_url() . 'link.php?post_type=' . EVENTAPPI_POST_NAME .
-                                  '&page=' . EVENTAPPI_PLUGIN_NAME . "-download-attendees&post={$eventPostID}";
-        $data['eventPost']      = get_post($eventPostID);
+        $data = $this->getAttendeesData($eventPostID);
+
+        echo Parser::instance()->parseEventAppiTemplate('ListEventAttendees', $data);
+    }
+
+    public function getAttendeesData($eventPostID)
+    {
+
+        global $wpdb, $post;
+
+        $data = array();
+
+        $results_per_page = 2;
+
+        $data['customPost'] = get_post_type_object(EVENTAPPI_POST_NAME);
+
+        if (is_admin()) { // Dashboard
+
+            $data['postUrl']        = get_admin_url() . 'edit.php?post_type=' . EVENTAPPI_POST_NAME .
+                                      '&page=' . EVENTAPPI_PLUGIN_NAME . "-attendees&post={$eventPostID}";
+            $data['attendeesLabel'] = __('Attendees', EVENTAPPI_PLUGIN_NAME);
+            $sq_key                 = 's';
+
+        } else { // Front-end
+            $page = get_query_var('page', 1);
+
+            if ($page == 0) {
+                $page = 1;
+            }
+
+            $sq_key = 'sf';
+
+            $data['postUrl'] = $data['postUrlRoot'] = get_permalink($post->ID) . '?id=' . $eventPostID;
+
+            // Append any existing query strings
+            if ($_GET['checked'] != '') {
+                $data['postUrl'] .= '&checked=' . htmlspecialchars($_GET['checked']);
+            }
+
+            if ($_GET['sf'] != '') {
+                $data['postUrl'] .= '&sf=' . urlencode($_GET['sf']);
+            }
+        }
+
+        $data['exportUrl'] = get_admin_url() . 'link.php?post_type=' . EVENTAPPI_POST_NAME .
+                             '&page=' . EVENTAPPI_PLUGIN_NAME . '-download-attendees&post=' . $eventPostID;
+
+        $data['eventPost'] = get_post($eventPostID);
 
         $attendeeTable  = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases';
         $usersTable     = $wpdb->prefix . 'users';
@@ -2349,7 +1320,7 @@ FROM {$attendeeTable} AS a
     WHERE a.event_id = %d AND (a.isClaimed = '1' OR a.isAssigned = '1')
 ATTENDEEQUERY;
 
-        if (array_key_exists('s', $_GET)) {
+        if (array_key_exists($sq_key, $_GET)) {
             $attendeeQuery .= <<<SEARCHCLAUSE
     AND (u.user_email LIKE  '%%%s%%' OR
          a.assignedTo LIKE '%%%s%%' OR
@@ -2364,14 +1335,14 @@ SEARCHCLAUSE;
 
         $attendeeQuery .= " GROUP BY a.purchased_ticket_hash ";
 
-        if (array_key_exists('s', $_GET)) {
+        if (array_key_exists($sq_key, $_GET)) {
             $attendeeQuery = $wpdb->prepare(
                 $attendeeQuery,
                 $eventPostID,
-                $_GET['s'],
-                $_GET['s'],
-                $_GET['s'],
-                $_GET['s']
+                $_GET[$sq_key],
+                $_GET[$sq_key],
+                $_GET[$sq_key],
+                $_GET[$sq_key]
             );
         } else {
             $attendeeQuery = $wpdb->prepare(
@@ -2380,8 +1351,17 @@ SEARCHCLAUSE;
             );
         }
 
+        // All Results - To determine total number of pages
+        $attendeeAllResults = count($wpdb->get_results($attendeeQuery));
+
+        // Page?
+        if ($page != '') {
+            $offset = (($page - 1) * $results_per_page);
+            $attendeeQuery .= ' LIMIT ' . $offset . ', ' . $results_per_page;
+        }
+
         $data['attendees'] = $wpdb->get_results($attendeeQuery);
-        $data['s']         = $_GET['s'];
+        $data[$sq_key]     = htmlspecialchars($_GET[$sq_key]);
 
         if (is_null($attendeeCheck)) {
             $attendeeCheck = 0;
@@ -2407,25 +1387,70 @@ SEARCHCLAUSE;
 
         $data['extraDataFields'] = User::instance()->getAdditionalContactMethods(true);
 
-        Parser::instance()->parseTemplate('list-event-attendees', $data, true);
+        // Total Pages
+        $data['total_pages'] = ceil($attendeeAllResults / $results_per_page);
+
+        // Current page
+        $data['page'] = $page;
+
+        return $data;
+
     }
 
     public function purchasesPage()
     {
         if (!current_user_can('manage_' . EVENTAPPI_PLUGIN_NAME)) {
-            wp_die('You do not have sufficient permissions to access this page.');
+            wp_die(__('You do not have sufficient permissions to access this page.', EVENTAPPI_PLUGIN_NAME));
         }
 
         global $wpdb;
+
+        $eventPostID = (int) $_GET['post'];
+
+        $data = $this->getPurchasesData($eventPostID);
+
+        echo Parser::instance()->parseEventAppiTemplate('ListEventPurchases', $data);
+    }
+
+    public function getPurchasesData($eventPostID)
+    {
+        global $wpdb, $post;
+
+        $results_per_page = 4;
+
         $data = array();
 
-        $eventPostID = $_GET['post'];
+        $data['customPost'] = get_post_type_object(EVENTAPPI_POST_NAME);
 
-        $data['customPost']     = get_post_type_object(EVENTAPPI_POST_NAME);
-        $data['purchasesLabel'] = __('Purchases', EVENTAPPI_PLUGIN_NAME);
-        $data['postUrl']        = get_admin_url() . 'edit.php?post_type=' . EVENTAPPI_POST_NAME .
-                                  '&page=' . EVENTAPPI_PLUGIN_NAME . "-purchases&post={$eventPostID}";
-        $data['eventPost']      = get_post($eventPostID);
+        if (is_admin()) { // Dashboard
+
+            $data['postUrl']        = get_admin_url() . 'edit.php?post_type=' . EVENTAPPI_POST_NAME .
+                                      '&page=' . EVENTAPPI_PLUGIN_NAME . '-purchases&post=' . $eventPostID;
+            $data['purchasesLabel'] = __('Purchases', EVENTAPPI_PLUGIN_NAME);
+            $sq_key                 = 's';
+
+        } else { // Front-end
+            $page = get_query_var('page', 1);
+
+            if ($page == 0) {
+                $page = 1;
+            }
+
+            $sq_key = 'sf';
+
+            $data['postUrl'] = $data['postUrlRoot'] = get_permalink($post->ID) . '?id=' . $eventPostID;
+
+            // Append any existing query strings
+            if ($_GET['assigned'] != '') {
+                $data['postUrl'] .= '&assigned=' . htmlspecialchars($_GET['assigned']);
+            }
+
+            if ($_GET['sf'] != '') {
+                $data['postUrl'] .= '&sf=' . urlencode($_GET['sf']);
+            }
+        }
+
+        $data['eventPost'] = get_post($eventPostID);
 
         $purchasesTable = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases';
         $usersTable     = $wpdb->prefix . 'users';
@@ -2455,7 +1480,7 @@ WHERE a.event_id = {$eventPostID}
 PURCHASEQUERYSQL;
 
         // cater for search criteria
-        if (array_key_exists('s', $_GET)) {
+        if (array_key_exists($sq_key, $_GET)) {
             $purchaseQuery .= <<<SEARCHCRTERIASQL
     AND (u.user_email  LIKE '%%%s%%' OR
          a.assignedTo  LIKE '%%%s%%' OR
@@ -2473,18 +1498,27 @@ SEARCHCRTERIASQL;
 
         $purchaseQuery .= ' GROUP BY a.purchased_ticket_hash ';
 
-        if (array_key_exists('s', $_GET)) {
+        if (array_key_exists($sq_key, $_GET)) {
             $purchaseQuery = $wpdb->prepare(
                 $purchaseQuery,
-                $_GET['s'],
-                $_GET['s'],
-                $_GET['s'],
-                $_GET['s']
+                $_GET[$sq_key],
+                $_GET[$sq_key],
+                $_GET[$sq_key],
+                $_GET[$sq_key]
             );
         }
 
+        // All Results - To determine total number of pages
+        $purchasesAllResults = count($wpdb->get_results($purchaseQuery));
+
+        // Page?
+        if ($page != '') {
+            $offset = (($page - 1) * $results_per_page);
+            $purchaseQuery .= ' LIMIT ' . $offset . ', ' . $results_per_page;
+        }
+
         $data['purchases'] = $wpdb->get_results($purchaseQuery);
-        $data['s']         = $_GET['s'];
+        $data[$sq_key]     = htmlspecialchars($_GET[$sq_key]);
 
         if (is_null($data['purchaseAvail'])) {
             $data['purchaseAvail'] = 0;
@@ -2508,7 +1542,13 @@ SEARCHCRTERIASQL;
             )
         );
 
-        Parser::instance()->parseTemplate('list-event-purchases', $data, true);
+        // Total Pages
+        $data['total_pages'] = ceil($purchasesAllResults / $results_per_page);
+
+        // Current page
+        $data['page'] = $page;
+
+        return $data;
     }
 
     private function ticketIsOnSale(array $ticketMeta)
@@ -2516,15 +1556,11 @@ SEARCHCRTERIASQL;
         $saleStart = $ticketMeta[EVENTAPPI_POST_NAME . '_ticket_sale_start'];
         if ($saleStart === false) {
             $saleStart = strtotime('yesterday');
-        } else {
-            $saleStart = strtotime($saleStart . ' 00:00:01');
         }
 
         $saleEnd = $ticketMeta[EVENTAPPI_POST_NAME . '_ticket_sale_end'];
         if ($saleEnd === false) {
             $saleEnd = strtotime('tomorrow');
-        } else {
-            $saleEnd = strtotime($saleEnd . ' 23:59:59');
         }
 
         if ($saleStart < strtotime('now') && $saleEnd > strtotime('now')) {
@@ -2565,22 +1601,27 @@ SEARCHCRTERIASQL;
 
         $thePostMeta = get_post_meta($thePost->ID);
 
-        $theVenue     = get_term($thePostMeta['eventappi_event_venue_select'][0], 'venue', ARRAY_A);
-        $theVenueMeta = get_tax_meta_all($thePostMeta['eventappi_event_venue_select'][0]);
-        $theAddress   = implode(', ', $theVenueMeta);
-        $theAdrLink   = str_replace(' ', '%20', $theAddress);
+        // Only get the term if there is a Venue ID associated with the Event
+        $venueId      = (int)$thePostMeta[EVENTAPPI_POST_NAME.'_venue_select'][0];
+
+        if($venueId > 0) {
+            $theVenue = get_term($venueId, 'venue', ARRAY_A);
+            $theVenueMeta = get_tax_meta_all($venueId);
+            $theAddress   = implode(', ', $theVenueMeta);
+            $theAdrLink   = str_replace(' ', '%20', $theAddress);
+        }
 
         $theTickets = wp_get_object_terms($thePost->ID, 'ticket');
         foreach ($theTickets as $tixIndex => $ticket) {
             $theTixMeta = get_tax_meta_all($ticket->term_id);
-            $total      = intval($theTixMeta['eventappi_event_ticket_available']);
-            $sold       = intval($theTixMeta['eventappi_event_ticket_sold']);
+            $total      = intval($theTixMeta[EVENTAPPI_POST_NAME . '_ticket_available']);
+            $sold       = intval($theTixMeta[EVENTAPPI_POST_NAME . '_ticket_sold']);
             $avail      = $total - $sold;
-            $price      = money_format('%i', (intval($theTixMeta['eventappi_event_ticket_cost']) / 100));
+            $price      = money_format('%i', (intval($theTixMeta[EVENTAPPI_POST_NAME . '_ticket_cost']) / 100));
 
             if ($this->ticketIsOnSale($theTixMeta)) {
-                $theTickets[$tixIndex]->ticket_id = $theTixMeta['eventappi_event_ticket_api_id'];
-                $theTickets[$tixIndex]->cost      = $theTixMeta['eventappi_event_ticket_cost'];
+                $theTickets[$tixIndex]->ticket_id = $theTixMeta[EVENTAPPI_POST_NAME . '_ticket_api_id'];
+                $theTickets[$tixIndex]->cost      = $theTixMeta[EVENTAPPI_POST_NAME . '_ticket_cost'];
                 $theTickets[$tixIndex]->avail     = $avail;
                 $theTickets[$tixIndex]->price     = $price;
             } else {
@@ -2590,12 +1631,24 @@ SEARCHCRTERIASQL;
 
         $data = array(
             'thePostId'  => $thePost->ID,
-            'eventId'    => $thePostMeta['eventappi_event_id'][0],
+            'eventId'    => $thePostMeta[EVENTAPPI_POST_NAME . '_id'][0],
             'formAction' => get_permalink(get_page_by_path(EVENTAPPI_PLUGIN_NAME . '-cart')),
-            'startDate'  => date(get_option('date_format'), strtotime($thePostMeta['eventappi_event_start_date'][0])),
-            'startTime'  => date(get_option('time_format'), strtotime($thePostMeta['eventappi_event_start_time'][0])),
-            'endDate'    => date(get_option('date_format'), strtotime($thePostMeta['eventappi_event_end_date'][0])),
-            'endTime'    => date(get_option('time_format'), strtotime($thePostMeta['eventappi_event_end_time'][0])),
+            'startDate'  => date(
+                get_option('date_format'),
+                $thePostMeta[EVENTAPPI_POST_NAME . '_start_date'][0]
+            ),
+            'startTime'  => date(
+                get_option('time_format'),
+                strtotime($thePostMeta[EVENTAPPI_POST_NAME . '_start_time'][0])
+            ),
+            'endDate'    => date(
+                get_option('date_format'),
+                $thePostMeta[EVENTAPPI_POST_NAME . '_end_date'][0]
+            ),
+            'endTime'    => date(
+                get_option('time_format'),
+                strtotime($thePostMeta[EVENTAPPI_POST_NAME . '_end_time'][0])
+            ),
             'theVenue'   => $theVenue,
             'theAddress' => $theAddress,
             'theAdrLink' => $theAdrLink,
@@ -2611,7 +1664,7 @@ SEARCHCRTERIASQL;
         $weHaveAVenue = false;
 
         foreach ($_REQUEST as $key => $value) {
-            if (substr($key, 0, 22) === 'eventappi_event_venue_') {
+            if (substr($key, 0, 22) === EVENTAPPI_POST_NAME . '_venue_') {
                 $keyParts     = explode('_venue_', $key);
                 $var          = $keyParts[1];
                 $$var         = $value;
@@ -2623,8 +1676,10 @@ SEARCHCRTERIASQL;
             return;
         }
 
-        if (array_key_exists('eventappi_event_venue_name', $_POST) && !empty($_POST['eventappi_event_venue_name'])) {
-            $venueName = $_POST['eventappi_event_venue_name'];
+        if (array_key_exists(EVENTAPPI_POST_NAME . '_venue_name', $_POST) &&
+            !empty($_POST[EVENTAPPI_POST_NAME . '_venue_name'])
+        ) {
+            $venueName = $_POST[EVENTAPPI_POST_NAME . '_venue_name'];
         } elseif (array_key_exists('tag-name', $_REQUEST)) {
             $venueName = $_REQUEST['tag-name'];
         } else {
@@ -2709,6 +1764,35 @@ NEWVENUESQL;
                     )
                 );
             }
+        }
+    }
+
+    public function loadScripts()
+    {
+        global $post;
+
+        // Only load the scripts if we are on add/edit event page
+        if (!isset($post) || EVENTAPPI_POST_NAME != $post->post_type) {
+            return;
+        }
+
+//        wp_localize_script(
+//            'eventappi-frontend',
+//            EVENTAPPI_PLUGIN_NAME . '_ajax_obj',
+//            array('ajax_url' => admin_url('admin-ajax.php'))
+//        );
+    }
+
+    public function loadUpdateAttendeeStatusCallback()
+    {
+        $event_id = (int) $_POST['event_id'];
+        $check    = sanitize_text_field($_POST['check']);
+        $state    = sanitize_text_field($_POST['state']);
+
+        if ($event_id && $check && $state) {
+            // The method will output the JSON to the front-end
+            $this->updateAttendeeCheckinStatus($event_id, $check, $state, true);
+            exit;
         }
     }
 }
