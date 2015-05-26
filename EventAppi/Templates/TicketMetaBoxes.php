@@ -14,6 +14,7 @@ if ($terms === false) {
 $tabCount = 1;
 
 $addTicketText = (count($terms) > 0) ? __('Add another ticket', EVENTAPPI_PLUGIN_NAME) : __('Add a ticket', EVENTAPPI_PLUGIN_NAME);
+$ticketDateFormat = Format::getJSCompatibleDateFormatString(get_option('date_format'));
 ?>
 <div class="tickets-container">
     <a href="#" id="add-ticket-tabs"><?php echo $addTicketText; ?></a>
@@ -66,8 +67,15 @@ $addTicketText = (count($terms) > 0) ? __('Add another ticket', EVENTAPPI_PLUGIN
                     <label for="inputSaleStart" class="control-label col-xs-2"><?php _e('On sale from:', EVENTAPPI_PLUGIN_NAME); ?></label>
 
                     <div class="col-xs-10">
-
-                        <input class="form-control cmb_datepicker start_date ticket" name="eventappi_event_ticket_sale_start[]" type="text" placeholder="<?php _e('Now', EVENTAPPI_PLUGIN_NAME); ?>" value="<?php echo date(Format::getJSCompatibleDateFormatString(get_option('date_format')), get_tax_meta($term->term_id, 'eventappi_event_ticket_sale_start')); ?>" />
+                        <?php
+                        $ticketStartDate = get_tax_meta($term->term_id, EVENTAPPI_POST_NAME . '_ticket_sale_start');
+                        if ($ticketStartDate !== '') {
+                            if (!is_numeric($ticketStartDate)) {
+                                $ticketStartDate = strtotime($ticketStartDate);
+                            }
+                            $ticketStartDate = date($ticketDateFormat, $ticketStartDate);
+                        }?>
+                        <input class="form-control cmb_datepicker start_date ticket" name="eventappi_event_ticket_sale_start[]" type="text" placeholder="<?php _e('Now', EVENTAPPI_PLUGIN_NAME); ?>" value="<?php echo $ticketStartDate; ?>" />
 
                     </div>
                 </div>
@@ -76,7 +84,15 @@ $addTicketText = (count($terms) > 0) ? __('Add another ticket', EVENTAPPI_PLUGIN
                     <label for="inputSaleEnd" class="control-label col-xs-2"><?php _e('On sale to:', EVENTAPPI_PLUGIN_NAME); ?></label>
 
                     <div class="col-xs-10">
-                        <input class="form-control cmb_datepicker end_date ticket" name="eventappi_event_ticket_sale_end[]" type="text" placeholder="<?php _e('Event start date', EVENTAPPI_PLUGIN_NAME); ?>" value="<?php echo date(Format::getJSCompatibleDateFormatString(get_option('date_format')), get_tax_meta($term->term_id, 'eventappi_event_ticket_sale_end')); ?>" />
+                        <?php
+                        $ticketEndDate = get_tax_meta($term->term_id, EVENTAPPI_POST_NAME . '_ticket_sale_end');
+                        if ($ticketEndDate !== '') {
+                            if (!is_numeric($ticketEndDate)) {
+                                $ticketEndDate = strtotime($ticketEndDate);
+                            }
+                            $ticketEndDate = date($ticketDateFormat, $ticketEndDate);
+                        }?>
+                        <input class="form-control cmb_datepicker end_date ticket" name="eventappi_event_ticket_sale_end[]" type="text" placeholder="<?php _e('Event start date', EVENTAPPI_PLUGIN_NAME); ?>" value="<?php echo $ticketEndDate; ?>" />
                     </div>
                 </div>
 

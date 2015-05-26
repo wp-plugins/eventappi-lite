@@ -4,7 +4,7 @@ URL: http://EventAppi.com/
 Tags: wordpress, events, plugin
 Requires at least: 4.0
 Tested up to: 4.2.2
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,8 +68,8 @@ _EventAppi requires at least_:
 
 == Upgrade Notice ==
 
-= 1.0.6 =
-This version adds some error management for the activation process.
+= 1.0.7 =
+Corrects an error where multiple copies of events are created on the EventAppi API
 
 == Screenshots ==
 
@@ -145,6 +145,12 @@ Payment gateways included:
 * WorldPay
 
 == Change Log ==
+
+
+= 1.0.7 =
+
+* Store dates internally as unix timestamps to improve i18n
+* Fixed an issue where multiple copies of events were being sent to the EventAppi API
 
 
 = 1.0.6 =

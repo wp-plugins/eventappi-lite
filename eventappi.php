@@ -2,7 +2,7 @@
 /*
  * Plugin Name: EventAppi LITE - Happy Event Management
  * Plugin URI: http://eventappi.com/
- * Version: 1.0.6
+ * Version: 1.0.7
  * Description: Ticketing and Event Management For The Win
  * Author: EventAppi Development Team
  * Author URI: http://www.eventappi.com
@@ -70,7 +70,7 @@ if (!function_exists('eventappi_version')) {
      */
     function eventappi_version()
     {
-        return '1.0.6';
+        return '1.0.7';
     }
 }
 

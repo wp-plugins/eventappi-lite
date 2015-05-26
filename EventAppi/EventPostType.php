@@ -394,12 +394,6 @@ class EventPostType
                 'taxonomy'   => 'venue',
                 'multiple'   => false,
                 'cols'       => '10'
-            ),
-            array(
-                'id'   => EVENTAPPI_POST_NAME . '_id',
-                'name' => '',
-                'type' => 'hidden',
-                'cols' => '1'
             )
         );
 
@@ -789,8 +783,6 @@ CHECKVENUESQL;
             return;
         }
 
-        $wp_date_format = get_option('date_format');
-
         foreach ($tickets as $index => $ticket) {
             $inputPostIndex = array_search($ticket, $_POST[EVENTAPPI_POST_NAME . '_ticket_name']);
 
@@ -814,9 +806,8 @@ CHECKVENUESQL;
             );
 
             $saleStart = $_POST[EVENTAPPI_POST_NAME . '_ticket_sale_start'][$inputPostIndex];
-
             if (empty($saleStart)) {
-                $saleStart = date($wp_date_format, strtotime('now'));
+                $saleStart = strtotime('now');
             }
 
             update_tax_meta(
@@ -831,7 +822,7 @@ CHECKVENUESQL;
                 if (empty($eventStartDate)) {
                     $eventStartDate = $_POST[EVENTAPPI_POST_NAME . '_start_date']['cmb-field-0'];
                 }
-                $saleEnd = date($wp_date_format, strtotime($eventStartDate));
+                $saleEnd = $eventStartDate;
             }
             update_tax_meta(
                 $term['term_id'],
