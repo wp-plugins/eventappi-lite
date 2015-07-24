@@ -1,4 +1,5 @@
-<?php namespace EventAppi;
+<?php
+namespace EventAppi;
 
 use EventAppi\Helpers\Sanitizer;
 
@@ -9,26 +10,50 @@ use EventAppi\Helpers\Sanitizer;
  */
 class User
 {
+    /**
+     *
+     */
     const USER_TYPE_ENTERPRISE = 1;
+    /**
+     *
+     */
     const USER_TYPE_MANAGER    = 2;
+    /**
+     *
+     */
     const USER_TYPE_ORGANISER  = 3;
+    /**
+     *
+     */
     const USER_TYPE_ATTENDEE   = 4;
 
     /**
      * @var User|null
      */
     private static $singleton = null;
+    /**
+     * @var
+     */
+    private $updateStatus;
+    /**
+     * @var string
+     */
+    private $nonceEditAction;
 
     /**
      * @var array
      */
     public $passwordStore = array();
-
+    /**
+     * @var bool
+     */
+    public $alreadyCreated = false;
     /**
      *
      */
     private function __construct()
     {
+        $this->nonceEditAction = EVENTAPPI_PLUGIN_NAME . '_edit_user';
     }
 
     /**
@@ -52,24 +77,41 @@ class User
         $this->passwordStore[$email] = $password;
     }
 
+    /**
+     *
+     */
     public function init()
     {
+        add_action('init', array($this, 'pageRedirect'));
+
+
+
+        // Update API when User Profile from the Dashboard is updated
+        // either own account or someone else's if an administrator performs the update
+        add_action('personal_options_update', array($this, 'checkForUserProfileUpdate'));
         add_action('edit_user_profile_update', array($this, 'checkForUserProfileUpdate'));
+
         add_action('user_register', array($this, 'registrationSave'), 10, 1);
 
         add_filter('user_contactmethods', array($this, 'addContactMethods'));
 
         if (is_admin()) {
             add_action('admin_notices', array($this, 'showAndRemoveAdminNotice'));
+
         }
     }
 
+
+    /**
+     * @param $user_id
+     */
     public function registrationSave($user_id)
     {
         /**
-         * This callback function can be called in two cases:
+         * This callback function can be called in the following cases:
          * 1. WordPress adds a user via the dashboard
          * 2. We register an attendee when they purchase tickets
+         * 3. User confirmed registration via email URL
          *
          * In the first case, the 'email' and 'pass1' POST vars
          * will be present because WP uses those to create the user,
@@ -78,10 +120,10 @@ class User
          * that we can add the user to the API.
          **/
 
-        if (array_key_exists('email', $_POST) &&
-            is_string($_POST['email']) &&
-            array_key_exists('pass1', $_POST) &&
-            is_string($_POST['pass1'])
+        if (array_key_exists('email', $_POST)
+            && is_string($_POST['email'])
+            && array_key_exists('pass1', $_POST)
+            && is_string($_POST['pass1'])
         ) {
             $this->addToPasswordStore($_POST['email'], $_POST['pass1']);
         }
@@ -93,6 +135,11 @@ class User
         }
     }
 
+    /**
+     * @param $userId
+     *
+     * @return int
+     */
     private function getApiUserType($userId)
     {
         $userData = get_user_by('id', $userId);
@@ -102,6 +149,9 @@ class User
             : self::USER_TYPE_ATTENDEE;
     }
 
+    /**
+     * @param $userId
+     */
     public function checkForUserProfileUpdate($userId)
     {
         $first_name = Sanitizer::instance()->sanitize($_POST['first_name'], 'string', 255);
@@ -122,30 +172,38 @@ class User
         $api_update_array['email']          = $email;
 
         $apiId = get_user_meta($userId, EVENTAPPI_PLUGIN_NAME . '_user_id', true);
-        if (!empty($apiId)) {
+
+        if (! empty($apiId)) {
             ApiClient::instance()->updateUser($apiId, $api_update_array);
         }
     }
 
+    /**
+     *
+     */
     public function ajaxUserCreateHandler()
     {
         $this->addNewEventAppiUser($_POST['email']);
     }
 
-    public function addNewEventAppiUser($email)
+    /**
+     * @param $email
+     * @param bool|true $exitOnApiError
+     */
+    public function addNewEventAppiUser($email, $exitOnApiError = true, $return = false)
     {
         $skip_wp = false;
         $wpUser  = null;
         $result  = 0;
 
         // check if email is set
-        if (!isset($email)) {
+        if (! isset($email)) {
             echo $result;
             exit();
         }
 
         // validate email
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
             echo $result;
             exit();
         }
@@ -160,8 +218,7 @@ class User
 
         // new User!
         if (isset($user['error'])) {
-
-            if (!$skip_wp) {
+            if (! $skip_wp) {
                 $password = wp_generate_password();
 
                 $this->addToPasswordStore($email, $password);
@@ -177,16 +234,18 @@ class User
                 );
 
                 $wpUser = wp_insert_user($userdata);
-
             } else {
                 $wpUser = get_user_by('email', $email);
                 $this->addUserToApi($wpUser);
             }
 
             if (is_wp_error($wpUser)) {
-                if (!array_key_exists('existing_user_email', $wpUser->errors)) {
+                if (! array_key_exists('existing_user_email', $wpUser->errors)) {
                     echo $wpUser->get_error_message();
-                    exit();
+
+                    if ($exitOnApiError) {
+                        exit();
+                    }
                 }
             }
 
@@ -198,23 +257,41 @@ class User
                 'user_id' => $user['data']['id'],
                 'new'     => 0
             );
-            echo json_encode($oldUser);
-            exit();
+
+            if ($return) {
+                return json_encode($oldUser);
+            } else {
+                echo json_encode($oldUser);
+            }
+
+            if ($exitOnApiError) {
+                exit();
+            }
         }
 
-        echo 'error';
-        exit();
+        if ($return) {
+            return 'error';
+        } else {
+            echo 'error';
+        }
+
+        if ($exitOnApiError) {
+            exit();
+        }
     }
 
+    /**
+     * @param $userData
+     * @param bool|true $failOnNoPassword
+     *
+     * @return int
+     */
     public function addUserToApi($userData, $failOnNoPassword = true)
     {
         if (array_key_exists($userData->data->user_email, $this->passwordStore)) {
-
             $newPass = $this->passwordStore[$userData->data->user_email];
             wp_new_user_notification($userData->data->ID, $newPass);
-
         } else {
-
             if ($failOnNoPassword) {
                 wp_die(__('Unable to set the user password.', EVENTAPPI_PLUGIN_NAME));
             }
@@ -233,10 +310,10 @@ class User
 
         // check whether the user exists
         $response = ApiClient::instance()->showUser($userData->data->user_email);
-        if (!array_key_exists('data', $response)) {
+        if (! array_key_exists('data', $response)) {
             $response = ApiClient::instance()->storeUser($newData);
 
-            if (!isset($response['data']['id'])) {
+            if (! isset($response['data']['id'])) {
                 return 0;
             }
         }
@@ -247,6 +324,11 @@ class User
         return $api_user_id;
     }
 
+    /**
+     * @param bool|false $filter
+     *
+     * @return array
+     */
     public function getAdditionalContactMethods($filter = false)
     {
         $theFields = array(
@@ -311,6 +393,9 @@ class User
         return $theFields;
     }
 
+    /**
+     * @return bool|mixed
+     */
     private function getUserNotices()
     {
         $notices = get_user_meta(get_current_user_id(), EVENTAPPI_PLUGIN_NAME . '_user_notices', true);
@@ -322,6 +407,9 @@ class User
         return false;
     }
 
+    /**
+     * @param array $newNotice
+     */
     public function addUserNotice(array $newNotice)
     {
         if (is_array($newNotice)) {
@@ -349,6 +437,9 @@ class User
         }
     }
 
+    /**
+     *
+     */
     public function showAndRemoveAdminNotice()
     {
         $notices = $this->getUserNotices();
@@ -370,6 +461,11 @@ class User
         update_user_meta(get_current_user_id(), EVENTAPPI_PLUGIN_NAME . '_user_notices', array());
     }
 
+    /**
+     * @param $contactMethods
+     *
+     * @return mixed
+     */
     public function addContactMethods($contactMethods)
     {
         $methods = $this->getAdditionalContactMethods();
@@ -379,5 +475,75 @@ class User
         }
 
         return $contactMethods;
+    }
+
+    /**
+     * @param $user
+     */
+    public function addNoteText($user)
+    {
+        echo Parser::instance()->parseEventAppiTemplate(
+            'UserNote',
+            array('notes' => get_user_meta($user->ID, EVENTAPPI_PLUGIN_NAME.'_notes', true))
+        );
+    }
+
+    /**
+     * @param $userId
+     *
+     * @return bool
+     */
+    public function saveNoteText($userId)
+    {
+        if (!current_user_can('edit_user', $userId)) {
+            return false;
+        }
+
+        $fieldName = EVENTAPPI_PLUGIN_NAME.'_notes';
+
+        update_user_meta($userId, $fieldName, $_POST[$fieldName]);
+    }
+
+
+    /**
+     * @param $userId
+     *
+     * @return mixed
+     */
+    public function idExists($userId)
+    {
+        global $wpdb;
+        return $wpdb->get_var('SELECT COUNT(*) FROM `'.$wpdb->users."` WHERE ID='".(int)$userId."'");
+    }
+
+    /**
+     *
+     */
+    public function pageRedirect()
+    {
+        global $current_user;
+
+        $userId = (int)$_GET['id'];
+
+        // Check if the user ID is the same as the current logged in user id - IF User Profile Page is accessed
+        // Also check if the user is accessing login page and he is logged in
+        // If any condition is met, the user gets redirected to "My Account" page
+        if (($userId != 0 && $userId === $current_user->ID && Settings::instance()->isPage('user-profile'))
+            || (is_user_logged_in() && Settings::instance()->isPage('login'))
+        ) {
+            wp_redirect(get_permalink(Settings::instance()->getPageId('my-account')));
+            exit;
+        }
+
+        // Access to the `Users/Organisers` is ONLY for the Administrator
+        if (! in_array('administrator', $current_user->roles)) {
+            $baseUri = basename($_SERVER['REQUEST_URI']);
+            $usersPage = 'users.php';
+
+            if (strpos($baseUri, $usersPage, 0) === 0) { // Redirect to 'Events' overview page
+                wp_redirect('edit.php?post_type='.EVENTAPPI_POST_NAME);
+                exit;
+            }
+        }
     }
 }

@@ -44,30 +44,29 @@ class Payment
 
     public function ajaxPayHandler()
     {
-        check_ajax_referer(EVENTAPPI_PLUGIN_NAME . '_world');
+        check_ajax_referer(Parser::instance()->nonceAjaxAction);
 
         $session = session_id();
 
+        // TODO: improve the way the data is taken
         $data = $_POST;
         global $wpdb;
 
         // up to this point, in order to avoid rounding errors, we have been dealing with
         // all amounts as integers (i.e. in cents rather than dollars), now we need to switch
-        $centsAmount    = $data['amount'];
-        $data['amount'] = number_format(intval($data['amount']) / 100, 2, '.', '');
+        $centsAmount    = ($data['amount'] * 100);
+        $data['amount'] = number_format($data['amount'], 2, '.', '');
 
         //get items from cart
-        $table_name    = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_cart';
-        $ticket_result = $wpdb->get_results(
-            "SELECT event_id, ticket_id, post_id, term, ticket_quantity FROM $table_name WHERE `session` = '$session';"
-        );
+        $sql = "SELECT ticket_id, ticket_api_id, ticket_quantity FROM `".PluginManager::instance()->tables['cart']."` WHERE `session` = '$session';";
+        $ticketResult = $wpdb->get_results($sql);
 
         $tickets = array();
 
-        if (is_array($ticket_result) && ! empty($ticket_result)) {
-
-            foreach ($ticket_result as $key => $value) {
-                $tickets[$key]['ticket_id'] = $value->ticket_id;
+        if (is_array($ticketResult) && ! empty($ticketResult)) {
+            foreach ($ticketResult as $key => $value) {
+                // This data gets sent to the API
+                $tickets[$key]['ticket_id'] = $value->ticket_api_id;
                 $tickets[$key]['quantity']  = $value->ticket_quantity;
             }
         }
@@ -83,7 +82,7 @@ class Payment
             $selector = EVENTAPPI_PLUGIN_NAME . "_gateway_{$gatewaySelected}_";
             $sql      = "SELECT option_name, option_value FROM {$options} WHERE option_name LIKE '{$selector}%'";
             $result   = $wpdb->get_results($sql);
-            if (!empty($result)) {
+            if (! empty($result)) {
                 foreach ($result as $key => $value) {
                     $optKey                   = str_replace($selector, '', $value->option_name);
                     $gatewaySettings[$optKey] = $value->option_value;
@@ -99,18 +98,16 @@ class Payment
         $expiryMonth   = '';
         $expiryYear    = '';
 
-        if (isset($data['start_date']) &&
-            $data['start_date'] !== '' &&
-            strpos($data['start_date'], '/') !== false
+        if (isset($data['start_date']) && $data['start_date'] !== '' && strpos($data['start_date'],
+                '/') !== false
         ) {
             $start_date = explode('/', $data['start_date']);
             $startMonth = $start_date[0];
             $startYear  = $start_date[1];
         }
 
-        if (isset($data['expiry_date']) &&
-            $data['expiry_date'] !== '' &&
-            strpos($data['expiry_date'], '/') !== false
+        if (isset($data['expiry_date']) && $data['expiry_date'] !== '' && strpos($data['expiry_date'],
+                '/') !== false
         ) {
             $expiry_date = explode('/', $data['expiry_date']);
             $expiryMonth = $expiry_date[0];
@@ -125,7 +122,7 @@ class Payment
             $startYear = substr(date('Y'), 0, 2) . $startYear;
         }
 
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if ( ! filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             exit();
         }
 
@@ -161,16 +158,7 @@ class Payment
         try {
             $success = false;
 
-            if ($data['amount'] === '0.00' && $gateway->supportsAuthorize()) {
-                $data['amount'] = '1.00';
-                $response       = $gateway->authorize($data)->send();
-                $data['amount'] = '0.00';
-
-                if ($response->isSuccessful()) {
-                    $success = true;
-                }
-            } elseif ($data['amount'] === '0.00') {
-                // zero value, but no authorize function on the gateway!
+            if ($data['amount'] === '0.00') {
                 $success = true;
             } else {
                 $response = $gateway->purchase($data)->send();
@@ -184,11 +172,9 @@ class Payment
                 //add tickets to purchase table
                 global $wpdb;
 
-                $table_name = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_cart';
-                $sql        = <<<REMOVESQL
-DELETE FROM {$table_name}
-WHERE session = %s
-REMOVESQL;
+                $tableName = PluginManager::instance()->tables['cart'];
+                $sql        = "DELETE FROM {$tableName} WHERE session = %s";
+
                 $wpdb->query(
                     $wpdb->prepare(
                         $sql,
@@ -196,48 +182,65 @@ REMOVESQL;
                     )
                 );
 
-                $table_name = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases';
+                $tableName = PluginManager::instance()->tables['purchases'];
 
                 // now, for the API we need to switch back to cents-only currency values
                 $data['amount']    = $centsAmount;
                 $data['login_url'] = get_permalink(Settings::instance()->getPageId('my-account'));
+
                 $returnTicket      = ApiClient::instance()->storePurchase($data);
 
-                foreach ($ticket_result as $key => $value) {
-                    $theTixMeta = get_tax_meta_all($value->term);
-                    $numSold    = intval($theTixMeta['eventappi_event_ticket_sold']);
-                    if (empty($numSold)) {
-                        $numSold = 0;
-                    }
-                    $numSold = intval($numSold) + intval($value->ticket_quantity);
-                    update_tax_meta($value->term, 'eventappi_event_ticket_sold', $numSold);
+                if(isset($returnTicket['error']) && is_array($returnTicket['error'])) {
+                    exit(sprintf(__('The purchase could not be made due to the following error: %s - Please empty the cart and add the items again. If the problem persists, consider contacting the administrator.', EVENTAPPI_PLUGIN_NAME), $returnTicket['error']['message']));
+                } else {
+                    if( ! empty($ticketResult) ) {
 
-                    $i = 0;
-                    while ($i < $value->ticket_quantity) {
-                        $purchId         = $returnTicket['data']['id'];
-                        $purchTicketId   = $returnTicket['data']['tickets'][$key]['id'];
-                        $purchTicketHash = $returnTicket['data']['tickets'][$key]['hashes'][$i];
-                        $time            = time();
-                        $sql             = <<<PURCHASESAVESQL
-INSERT INTO {$table_name} (`user_id`, `purchase_id`, `purchase_ticket_id`, `purchased_ticket_hash`,
-        `event_id`, `ticket_id`, `isClaimed`, `isAssigned`, `isSent`, `timestamp`)
-     VALUES (%d, %d, %d, %s, %d, %d, 0, 0, 0, %s)
+                        foreach ($ticketResult as $key => $value) {
+                            $ticketId = $value->ticket_id;
+                            $eventId = get_post_meta($ticketId, EVENTAPPI_TICKET_POST_NAME . '_event_id', true);
+
+                            $ticketMeta = get_post_meta($ticketId);
+
+                            // Update Tickets Sold
+                            $numSold = (int)$ticketMeta[EVENTAPPI_TICKET_POST_NAME . '_no_sold'][0] + intval($value->ticket_quantity);
+                            update_post_meta($ticketId, EVENTAPPI_TICKET_POST_NAME . '_no_sold', $numSold);
+
+                            $i = 0;
+                            while ($i < $value->ticket_quantity) {
+                                $purchId         = $returnTicket['data']['id'];
+                                $purchTicketId   = $returnTicket['data']['tickets'][$key]['id'];
+                                $purchTicketHash = $returnTicket['data']['tickets'][$key]['hashes'][$i];
+
+                                $time            = time();
+                                $sql             = <<<PURCHASESAVESQL
+INSERT INTO {$tableName} (`user_id`, `purchase_id`, `purchase_ticket_id`, `purchased_ticket_hash`,
+        `event_id`, `ticket_id`, `is_claimed`, `is_assigned`, `is_sent`, `timestamp`)
+     VALUES (%d, %d, %d, %s, %s, %d, %d, 0, 0, 0, %s)
 PURCHASESAVESQL;
-                        $wpdb->query(
-                            $wpdb->prepare(
-                                $sql,
-                                $user->ID,
-                                $purchId,
-                                $purchTicketId,
-                                $purchTicketHash,
-                                $value->post_id,
-                                $value->term,
-                                $time
-                            )
-                        );
-                        $i ++;
+
+                                $wpdb->query(
+                                    $wpdb->prepare(
+                                        $sql,
+                                        $user->ID,
+                                        $purchId,
+                                        $purchTicketId,
+                                        $purchTicketHash,
+                                        $eventId,
+                                        $ticketId,
+                                        $time
+                                    )
+                                );
+                                $i ++;
+                            }
+                        }
+                    } else {
+                        echo __('The purchase could not be made as the cart is empty. Please try adding items back to the cart. If the problem persists, consider contacting the administrator.', EVENTAPPI_PLUGIN_NAME);
+                        exit;
                     }
+
                 }
+
+                $_SESSION[EVENTAPPI_PLUGIN_NAME.'_empty_cart'] = true;
 
                 echo __('Thank you, your payment was successful.', EVENTAPPI_PLUGIN_NAME);
                 exit();

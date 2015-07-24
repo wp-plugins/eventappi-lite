@@ -33,7 +33,7 @@ class DisplayField
     }
 
     public function displayField($data)
-    {
+    {        
         $field       = $data['field'];
         $option_name = $data['prefix'] . $field['id'];
 
@@ -118,8 +118,8 @@ class DisplayField
             case 'select':
                 $html .= '<select name="' . esc_attr($option_name) . '" id="' . esc_attr($field['id']) . '">';
                 foreach ($field['options'] as $k => $v) {
-                    $html .= '<option ' . selected($k, $option, false) .
-                             ' value="' . esc_attr($k) . '">' . $v . '</option>';
+                    $html .= '<option ' . selected($k, $option,
+                            false) . ' value="' . esc_attr($k) . '">' . $v . '</option>';
                 }
                 $html .= '</select> ';
                 break;
@@ -132,8 +132,8 @@ class DisplayField
                     if (in_array($k, $option)) {
                         $selected = true;
                     }
-                    $html .= '<option ' . selected($selected, true, false) .
-                             ' value="' . esc_attr($k) . '">' . $v . '</option>';
+                    $html .= '<option ' . selected($selected, true,
+                            false) . ' value="' . esc_attr($k) . '">' . $v . '</option>';
                 }
                 $html .= '</select> ';
                 break;
@@ -148,17 +148,14 @@ class DisplayField
                 if ($option) {
                     $image_thumb = wp_get_attachment_thumb_url($option);
                 }
-                $html .= '<img id="' . $option_name .
-                         '_preview" class="image_preview" src="' . $image_thumb . '" /><br/>' . "\n";
-                $html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' .
-                         __('Upload an image', EVENTAPPI_PLUGIN_NAME) . '" data-uploader_button_text="' .
-                         __('Use image', EVENTAPPI_PLUGIN_NAME) . '" class="image_upload_button button" value="' .
-                         __('Upload new image', EVENTAPPI_PLUGIN_NAME) . '" />' . "\n";
-                $html .= '<input id="' . $option_name .
-                         '_delete" type="button" class="image_delete_button button" value="' .
-                         __('Remove image', EVENTAPPI_PLUGIN_NAME) . '" />' . "\n";
-                $html .= '<input id="' . $option_name . '" class="image_data_field" type="hidden" name="' .
-                         option_name . '" value="' . $option . '"/><br/>' . "\n";
+                $html .= '<img id="' . $option_name . '_preview" class="image_preview" src="' . $image_thumb . '" /><br/>' . "\n";
+                $html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' . __('Upload an image',
+                        EVENTAPPI_PLUGIN_NAME) . '" data-uploader_button_text="' . __('Use image',
+                        EVENTAPPI_PLUGIN_NAME) . '" class="image_upload_button button" value="' . __('Upload new image',
+                        EVENTAPPI_PLUGIN_NAME) . '" />' . "\n";
+                $html .= '<input id="' . $option_name . '_delete" type="button" class="image_delete_button button" value="' . __('Remove image',
+                        EVENTAPPI_PLUGIN_NAME) . '" />' . "\n";
+                $html .= '<input id="' . $option_name . '" class="image_data_field" type="hidden" name="' . $option_name . '" value="' . $option . '"/><br/>' . "\n";
                 break;
 
             case 'color':

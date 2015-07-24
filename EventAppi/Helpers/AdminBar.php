@@ -45,14 +45,13 @@ class AdminBar
     /**
      * No admin bar for organiser and attendee
      */
-    function hideAdminBar()
+    public function hideAdminBar()
     {
         $userdata = wp_get_current_user();
         $user     = new WP_User($userdata->ID);
-        if ( ! empty($user->roles) &&
+        if (! empty($user->roles) &&
              is_array($user->roles) &&
-             ($user->roles[0] === 'event_organiser' || $user->roles[0] === 'attendee')
-        ) {
+             ($user->roles[0] === 'event_organiser' || $user->roles[0] === 'attendee')) {
             show_admin_bar(false);
         }
     }

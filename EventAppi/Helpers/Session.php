@@ -1,8 +1,8 @@
 <?php
 namespace EventAppi\Helpers;
 
-use EventAppi\Helpers\Session;
 use EventAppi\Settings;
+
 /**
  * Class Session
  *
@@ -55,7 +55,7 @@ class Session
     {
         Logger::instance()->log(__FILE__, __FUNCTION__, '', Logger::LOG_LEVEL_TRACE);
 
-        if ( ! isset($_SESSION)) {
+        if (! isset($_SESSION)) {
             session_start();
         }
     }
@@ -111,7 +111,7 @@ class Session
                     }
                 }
             }
-            
+
             return get_permalink(Settings::instance()->getPageId('my-account'));
 
         } else {

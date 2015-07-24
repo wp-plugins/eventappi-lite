@@ -1,4 +1,5 @@
-<?php namespace EventAppi;
+<?php
+namespace EventAppi;
 
 /**
  * Class Help

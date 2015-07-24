@@ -72,7 +72,7 @@ class LicenseKeyManager
             return false;
         }
 
-        if ( ! $this->keyCheckRequired()) {
+        if (! $this->keyCheckRequired()) {
             return (bool) $options->getPluginOption('license_key_status');
         }
 

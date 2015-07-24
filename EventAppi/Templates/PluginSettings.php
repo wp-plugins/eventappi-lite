@@ -1,3 +1,6 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+?>
 <div class="wrap" id="eventappi_settings">
     <h2><?php _e('Plugin Settings', EVENTAPPI_PLUGIN_NAME); ?></h2>
 

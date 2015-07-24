@@ -3,8 +3,8 @@ Contributors: EventAppi Development Team
 URL: http://EventAppi.com/
 Tags: wordpress, events, plugin
 Requires at least: 4.0
-Tested up to: 4.2.2
-Stable tag: 1.0.7
+Tested up to: 4.2.3
+Stable tag: 1.0.8
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,8 +68,8 @@ _EventAppi requires at least_:
 
 == Upgrade Notice ==
 
-= 1.0.7 =
-Corrects an error where multiple copies of events are created on the EventAppi API
+= 1.0.8 =
+Better compatibility. Better plugin organization. Easier event management. WIN!
 
 == Screenshots ==
 
@@ -145,6 +145,14 @@ Payment gateways included:
 * WorldPay
 
 == Change Log ==
+
+
+= 1.0.8 =
+
+* Improved compatibility with the WordPress Theme Customizer.
+* You can now specify how many days, before an event, your attendees will receive their event reminder email.
+* We have turned tickets into custom post types for even more flexibility and better cross-plugin compatibility.
+* We have cleaned up the code to reduce the size of the plugin.
 
 
 = 1.0.7 =

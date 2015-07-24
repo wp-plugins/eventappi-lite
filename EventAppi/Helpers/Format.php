@@ -8,6 +8,11 @@
 class Format
 {
 
+    /**
+     * @param $dateFormatString
+     *
+     * @return mixed
+     */
     public static function getJSCompatibleDateFormatString($dateFormatString)
     {
         return str_replace('S', '', $dateFormatString);

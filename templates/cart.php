@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * The data object for this is the contents of the cart for this user
  */
@@ -26,10 +27,10 @@ $total = 0;
                         <tr>
                             <td><?php echo $ticket->ticket_name; ?></td>
                             <td>
-                                $<span><?php echo money_format('%i', ($ticket->ticket_price / 100)); ?></span>
+                                $<span><?php echo money_format('%i', $ticket->ticket_price); ?></span>
                             </td>
                             <td>
-                                <input name="quantity[]" type="qty" class="form-control ticket-quantity" readonly="readonly" value="<?php echo $ticket->ticket_quantity; ?>" placeholder="<?php _e('e.g. 120', EVENTAPPI_PLUGIN_NAME); ?>">
+                                <input type="qty" name="quantity[]"  class="form-control ticket-quantity" readonly="readonly" value="<?php echo $ticket->ticket_quantity; ?>" placeholder="<?php _e('e.g. 120', EVENTAPPI_PLUGIN_NAME); ?>">
                                 <input type="hidden" name="event[]" value="<?php echo $ticket->event_id; ?>">
                                 <input type="hidden" name="id[]" value="<?php echo $ticket->ticket_id; ?>">
                                 <input type="hidden" name="name[]" value="<?php echo $ticket->ticket_name; ?>">
@@ -38,7 +39,7 @@ $total = 0;
                                 <input type="hidden" class="ticket-price" name="price[]" value="<?php echo $ticket->ticket_price; ?>">
                             </td>
                             <td class="full-price">
-                                $<span><?php echo money_format('%i', (($ticket->ticket_quantity * $ticket->ticket_price) / 100)); ?></span>
+                                $<span><?php echo money_format('%i', ($ticket->ticket_quantity * $ticket->ticket_price)); ?></span>
                             </td>
                             <td>
                                 <a class="remove" data-id="<?php echo $ticket->ticket_id; ?>" href="javascript:void(0)">
@@ -55,7 +56,7 @@ $total = 0;
                         <?php _e('Total:', EVENTAPPI_PLUGIN_NAME); ?> <br />
                     </td>
                     <td>
-                        <b>$<span id="cart-total"><?php echo money_format('%i', ($total / 100)); ?></span></b>
+                        <b>$<span id="cart-total"><?php echo money_format('%i', $total); ?></span></b>
                     </td>
                 </tr>
                 <tr>

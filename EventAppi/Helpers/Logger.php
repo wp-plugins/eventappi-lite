@@ -107,9 +107,9 @@ class Logger
     public function log($file, $function, $message, $logLevel = self::LOG_LEVEL_ERROR)
     {
         $logThreshold = Options::instance()->getLogEnabled();
+        
         if ($logThreshold > self::LOG_LEVEL_DISABLED) {
             if (is_writable($this->file)) {
-
                 $logFile = fopen($this->file, 'a') or wp_die( sprintf(__('Cannot open EventAppi log file: %s', EVENTAPPI_PLUGIN_NAME), $this->file) );
 
                 $file = ! empty($file) ? basename($file) : '';

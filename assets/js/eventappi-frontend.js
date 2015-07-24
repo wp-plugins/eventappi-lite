@@ -1,25 +1,24 @@
-function blockTheUI() {
-    $.blockUI({
-        css: {
-            border: 'none',
-            padding: '15px',
-            backgroundColor: '#000',
-            '-webkit-border-radius': '10px',
-            '-moz-border-radius': '10px',
-            opacity: .5,
-            color: '#fff',
-            'z-index': 9000
-        }
-    });
-}
+jQuery(document).ready(function($) {
+    function blockTheUI() {
+        $.blockUI({
+            css: {
+                border: 'none',
+                padding: '15px',
+                backgroundColor: '#000',
+                '-webkit-border-radius': '10px',
+                '-moz-border-radius': '10px',
+                opacity: .5,
+                color: '#fff',
+                'z-index': 9000
+            }
+        });
+    }
 
-function unBlockTheUI() {
-    setTimeout($.unblockUI, 100);
-}
+    function unBlockTheUI() {
+        setTimeout($.unblockUI, 100);
+    }
 
 
-var $ = jQuery;
-$(document).ready(function () {
     var self = $(this);
 
 
@@ -27,22 +26,35 @@ $(document).ready(function () {
 
         var self = self.find('#eventappi-wrapper');
 
+        if(self.find('#your-profile').length) {
+
+            $('#your-profile').submit(function() {
+                /* If either the new or confirm password field is filled */
+                if($('#eventappi_pass1').val() != '' || $('#eventappi_pass2').val() != '') {
+                    if( $('#eventappi_pass1').val() != $('#eventappi_pass2').val() ) {
+                        alert(eventappi_ajax_obj.text.pass_not_match_error);
+                        return false;
+                    }
+                }
+            });
+        }
+
         //START DIALOG
         self.find('.send').on('click', function () {
             event.preventDefault();
-            $('#dialog-form-send').find('#form-send-ticket').find('#hash').val($(this).attr('data-hash'));
+            $('#dialog-form-send').find('#form-send-ticket').find('#hash-st').val($(this).attr('data-hash'));
             sendDialog.dialog('open');
         });
 
         self.find('.assign').on('click', function (event) {
             event.preventDefault();
-            $('#dialog-form-assign').find('#form-assign-ticket').find('#hash').val($(this).attr('data-hash'));
+            $('#dialog-form-assign').find('#form-assign-ticket').find('#hash-at').val($(this).attr('data-hash'));
             assignDialog.dialog('open');
         });
 
         self.find('.claim').on('click', function (event) {
             event.preventDefault();
-            $('#dialog-form-claim').find('#form-claim-ticket').find('#hash').val($(this).attr('data-hash'));
+            $('#dialog-form-claim').find('#form-claim-ticket').find('#hash-ct').val($(this).attr('data-hash'));
             claimDialog.dialog('open');
         });
 
@@ -61,25 +73,27 @@ $(document).ready(function () {
                 type: 'POST',
                 data: sendData
             });
-            
-            location.assign(eventappi_ajax_obj.my_account_url);
+
+            //location.assign(eventappi_ajax_obj.my_account_url);
         }
 
-        var sendDialog = $('#dialog-form-send').dialog({
-            autoOpen: false,
-            height: 500,
-            width: 650,
-            modal: true,
-            buttons: {
-                'Send': sendTicket,
-                Cancel: function () {
+        if($('#dialog-form-send').length > 0) {
+            var sendDialog = $('#dialog-form-send').dialog({
+                autoOpen: false,
+                height: 500,
+                width: 650,
+                modal: true,
+                buttons: {
+                    'Send': sendTicket,
+                    Cancel: function () {
+                        sendDialog.dialog('close');
+                    }
+                },
+                close: function () {
                     sendDialog.dialog('close');
                 }
-            },
-            close: function () {
-                sendDialog.dialog('close');
-            }
-        });
+            });
+        }
 
         function assignTicket() {
             var assignData = [];
@@ -104,21 +118,23 @@ $(document).ready(function () {
             location.assign(eventappi_ajax_obj.my_account_url);
         }
 
-        var assignDialog = $('#dialog-form-assign').dialog({
-            autoOpen: false,
-            height: 500,
-            width: 650,
-            modal: true,
-            buttons: {
-                'Assign': assignTicket,
-                Cancel: function () {
+        if($('#dialog-form-assign').length > 0) {
+            var assignDialog = $('#dialog-form-assign').dialog({
+                autoOpen: false,
+                height: 500,
+                width: 650,
+                modal: true,
+                buttons: {
+                    'Assign': assignTicket,
+                    Cancel: function () {
+                        assignDialog.dialog('close');
+                    }
+                },
+                close: function () {
                     assignDialog.dialog('close');
                 }
-            },
-            close: function () {
-                assignDialog.dialog('close');
-            }
-        });
+            });
+        }
 
         function claimTicket() {
             var claimData = [];
@@ -143,22 +159,23 @@ $(document).ready(function () {
             location.assign(eventappi_ajax_obj.my_account_url);
         }
 
-        var claimDialog = $('#dialog-form-claim').dialog({
-            autoOpen: false,
-            height: 500,
-            width: 650,
-            modal: true,
-            buttons: {
-                'Claim': claimTicket,
-                Cancel: function () {
+        if($('#dialog-form-claim').length > 0) {
+            var claimDialog = $('#dialog-form-claim').dialog({
+                autoOpen: false,
+                height: 500,
+                width: 650,
+                modal: true,
+                buttons: {
+                    'Claim': claimTicket,
+                    Cancel: function () {
+                        claimDialog.dialog('close');
+                    }
+                },
+                close: function () {
                     claimDialog.dialog('close');
                 }
-            },
-            close: function () {
-                claimDialog.dialog('close');
-            }
-        });
-
+            });
+        }
         //END OF DIALOG
 
         self.find('.show-form').on('click', function (event) {
@@ -233,7 +250,7 @@ $(document).ready(function () {
             }
         });
 
-        if (self.find('.ticket-price').length) {
+        if (self.find('.ticket-quantity').length) {
             self.find('.ticket-quantity').on('keyup', function () {
                 var avail = $(this).attr("placeholder").replace(' available', '');
                 var wants = $(this).val();
@@ -246,37 +263,23 @@ $(document).ready(function () {
                     return false;
                 }
 
-                var ticketPrice = $(this).parent().find('.ticket-price').val();
-                var ticketQuantity = $(this).parent().find('.ticket-quantity').val();
+                // Only in the Cart Page
+                if($('#cart-total').length > 0) {
+                    var ticketPrice = $(this).parent().find('.ticket-price').val();
+                    var ticketQuantity = $(this).parent().find('.ticket-quantity').val();
 
-                var ticketPriceSpan = $(this).parent().parent().find('.full-price span');
-                var newTicketPrice = ( (ticketPrice * ticketQuantity) / 100 ).toFixed(2);
-                ticketPriceSpan.text(newTicketPrice);
+                    var ticketPriceSpan = $(this).parent().parent().find('.full-price span');
+                    var newTicketPrice = ( (ticketPrice * ticketQuantity) / 100 ).toFixed(2);
+                    ticketPriceSpan.text(newTicketPrice);
 
-                var totalPrice = 0;
+                    var totalPrice = 0;
 
-                self.find('.full-price span').each(function (index, value) {
-                    totalPrice += parseFloat(self.find(value).text().replace(',', ''));
-                });
-
-                self.find('#cart-total').text(totalPrice.toFixed(2));
-
-                var data = [];
-
-                self.find('#ev_tickets').find('tr').each(function () {
-                    $(this).find('input').each(function () {
-                        data.push({'name': $(this).attr('name'), 'value': $(this).val()});
+                    self.find('.full-price span').each(function (index, value) {
+                        totalPrice += parseFloat(self.find(value).text().replace(',', ''));
                     });
-                });
 
-                data.push({'name': 'action', 'value': eventappi_ajax_obj.plugin_name + '_shopping_cart_add'});
-                data.push({'name': '_ajax_nonce', 'value': eventappi_ajax_obj.nonce});
-
-                $.ajax({
-                    url: eventappi_ajax_obj.ajax_url,
-                    type: 'POST',
-                    data: data
-                });
+                    self.find('#cart-total').text(totalPrice.toFixed(2));
+                }
             });
         }
 
@@ -350,6 +353,27 @@ $(document).ready(function () {
                 });
             });
         }
-        
+
+
     }
+
+    var eaErrArea = $('#ea-event-no-tickets-error');
+
+    if(eaErrArea.length > 0) {
+        jQuery.post(eventappi_ajax_obj.ajax_url, {
+            'action': eventappi_ajax_obj.plugin_name + '_check_event_api',
+            'event_id': eaErrArea.data('event-id')
+        }, function(output) {
+            if(output !== '') {
+                eaErrArea.html(output).fadeIn();
+            }
+        });
+    }
+
+    // Clear Image - Create Event
+    $('.ea-reg-file-clear').click(function(e) {
+        e.preventDefault();
+        var regFile = $(this).prev('input');
+        regFile.replaceWith( regFile.clone( true ) );
+    });
 });

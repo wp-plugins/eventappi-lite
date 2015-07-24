@@ -1,4 +1,5 @@
-<?php namespace EventAppi;
+<?php
+namespace EventAppi;
 
 use EventAppi\Helpers\Options;
 use EventAppi\Helpers\DisplayField;
@@ -10,7 +11,6 @@ use EventAppi\Helpers\DisplayField;
  */
 class Settings
 {
-
     /**
      * @var Settings|null
      */
@@ -118,10 +118,7 @@ class Settings
                         $license_key !== '' &&
                         LicenseKeyManager::instance()->checkLicenseKey()
                     ) {
-                        $field['description'] = __(
-                            'Your plugin is registered and <span style="color:#009900;font-weight:bold;">Active</span>',
-                            EVENTAPPI_PLUGIN_NAME
-                        );
+                        $field['description'] = __('Your plugin is registered and currently <span style="color:#009900;font-weight:bold;">Active</span>', EVENTAPPI_PLUGIN_NAME);
 
                         if (!$_POST) {
                             add_settings_error(
@@ -132,19 +129,13 @@ class Settings
                             );
                         }
                     } else {
-                        $field['description'] = __(
-                            'Your License Key is <span style="color:#990000;font-weight:bold;">Inactive</span>',
-                            EVENTAPPI_PLUGIN_NAME
-                        );
+                        $field['description'] = __('Your LicenseKey is currently <span style="color:#990000;font-weight:bold;">Inactive</span>', EVENTAPPI_PLUGIN_NAME);
 
                         if (!$_POST) {
                             add_settings_error(
                                 'license_key',
                                 'settings_updated',
-                                __(
-                                    'The license key you provided is invalid.<br>See the Help page for Support.<br>',
-                                    EVENTAPPI_PLUGIN_NAME
-                                )
+                                __('The license key you provided is invalid.<br>Please try again or contact EventAppi Support, using the following contact details:<br><ul><li>Telephone: 020202020202</li><li>Email: admin@webplunder.com</li></ul>', EVENTAPPI_PLUGIN_NAME)
                             );
                         }
                     }
@@ -193,8 +184,10 @@ class Settings
 
         $html .= '</h2>';
 
-        if(strtolower($tab) == 'pages') {
-            $html .= '<p>'.__('Make sure the right associations are made for the EventAppi pages.', EVENTAPPI_PLUGIN_NAME).'</p>';
+        if (strtolower($tab) == 'pages') {
+            $html .= '<p>'.
+                __('Make sure the right associations are made for the EventAppi pages.', EVENTAPPI_PLUGIN_NAME).
+            '</p>';
         }
 
         echo $html;
@@ -202,6 +195,8 @@ class Settings
 
     public function getSettingsArray()
     {
+        $currentCurrencySymbol = Currency::instance()->getCurrencySymbol(get_option(EVENTAPPI_PLUGIN_NAME.'_currency'));
+
         $settingsArray = array(
             'General' => array(
                 'title'       => __('General', EVENTAPPI_PLUGIN_NAME),
@@ -241,17 +236,16 @@ class Settings
                         'type'        => 'hidden',
                         'default'     => 'invalid'
                     ),
+                    // Outlines Section
                     array(
                         'id'          => 'upgrade',
                         'label'       => '<h3>' . __('Upgrade', EVENTAPPI_PLUGIN_NAME) . '</h3>',
-                        'description' => __(
-                            'You can view upgrade and pricing plans availiable to you at: ' .
-                            '<a href="http://eventappi.com/pricing">http://eventappi.com/pricing</a>',
-                            EVENTAPPI_PLUGIN_NAME
-                        ),
+                        'description' => __('You can view upgrade and pricing plans availiable to you at: <a href="http://eventappi.com/pricing">http://eventappi.com/pricing</a>', EVENTAPPI_PLUGIN_NAME),
                         'type'        => '',
                         'placeholder' => '',
-                    )
+                    ),
+
+
                 )
             ),
             'Gateway' => array(
@@ -284,6 +278,8 @@ class Settings
                             'payflow'        => __('Payflow', EVENTAPPI_PLUGIN_NAME),
                             'paymentexpress' => __('PaymentExpress (DPS)', EVENTAPPI_PLUGIN_NAME),
                             'paypal'         => __('PayPal Rest', EVENTAPPI_PLUGIN_NAME),
+                            'paypalpro'      => __('PayPal Pro', EVENTAPPI_PLUGIN_NAME),
+                            'paypalexp'      => __('PayPal Express', EVENTAPPI_PLUGIN_NAME),
                             'pin'            => __('Pin Payments', EVENTAPPI_PLUGIN_NAME),
                             'sagepay'        => __('Sage Pay', EVENTAPPI_PLUGIN_NAME),
                             'securepay'      => __('SecurePay', EVENTAPPI_PLUGIN_NAME),
@@ -456,15 +452,17 @@ class Settings
                         'type'        => 'hidden',
                         'default'     => 'Dummy'
                     ),
-                    /* Currently there is a bug if this comment remains, so we remove for now
+
+                    /*
                     array(
                         'id'          => 'gateway_dummy_info',
                         'label'       => 'Note:',
-                        'description' => 'Card numbers ending in even numbers should result in successful payments. ' .
-                                         'Payments with cards ending in odd numbers should fail.',
+                        'description' => 'Card numbers ending in even numbers should result in successful payments. Payments with cards ending in odd numbers should fail.',
                         'type'        => 'hidden',
                         'placeholder' => ''
-                    ),*/
+                    ),
+                     *
+                     */
                     array(
                         'id'          => 'gateway_eway_fullGatewayName',
                         'label'       => '',
@@ -864,7 +862,67 @@ class Settings
                     array(
                         'id'          => 'gateway_paypal_testMode',
                         'label'       => __('Test mode', EVENTAPPI_PLUGIN_NAME),
-                        'description' => __('PIN Test Mode', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('PayPal Test Mode', EVENTAPPI_PLUGIN_NAME),
+                        'type'        => 'radio',
+                        'options'     => array(true => 'Yes', false => 'No'),
+                        'default'     => true
+                    ),
+                    array(
+                        'id' => 'gateway_paypalpro_username',
+                        'label' => __('User Name', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('Your PayPal Pro user name', EVENTAPPI_PLUGIN_NAME),
+                        'type' => 'text',
+                        'default' => '',
+                        'placeholder' => 'e.g. john@example.com'
+                    ),
+                    array(
+                        'id' => 'gateway_paypalpro_password',
+                        'label' => __('Password', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('Your PayPal Pro password', EVENTAPPI_PLUGIN_NAME),
+                        'type' => 'password',
+                        'default' => ''
+                    ),
+                    array(
+                        'id' => 'gateway_paypalpro_signature',
+                        'label' => __('Signature', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('Your PayPal Pro Signature', EVENTAPPI_PLUGIN_NAME),
+                        'type' => 'password',
+                        'default' => ''
+                    ),
+                    array(
+                        'id' => 'gateway_paypalpro_testMode',
+                        'label'       => __('Test mode', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('PayPal Test Mode', EVENTAPPI_PLUGIN_NAME),
+                        'type'        => 'radio',
+                        'options'     => array(true => 'Yes', false => 'No'),
+                        'default'     => true
+                    ),
+                    array(
+                        'id' => 'gateway_paypalexp_username',
+                        'label' => __('User Name', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('Your PayPal Express user name', EVENTAPPI_PLUGIN_NAME),
+                        'type' => 'text',
+                        'default' => '',
+                        'placeholder' => 'e.g. john@example.com'
+                    ),
+                    array(
+                        'id' => 'gateway_paypalexp_password',
+                        'label' => __('Password', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('Your PayPal Express password', EVENTAPPI_PLUGIN_NAME),
+                        'type' => 'password',
+                        'default' => ''
+                    ),
+                    array(
+                        'id' => 'gateway_paypalexp_signature',
+                        'label' => __('Signature', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('Your PayPal Express Signature', EVENTAPPI_PLUGIN_NAME),
+                        'type' => 'password',
+                        'default' => ''
+                    ),
+                    array(
+                        'id' => 'gateway_paypalexp_testMode',
+                        'label'       => __('Test mode', EVENTAPPI_PLUGIN_NAME),
+                        'description' => __('PayPal Test Mode', EVENTAPPI_PLUGIN_NAME),
                         'type'        => 'radio',
                         'options'     => array(true => 'Yes', false => 'No'),
                         'default'     => true
@@ -1037,32 +1095,19 @@ class Settings
 
         // Get list of all published pages
         $pages = get_pages(array(
-            'sort_order' => 'asc',
-            'sort_column' => 'post_title',
-            'hierarchical' => 1,
-            'exclude' => '',
-            'include' => '',
-            'meta_key' => '',
-            'meta_value' => '',
-            'authors' => '',
-            'child_of' => 0,
-            'parent' => -1,
-            'exclude_tree' => '',
-            'number' => '',
-            'offset' => 0,
             'post_type' => 'page',
             'post_status' => 'publish'
         ));
 
         $pagesList = array('' => __('-- SELECT --', EVENTAPPI_PLUGIN_NAME));
 
-        foreach($pages as $val) {
+        foreach ($pages as $val) {
             $pagesList[$val->ID] = $val->post_title;
         }
 
         $pagesFields = array();
 
-        foreach(PluginManager::instance()->customPages() as $val) {
+        foreach (PluginManager::instance()->customPages() as $val) {
             $pagesFields[] = array(
                 'id'          => $val['id'].'_id',
                 'label'       => __($val['label'], EVENTAPPI_PLUGIN_NAME),
@@ -1082,7 +1127,32 @@ class Settings
         return $settingsArray;
     }
 
-    public function getPageId($eaPageId) {
+    // Returns the Post ID for the EventAppi Page
+    public function getPageId($eaPageId)
+    {
         return get_option(EVENTAPPI_PLUGIN_NAME.'_'.$eaPageId.'_id');
+    }
+
+    // Check if the current page is an EventAppi page
+    // If $post is not available (for earlier calls)
+    // the URL will be checked (it can have any slug)
+    public function isPage($eaPageId)
+    {
+        global $post;
+
+        if (! empty($post)) {
+            $pageId = $post->ID;
+        } else {
+            $url = explode('?', 'http://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+
+            if (function_exists('wp_rewrite_rules')) {
+                $pageId = url_to_postid($url[0]);
+            } else {
+                global $wpdb;
+                $pageId = $wpdb->get_var('SELECT ID FROM `'.$wpdb->posts."` WHERE post_name='".basename($url[0])."'");
+            }
+        }
+
+        return ( $this->getPageId($eaPageId) == $pageId );
     }
 }

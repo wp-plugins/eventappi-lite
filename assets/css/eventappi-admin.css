@@ -1,3 +1,9 @@
+body.post-type-eventappi_ticket .tablenav .actions {
+  overflow: visible;
+}
+body.users-organisers .menu-icon-users {
+  display: none;
+}
 /* custom styles */
 #eventappi-wrapper form[name=delete] {
   float: left;
@@ -28,6 +34,9 @@
 #revenue-per-day-stats {
   width: 100%;
   min-height: 600px;
+}
+#wp-eventappi_notes-wrap {
+  width: 55%;
 }
 ul.ticket-tabs {
   margin: 20px 0 0 0;
@@ -64,15 +73,11 @@ ul.ticket-tabs li.current {
   background-color: #ffe8e8;
 }
 h3.ui-accordion-header {
-  padding: 8px 27px !important;
+  margin: 0 0 5px 0 !important;
 }
-.event-tickets {
-  display: none;
+.ea-error {
+  color: #CC0000;
 }
-.ui-accordion .ui-accordion-content {
-  overflow: visible !important;
-  height: auto !important;
-}
-.chosen-container {
-  min-width: 100%;
+.ea-note {
+  padding: 12px !important;
 }

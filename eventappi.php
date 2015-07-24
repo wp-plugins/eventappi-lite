@@ -2,12 +2,12 @@
 /*
  * Plugin Name: EventAppi LITE - Happy Event Management
  * Plugin URI: http://eventappi.com/
- * Version: 1.0.7
+ * Version: 1.0.8
  * Description: Ticketing and Event Management For The Win
  * Author: EventAppi Development Team
  * Author URI: http://www.eventappi.com
  * Text Domain: eventappi
- * Domain Path: /lang/
+ * Domain Path: /i18n/languages/
  *
  * Requires at least: 4.0
  * Tested up to: 4.1.1
@@ -30,36 +30,16 @@
  */
 
 //Exit if accessed directly
-if (!defined('ABSPATH')) {
+if (! defined('ABSPATH')) {
     exit;
 }
 
-if (file_exists(__DIR__ . '/.env.php')) {
-    include_once(__DIR__ . '/.env.php');
-
-    if ($eventAppiEnv['error_reporting'] === true) {
-        // Enable WP_DEBUG mode
-        define('WP_DEBUG', true);
-
-        // Enable Debug logging to the /wp-content/debug.log file
-        define('WP_DEBUG_LOG', true);
-
-        error_reporting($eventAppiEnv['error_reporting_level']);
-        ini_set('display_errors', 1);
-    } else {
-        error_reporting(0);
-        ini_set('display_errors', 0);
-    }
-    unset($eventAppiEnv['error_reporting']);
-    unset($eventAppiEnv['error_reporting_level']);
-
-    foreach ($eventAppiEnv as $envKey => $envVal) {
-        putenv("{$envKey}={$envVal}");
-    }
-} else {
-    error_reporting(0);
-    ini_set('display_errors', 0);
+// WordPress 4 Theme Customizer conflicts with our use of HumanMade\CustomMetaBoxes so
+// we don't load the plugin if the Customizer is being loaded.
+if (basename($_SERVER['SCRIPT_NAME']) === 'customize.php') {
+    return;
 }
+
 
 if (!function_exists('eventappi_version')) {
     // Load composer libraries and init PSR-4 autoload
@@ -70,21 +50,22 @@ if (!function_exists('eventappi_version')) {
      */
     function eventappi_version()
     {
-        return '1.0.7';
+        return '1.0.8';
     }
 }
 
 use EventAppi\ClassLoader as ClassLoader;
 
 // make sure WP_CONTENT_DIR is defined
-if (!defined('WP_CONTENT_DIR')) {
+if (! defined('WP_CONTENT_DIR')) {
     define('WP_CONTENT_DIR', ABSPATH . 'wp-content');
 }
 
 // some useful constants for paths etc.
 define('EVENTAPPI_PLUGIN_NAME', 'eventappi');
+define('EVENTAPPI_PLUGIN_NICE_NAME', 'EventAppi');
 define('EVENTAPPI_PLUGIN_VERSION', eventappi_version());
-define('EVENTAPPI_PLUGIN_PATH', '/' . plugin_basename(dirname(__FILE__)) . '/');
+define('EVENTAPPI_PLUGIN_PATH', '/'.plugin_basename(dirname(__FILE__)).'/');
 define('EVENTAPPI_PLUGIN_FULL_PATH', WP_PLUGIN_DIR . EVENTAPPI_PLUGIN_PATH);
 define('EVENTAPPI_PLUGIN_FILE_ABS', __FILE__);
 define('EVENTAPPI_PLUGIN_DIR_ABS', __DIR__);
@@ -92,6 +73,7 @@ define('EVENTAPPI_PLUGIN_DIR_ABS', __DIR__);
 define('EVENTAPPI_WPRESS_PLUGIN_PATH', plugin_basename(__FILE__));
 
 define('EVENTAPPI_POST_NAME', EVENTAPPI_PLUGIN_NAME.'_event');
+define('EVENTAPPI_TICKET_POST_NAME', EVENTAPPI_PLUGIN_NAME.'_ticket');
 
 
 $wp_plugin_url  = WP_PLUGIN_URL;

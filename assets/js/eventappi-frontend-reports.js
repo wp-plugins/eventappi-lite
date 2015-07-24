@@ -3,7 +3,7 @@
     'use strict';
 
     var $ = jQuery;
-    var LANG = eventappi_reports_ajax_obj.text;
+    var LANG = eventappi_ajax_obj_reports.text;
 
     /**
      * EventAppi Reports
@@ -199,7 +199,7 @@
         /**
          * Perform a GET request
          *
-         * eventappi_reports_ajax_obj is created by wp_localize_script() in ChirrpyPublic::public_ajaxurl()
+         * eventappi_ajax_obj_reports is created by wp_localize_script() in ChirrpyPublic::public_ajaxurl()
          *
          * @param  {string} action
          * @param  {object} params
@@ -208,8 +208,8 @@
         get: function(action, params) {
 
             var data = {
-                'action':      eventappi_reports_ajax_obj.plugin_name + '_' + action,
-                '_ajax_nonce': eventappi_reports_ajax_obj.nonce
+                'action':      eventappi_ajax_obj_reports.plugin_name + '_' + action,
+                '_ajax_nonce': eventappi_ajax_obj_reports.nonce
             };
 
             for (var p in params) {
@@ -219,7 +219,7 @@
             }
 
             return $.ajax({
-                url:      eventappi_reports_ajax_obj.ajax_url,
+                url:      eventappi_ajax_obj_reports.ajax_url,
                 method:   'GET',
                 data:     data,
                 dataType: 'json'

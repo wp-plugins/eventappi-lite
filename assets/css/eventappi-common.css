@@ -120,3 +120,195 @@
 #eventappi-wrapper #ea-reports div#ea-reports-bodies-container > div .ea-reports-custom-range-container > span {
   margin: 0 10px;
 }
+#eventappi-wrapper .ea-add-btn {
+  font-size: 100%;
+}
+.field-label {
+  margin: 0 0 7px;
+}
+.ea-clear {
+  clear: both;
+}
+span.ea-error,
+span.ea-req {
+  color: #CC0000;
+}
+/* @@[LITE] START */
+#event-ticket-max-error {
+  border: 1px solid red;
+  color: #cc0000;
+  padding: 10px;
+  margin: 10px 0;
+  display: none;
+  /* default mode */
+}
+/* @@[LITE] END */
+/* EVENTAPPI UPDATE BUTTON */
+.ea-update-btn {
+  background-color: #44c767;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #18ab29;
+  display: inline-block;
+  cursor: pointer;
+  color: white;
+  font-size: 17px;
+  padding: 9px 20px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #2f6627;
+}
+.ea-update-btn-big {
+  font-size: 19px !important;
+  color: white;
+}
+.ea-update-btn:hover {
+  background-color: #5cbf2a;
+  color: white;
+}
+.ea-update-btn:active {
+  position: relative;
+  top: 1px;
+}
+.ea-note-ok {
+  border: 1px solid green;
+  margin: 10px 0;
+  padding: 5px;
+}
+/* EVENTAPPI UPDATE BUTTON */
+.ea-update-btn {
+  background-color: #44c767;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 1px solid #18ab29;
+  display: inline-block;
+  cursor: pointer;
+  color: white;
+  font-size: 17px;
+  padding: 9px 20px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #2f6627;
+}
+.ea-update-btn-big {
+  font-size: 19px !important;
+  color: white;
+}
+.ea-update-btn:hover {
+  background-color: #5cbf2a;
+  color: white;
+}
+.ea-update-btn:active {
+  position: relative;
+  top: 1px;
+}
+.ea-reg-fields-preview-action {
+  margin: 0 0 15px 0;
+}
+/* EVENTAPPI - Ticket Registration Field Accordion Panel Area */
+.accordion-tickets-reg-fields .reg-field-area {
+  padding: 12px 10px;
+  min-height: 25px;
+}
+/* EVENTAPPI ADD AREA */
+#ea-add-ticket-area,
+#ea-add-ticket-reg-field-area {
+  display: none;
+}
+.ea-add-new-ticket-btn,
+.ea-add-new-ticket-reg-field-btn {
+  margin: 5px 0 10px 0;
+}
+.ea-add-btn {
+  -moz-box-shadow: inset 0px 1px 0px 0px #54a3f7;
+  -webkit-box-shadow: inset 0px 1px 0px 0px #54a3f7;
+  box-shadow: inset 0px 1px 0px 0px #54a3f7;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #007dc1), color-stop(1, #0061a7));
+  background: -moz-linear-gradient(top, #007dc1 5%, #0061a7 100%);
+  background: -webkit-linear-gradient(top, #007dc1 5%, #0061a7 100%);
+  background: -o-linear-gradient(top, #007dc1 5%, #0061a7 100%);
+  background: -ms-linear-gradient(top, #007dc1 5%, #0061a7 100%);
+  background: linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#007dc1', endColorstr='#0061a7', GradientType=0);
+  background-color: #007dc1;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 1px solid #124d77;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff !important;
+  font-size: 13px;
+  padding: 6px 24px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #154682;
+}
+.ea-add-btn:hover {
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #0061a7), color-stop(1, #007dc1));
+  background: -moz-linear-gradient(top, #0061a7 5%, #007dc1 100%);
+  background: -webkit-linear-gradient(top, #0061a7 5%, #007dc1 100%);
+  background: -o-linear-gradient(top, #0061a7 5%, #007dc1 100%);
+  background: -ms-linear-gradient(top, #0061a7 5%, #007dc1 100%);
+  background: linear-gradient(to bottom, #0061a7 5%, #007dc1 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0061a7', endColorstr='#007dc1', GradientType=0);
+  background-color: #0061a7;
+  color: white;
+}
+.ea-add-btn:active {
+  position: relative;
+  top: 1px;
+  color: white;
+}
+.actions .ea-remove {
+  color: #a00;
+}
+.actions .ea-remove:hover {
+  color: red;
+}
+.ea-hidden {
+  display: none;
+}
+h3.ui-accordion-header {
+  padding: 8px 27px !important;
+  margin: 0 0 5px 0 !important;
+}
+.event-tickets {
+  display: none;
+}
+#accordion-events-tickets .tickets-area {
+  margin: -5px 0 5px 0;
+}
+#accordion-events-tickets .marked.tickets-area {
+  border-right: 2px solid green;
+  border-bottom: 2px solid green;
+  border-left: 2px solid green;
+}
+#accordion-events-tickets .marked.ui-accordion-header {
+  border-top: 2px solid green;
+  border-right: 2px solid green;
+  border-bottom: 2px solid green;
+  border-left: 2px solid green;
+}
+.ui-accordion .group {
+  margin: 0 0 5px 0;
+}
+.ui-accordion .ui-accordion-content {
+  overflow: visible !important;
+  height: auto !important;
+}
+.ui-accordion .ui-state-highlight {
+  height: 37px;
+  line-height: 37px;
+  border: 1px dashed;
+  margin: 0 0 5px 0;
+}
+.ea-accordion-title span {
+  position: absolute;
+  right: 10px;
+}
+.ea-accordion-title span:hover {
+  cursor: move;
+}
+.chosen-container {
+  min-width: 100%;
+}

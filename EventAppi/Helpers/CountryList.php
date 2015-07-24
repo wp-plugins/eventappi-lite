@@ -37,7 +37,7 @@ class CountryList
     private function __construct(ApiClientInterface $client)
     {
         self::$apiClient   = $client;
-        self::$countryList = [];
+        self::$countryList = array();
         self::$listTimer   = 1426768000;
     }
 

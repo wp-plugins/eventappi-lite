@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 /**
  * The data array for this template contains:
  * - total     : the basket total
@@ -6,21 +7,11 @@
  * - userMeta  : user data for billing if present
  * - countries : a list of countries for the drop-down
  */
-/**
- * for testing only - set environment vars to prevent having to re-enter CC data
- */
-if (getenv('test_card_number') !== false) {
-    $extraData['test_card_number'] = getenv('test_card_number');
-    $extraData['test_card_name']   = getenv('test_card_name');
-    $extraData['test_card_last']   = getenv('test_card_last');
-    $extraData['test_card_cvv']    = getenv('test_card_cvv');
-    $extraData['test_card_exp']    = getenv('test_card_exp');
-}
 ?>
 
 <div id="eventappi-wrapper" class="wrap">
 
-    <h3><?php _e('Total: $', EVENTAPPI_PLUGIN_NAME); ?><?php echo money_format('%i', ($data['total'] / 100)); ?></h3>
+    <h3><?php _e('Total: $', EVENTAPPI_PLUGIN_NAME); ?><?php echo money_format('%i', $data['total']); ?></h3>
 
     <form role="form" action="<?php echo $data['actionUrl']; ?>" method="post">
         <div class="row-fluid">
@@ -51,7 +42,7 @@ if (getenv('test_card_number') !== false) {
                 </div>
 
                 <div class="form-group">
-                    <label><?php _e('Country', EVENTAPPI_PLUGIN_NAME); ?></label>
+                    <label><?php _e('Country', EVENTAPPI_PLUGIN_NAME); ?></label><br />
                     <select name="billing_country">
                         <?php foreach ($data['countries'] as $code => $country) : ?>
                             <?php
@@ -68,6 +59,7 @@ if (getenv('test_card_number') !== false) {
                     </select>
                 </div>
             </div>
+            <?php if (intval($data['total']) > 0) : ?>
             <div class="col-lg-6">
                 <div class="form-group">
                     <label><?php _e('Credit card number', EVENTAPPI_PLUGIN_NAME); ?></label>
@@ -104,6 +96,7 @@ if (getenv('test_card_number') !== false) {
                     <input name="issueNumber" type="text" class="form-control" id="" placeholder="" />
                 </div>
             </div>
+            <?php endif; ?>
         </div>
         <hr>
         <div class="row-fluid">
