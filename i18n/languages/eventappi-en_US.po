@@ -1,0 +1,2691 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: EventAppi - Happy Event Management\n"
+"POT-Creation-Date: 2015-07-03 12:57+0100\n"
+"PO-Revision-Date: 2015-07-03 13:11+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: eventappi.php\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: EventAppi/Analytics.php:51
+msgid "You do not have sufficient permissions to view this page."
+msgstr ""
+
+#: EventAppi/CouponPostType.php:84
+msgid "Numeric Value"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:91
+msgid "Discount Type"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:96
+msgid "[select]"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:97
+msgid "Percentage (%)"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:98
+msgid "Fixed Amount"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:103
+msgid "Number of usages"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:104
+msgid "Leave the field empty for unlimited."
+msgstr ""
+
+#: EventAppi/CouponPostType.php:111
+msgid "Expiry Date"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:113
+#, php-format
+msgid ""
+"Use the datepicker to select a date - format should be like %s - Leave the "
+"field empty if you do not wish this coupon to expire."
+msgstr ""
+
+#: EventAppi/CouponPostType.php:131
+msgctxt "post type general name"
+msgid "Event Coupons"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:132
+msgctxt "post type singular name"
+msgid "Coupon"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:133
+msgctxt "event"
+msgid "Add new Coupon"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:134
+msgid "Add new Coupon"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:135 EventAppi/PluginManager.php:279
+msgid "Edit Coupon"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:136
+msgid "New Coupon"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:137
+msgid "View Coupon"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:138
+msgid "Search Coupons"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:139
+msgid "No coupon found"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:140
+msgid "No coupon found in Trash"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:168
+msgid "Coupon Options"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:182
+msgid "Coupon To Tickets"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:315
+msgid "There are no tickets associated with this event"
+msgstr ""
+
+#: EventAppi/CouponPostType.php:438
+msgid "You have to be logged in to access this page."
+msgstr ""
+
+#: EventAppi/CouponPostType.php:447
+msgid ""
+"The requested ID does not belong to any coupon. Please contact the "
+"administrator if you do not manage to edit the coupon you want."
+msgstr ""
+
+#: EventAppi/CouponPostType.php:457
+msgid ""
+"It looks like the coupon ID is assigned to another event organiser and it is "
+"not available for editing. For further clarifications, please contact the "
+"administrator."
+msgstr ""
+
+#: EventAppi/EventCatTax.php:50
+msgctxt "taxonomy general name"
+msgid "Categories"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:51
+msgctxt "taxonomy singular name"
+msgid "Category"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:52
+msgid "Search Categories"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:53
+msgid "Popular Categories"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:54
+msgid "All Categories"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:57
+msgid "Edit Category"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:58
+msgid "Update Category"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:59 templates/create-new-event.php:56
+#: templates/edit-event.php:20
+msgid "Add New Category"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:60
+msgid "New Category Name"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:61
+msgid "Separate categories with commas"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:62
+msgid "Add or remove categories"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:63
+msgid "Choose from the most used categories"
+msgstr ""
+
+#: EventAppi/EventCatTax.php:64
+msgid "No category found."
+msgstr ""
+
+#: EventAppi/EventCatTax.php:65 EventAppi/EventPostType.php:284
+msgid "Categories"
+msgstr ""
+
+#: EventAppi/EventPostType.php:120
+msgid "Event TimeZone"
+msgstr ""
+
+#: EventAppi/EventPostType.php:178
+msgid ""
+"Please enter your EventAppi license key and payment gateway settings to use "
+"the plugin.<br>Need a license key? Please visit <a href=\"http://eventappi."
+"com/pricing/\">EventAppi.com</a> for details."
+msgstr ""
+
+#: EventAppi/EventPostType.php:187
+msgctxt "post type general name"
+msgid "Events"
+msgstr ""
+
+#: EventAppi/EventPostType.php:188
+msgctxt "post type singular name"
+msgid "Event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:189
+msgctxt "event"
+msgid "Add new Event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:190
+msgid "Add new Event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:191 EventAppi/PluginManager.php:199
+msgid "Edit Event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:192
+msgid "New Event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:193
+msgid "View Event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:194
+msgid "Search Events"
+msgstr ""
+
+#: EventAppi/EventPostType.php:195
+msgid "No events found"
+msgstr ""
+
+#: EventAppi/EventPostType.php:196
+msgid "No events found in Trash"
+msgstr ""
+
+#: EventAppi/EventPostType.php:213
+msgid "events"
+msgstr ""
+
+#: EventAppi/EventPostType.php:224 EventAppi/EventPostType.php:285
+msgid "Start Date"
+msgstr ""
+
+#: EventAppi/EventPostType.php:225
+msgid "Event start date"
+msgstr ""
+
+#: EventAppi/EventPostType.php:233 EventAppi/EventPostType.php:286
+msgid "Start Time"
+msgstr ""
+
+#: EventAppi/EventPostType.php:234
+msgid "Event start time"
+msgstr ""
+
+#: EventAppi/EventPostType.php:241 EventAppi/EventPostType.php:287
+msgid "End Date"
+msgstr ""
+
+#: EventAppi/EventPostType.php:242
+msgid "Event end date"
+msgstr ""
+
+#: EventAppi/EventPostType.php:249 EventAppi/EventPostType.php:288
+msgid "End Time"
+msgstr ""
+
+#: EventAppi/EventPostType.php:250
+msgid "Event end time"
+msgstr ""
+
+#: EventAppi/EventPostType.php:257
+msgid "Select Venue"
+msgstr ""
+
+#: EventAppi/EventPostType.php:267
+msgid "Event Details"
+msgstr ""
+
+#: EventAppi/EventPostType.php:282 EventAppi/TicketPostType.php:184
+msgid "Event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:283 EventAppi/TicketPostType.php:183
+#: templates/list-all-events.php:60
+msgid "Featured Image"
+msgstr ""
+
+#: EventAppi/EventPostType.php:289 EventAppi/EventVenueTax.php:85
+msgid "Venue"
+msgstr ""
+
+#: EventAppi/EventPostType.php:290 templates/list-all-coupons.php:45
+#: templates/list-all-events.php:63
+msgid "Actions"
+msgstr ""
+
+#: EventAppi/EventPostType.php:708
+msgid "We have our Event Data."
+msgstr ""
+
+#: EventAppi/EventPostType.php:767
+#, php-format
+msgid "You cannot have more than %d tickets per event."
+msgstr ""
+
+#: EventAppi/EventPostType.php:895
+msgid "EventAppi Tickets"
+msgstr ""
+
+#: EventAppi/EventPostType.php:896 EventAppi/TicketPostType.php:320
+#: templates/single-event.php:68
+msgid "Tickets"
+msgstr ""
+
+#: EventAppi/EventPostType.php:904
+msgid "EventAppi Coupons"
+msgstr ""
+
+#: EventAppi/EventPostType.php:905 EventAppi/PluginManager.php:267
+msgid "Coupons"
+msgstr ""
+
+#: EventAppi/EventPostType.php:915
+msgid "EventAppi Organisers"
+msgstr ""
+
+#: EventAppi/EventPostType.php:916
+msgid "Organisers"
+msgstr ""
+
+#: EventAppi/EventPostType.php:925
+msgid "EventAppi Reports"
+msgstr ""
+
+#: EventAppi/EventPostType.php:926 EventAppi/Shortcodes.php:401
+msgid "Reports"
+msgstr ""
+
+#: EventAppi/EventPostType.php:935
+msgid "EventAppi Attendees"
+msgstr ""
+
+#: EventAppi/EventPostType.php:936 EventAppi/EventPostType.php:1273
+#: EventAppi/PluginManager.php:211 templates/list-all-events.php:74
+msgid "Attendees"
+msgstr ""
+
+#: EventAppi/EventPostType.php:945
+msgid "Download EventAppi Attendees"
+msgstr ""
+
+#: EventAppi/EventPostType.php:946
+msgid "Download Attendees"
+msgstr ""
+
+#: EventAppi/EventPostType.php:955
+msgid "EventAppi Purchases"
+msgstr ""
+
+#: EventAppi/EventPostType.php:956 EventAppi/EventPostType.php:1440
+#: EventAppi/PluginManager.php:205 templates/list-all-events.php:76
+msgid "Purchases"
+msgstr ""
+
+#: EventAppi/EventPostType.php:968 EventAppi/EventPostType.php:1011
+msgid "EventAppi Settings"
+msgstr ""
+
+#: EventAppi/EventPostType.php:969 EventAppi/EventPostType.php:1012
+#: EventAppi/PluginManager.php:79
+msgid "Settings"
+msgstr ""
+
+#: EventAppi/EventPostType.php:979 EventAppi/EventPostType.php:1022
+msgid "EventAppi Help"
+msgstr ""
+
+#: EventAppi/EventPostType.php:980 EventAppi/EventPostType.php:1023
+msgid "Help"
+msgstr ""
+
+#: EventAppi/EventPostType.php:998 EventAppi/EventPostType.php:999
+#: EventAppi/Parser.php:679
+msgid "Events"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1032
+msgid ""
+"Looks like the EventAppi plugin is inactive. Please check your license key "
+"in the Settings menu."
+msgstr ""
+
+#: EventAppi/EventPostType.php:1092
+msgid "The attendee is already checked in, and cannot be checked in again."
+msgstr ""
+
+#: EventAppi/EventPostType.php:1111
+#: EventAppi/Templates/Events/ListEventAttendees.php:83
+#: templates/list-event-attendees.php:122
+msgid "Check Out"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1111
+#: EventAppi/Templates/Events/ListEventAttendees.php:83
+#: templates/list-event-attendees.php:122
+msgid "Check In"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1112
+msgid "The attendee's status was changed"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1215 templates/checkout.php:30
+#: templates/list-event-purchases.php:113 templates/my-account.php:88
+msgid "Email"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1216 templates/edit-user.php:22
+#: templates/my-account.php:18
+msgid "First Name"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1217 templates/edit-user.php:27
+#: templates/my-account.php:23
+msgid "Last Name"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1218
+msgid "Display Name"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1219 EventAppi/EventPostType.php:1392
+msgid "Checked In"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1219
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:40
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:30
+msgid "Yes"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1219
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:41
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:31
+msgid "No"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1220
+#: EventAppi/Templates/Events/ListEventAttendees.php:40
+#: EventAppi/Templates/Events/ListEventAttendees.php:50
+#: templates/list-event-attendees.php:97
+msgid "Assigned To"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1238
+msgid "There are no attendees for this event"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1247 EventAppi/EventPostType.php:1418
+#: EventAppi/Help.php:37 EventAppi/Settings.php:48
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: EventAppi/EventPostType.php:1387 EventAppi/EventPostType.php:1548
+msgid "All"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1397
+msgid "Not Checked In"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1553
+msgid "Anonymous"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1558
+msgid "Claimed or Assigned"
+msgstr ""
+
+#: EventAppi/EventPostType.php:1721
+msgid ""
+"The email you typed is already in our database. Please use another one to "
+"continue."
+msgstr ""
+
+#: EventAppi/EventPostType.php:1747
+#, php-format
+msgid ""
+"This event was created by %s and the account is pending activation. Once the "
+"user is active, the event will get published."
+msgstr ""
+
+#: EventAppi/EventPostType.php:1749
+#, php-format
+msgid ""
+"This event was created by a guest user and is awaiting account activation "
+"but the email (%s) does not seem to be valid."
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:80
+msgctxt "taxonomy general name"
+msgid "Venues"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:81
+msgctxt "taxonomy singular name"
+msgid "Venue"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:82
+msgid "Search Venues"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:83
+msgid "Popular Venues"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:84
+msgid "All Venues"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:86 templates/single-event.php:50
+msgid "Venue:"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:87
+msgid "Edit Venue"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:88
+msgid "Update Venue"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:89
+msgid "Add New Venue"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:90
+msgid "New Venue Name"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:91
+msgid "Separate venues with commas"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:92
+msgid "Add or remove venues"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:93
+msgid "Choose from the most used venues"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:94
+msgid "No venue found."
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:95
+msgid "Venues"
+msgstr ""
+
+#: EventAppi/EventVenueTax.php:166
+msgid "Unable to add the new venue"
+msgstr ""
+
+#: EventAppi/Helpers/CMBSelectField.php:87
+msgid "None"
+msgstr ""
+
+#: EventAppi/Helpers/CMBSelectField.php:122
+msgid "Type to search"
+msgstr ""
+
+#: EventAppi/Helpers/DisplayField.php:152
+msgid "Upload an image"
+msgstr ""
+
+#: EventAppi/Helpers/DisplayField.php:153
+msgid "Use image"
+msgstr ""
+
+#: EventAppi/Helpers/DisplayField.php:154
+msgid "Upload new image"
+msgstr ""
+
+#: EventAppi/Helpers/DisplayField.php:156
+msgid "Remove image"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:87
+msgid "Disabled"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:88
+msgid "Error"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:89
+msgid "Warning"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:90
+msgid "Info"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:91
+msgid "Debug"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:92
+msgid "Trace"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:113
+#, php-format
+msgid "Cannot open EventAppi log file: %s"
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:135
+#, php-format
+msgid ""
+"Your log file is not writable. Check if your server is able to write to %s."
+msgstr ""
+
+#: EventAppi/Helpers/Logger.php:150
+msgid "Cloning of the EventAppi singleton objects is not permitted."
+msgstr ""
+
+#: EventAppi/LicenseKeyManager.php:79
+msgid "Check License Key on the API."
+msgstr ""
+
+#: EventAppi/Parser.php:629 EventAppi/Parser.php:630
+msgid "Please fill in all values before claiming the ticket."
+msgstr ""
+
+#: EventAppi/Parser.php:631
+msgid ""
+"There are not enough tickets available. Extra tickets have been removed."
+msgstr ""
+
+#: EventAppi/Parser.php:632
+msgid "Category could not be created. Please try again."
+msgstr ""
+
+#: EventAppi/Parser.php:633
+msgid "Choose Venue for this Event"
+msgstr ""
+
+#: EventAppi/Parser.php:634
+msgid "Show Form"
+msgstr ""
+
+#: EventAppi/Parser.php:635
+msgid "The passwords entered do not match."
+msgstr ""
+
+#: EventAppi/Parser.php:636
+msgid ""
+"If you do not want to update the password, please leave both \"New Password"
+"\" and \"Confirm Password\" fields empty."
+msgstr ""
+
+#: EventAppi/Parser.php:637
+msgid "This venue name already exists."
+msgstr ""
+
+#: EventAppi/Parser.php:638
+msgid "An event name is required."
+msgstr ""
+
+#: EventAppi/Parser.php:639 EventAppi/TicketPostType.php:326
+msgid "New Ticket"
+msgstr ""
+
+#: EventAppi/Parser.php:640
+msgid "remove this ticket"
+msgstr ""
+
+#: EventAppi/Parser.php:641
+msgid "Purchase Successful!"
+msgstr ""
+
+#: EventAppi/Parser.php:642
+msgid ""
+"Thank you for your purchase your confirmation of your order will be emailed "
+"to you."
+msgstr ""
+
+#: EventAppi/Parser.php:643
+msgid "Sorry we could not remove this item, please try again."
+msgstr ""
+
+#: EventAppi/Parser.php:645
+msgid "Please type an email that is need for the account creation."
+msgstr ""
+
+#: EventAppi/Parser.php:647
+msgid "Please pick a start date for the event."
+msgstr ""
+
+#: EventAppi/Parser.php:648
+msgid "Please pick a start time for the event."
+msgstr ""
+
+#: EventAppi/Parser.php:652
+#, php-format
+msgid "Are you sure you want to delete the coupon `%s`?"
+msgstr ""
+
+#: EventAppi/Parser.php:653
+msgid ""
+"The coupon could not be deleted. Please try again later. If the problem "
+"persists, please contact the administrator of this website."
+msgstr ""
+
+#: EventAppi/Parser.php:661
+msgid "Tickets sold"
+msgstr ""
+
+#: EventAppi/Parser.php:662
+msgid "Ticket sales"
+msgstr ""
+
+#: EventAppi/Parser.php:664
+msgid "Tickets sold per event per day for this week"
+msgstr ""
+
+#: EventAppi/Parser.php:665
+msgid "Tickets sold per event per week for this month"
+msgstr ""
+
+#: EventAppi/Parser.php:666
+msgid "Tickets sold per event per day"
+msgstr ""
+
+#: EventAppi/Parser.php:669
+msgid "Revenue per event for this week"
+msgstr ""
+
+#: EventAppi/Parser.php:670
+msgid "Revenue per event for this month"
+msgstr ""
+
+#: EventAppi/Parser.php:671
+msgid "Revenue per event"
+msgstr ""
+
+#: EventAppi/Parser.php:672
+msgid "Revenue in $"
+msgstr ""
+
+#: EventAppi/Parser.php:675
+msgid "Ticket availability"
+msgstr ""
+
+#: EventAppi/Parser.php:676
+msgid "Ticket availability per event"
+msgstr ""
+
+#: EventAppi/Parser.php:677
+msgid "Tickets available"
+msgstr ""
+
+#: EventAppi/Parser.php:681
+msgid "Week"
+msgstr ""
+
+#: EventAppi/Parser.php:682
+msgid "Month"
+msgstr ""
+
+#: EventAppi/Parser.php:683
+msgid "Custom"
+msgstr ""
+
+#: EventAppi/Parser.php:686
+msgid "Jan"
+msgstr ""
+
+#: EventAppi/Parser.php:687
+msgid "Feb"
+msgstr ""
+
+#: EventAppi/Parser.php:688
+msgid "Mar"
+msgstr ""
+
+#: EventAppi/Parser.php:689
+msgid "Apr"
+msgstr ""
+
+#: EventAppi/Parser.php:690
+msgid "May"
+msgstr ""
+
+#: EventAppi/Parser.php:691
+msgid "Jun"
+msgstr ""
+
+#: EventAppi/Parser.php:692
+msgid "Jul"
+msgstr ""
+
+#: EventAppi/Parser.php:693
+msgid "Aug"
+msgstr ""
+
+#: EventAppi/Parser.php:694
+msgid "Sep"
+msgstr ""
+
+#: EventAppi/Parser.php:695
+msgid "Oct"
+msgstr ""
+
+#: EventAppi/Parser.php:696
+msgid "Nov"
+msgstr ""
+
+#: EventAppi/Parser.php:697
+msgid "Dec"
+msgstr ""
+
+#: EventAppi/Parser.php:709
+msgid "Please specify an email address to send the ticket to."
+msgstr ""
+
+#: EventAppi/Parser.php:710
+msgid "Oops, nothing found!"
+msgstr ""
+
+#: EventAppi/Parser.php:711
+#, php-format
+msgid "Ticket %d"
+msgstr ""
+
+#: EventAppi/Parser.php:712
+msgid "Please make sure you select a venue."
+msgstr ""
+
+#: EventAppi/Parser.php:713
+msgid "Please type a title."
+msgstr ""
+
+#: EventAppi/Parser.php:714
+msgid "Please specify how many tickets are available."
+msgstr ""
+
+#: EventAppi/Parser.php:715
+msgid ""
+"You have selected a \"Sale\" ticket, but the price is zero. Please correct "
+"this."
+msgstr ""
+
+#: EventAppi/Parser.php:716
+msgid ""
+"You have selected a \"Free\" ticket, but the price is bigger than zero. "
+"Please correct this."
+msgstr ""
+
+#: EventAppi/Parser.php:717
+msgid "You have to select an event that will be associated with the ticket."
+msgstr ""
+
+#: EventAppi/Parser.php:718
+msgid "Please select a ticket type."
+msgstr ""
+
+#: EventAppi/Parser.php:719
+msgid ""
+"Due to an internal error, the ticket could not be deleted. Please try again "
+"later!"
+msgstr ""
+
+#: EventAppi/Payment.php:237
+msgid "Thank you, your payment was successful."
+msgstr ""
+
+#: EventAppi/Payment.php:242
+#, php-format
+msgid "There was an error communicating with the Omipay Gateway.<br>%s"
+msgstr ""
+
+#: EventAppi/Payment.php:244
+msgid "Sorry, your payment was unsuccessful."
+msgstr ""
+
+#: EventAppi/PluginManager.php:154
+#, php-format
+msgid "Activation failed because we require %s"
+msgstr ""
+
+#: EventAppi/PluginManager.php:159
+msgid "nothing"
+msgstr ""
+
+#: EventAppi/PluginManager.php:193 EventAppi/Shortcodes.php:401
+#: templates/create-new-event.php:280
+msgid "Create Event"
+msgstr ""
+
+#: EventAppi/PluginManager.php:217
+msgid "User Profile"
+msgstr ""
+
+#: EventAppi/PluginManager.php:224
+msgid "Cart"
+msgstr ""
+
+#: EventAppi/PluginManager.php:230
+msgid "Checkout"
+msgstr ""
+
+#: EventAppi/PluginManager.php:236
+msgid "Analytics"
+msgstr ""
+
+#: EventAppi/PluginManager.php:242
+msgid "Login"
+msgstr ""
+
+#: EventAppi/PluginManager.php:248
+msgid "My Account"
+msgstr ""
+
+#: EventAppi/PluginManager.php:254
+msgid "Thank You"
+msgstr ""
+
+#: EventAppi/PluginManager.php:260
+msgid "Preview Ticket Registration Fields"
+msgstr ""
+
+#: EventAppi/PluginManager.php:273
+msgid "Create Coupon"
+msgstr ""
+
+#: EventAppi/PluginManager.php:361
+msgid "Attendee"
+msgstr ""
+
+#: EventAppi/PluginManager.php:368 EventAppi/Templates/VenueUserInfo.php:10
+msgid "Event Organiser"
+msgstr ""
+
+#: EventAppi/Settings.php:59 EventAppi/Settings.php:87
+#: EventAppi/Settings.php:172 EventAppi/Settings.php:203
+msgid "General"
+msgstr ""
+
+#: EventAppi/Settings.php:122
+msgid ""
+"Your plugin is registered and currently <span style=\"color:#009900;font-"
+"weight:bold;\">Active</span>"
+msgstr ""
+
+#: EventAppi/Settings.php:128
+msgid "Your plugin was successfully Activated."
+msgstr ""
+
+#: EventAppi/Settings.php:133
+msgid ""
+"Your LicenseKey is currently <span style=\"color:#990000;font-weight:bold;"
+"\">Inactive</span>"
+msgstr ""
+
+#: EventAppi/Settings.php:139
+msgid ""
+"The license key you provided is invalid.<br>Please try again or contact "
+"EventAppi Support, using the following contact details:"
+"<br><ul><li>Telephone: 020202020202</li><li>Email: admin@webplunder.com</"
+"li></ul>"
+msgstr ""
+
+#: EventAppi/Settings.php:193
+msgid "Make sure the right associations are made for the EventAppi pages."
+msgstr ""
+
+#: EventAppi/Settings.php:204
+msgid "Here you can activate your EventAppi Plugin."
+msgstr ""
+
+#: EventAppi/Settings.php:208 EventAppi/Settings.php:212
+msgid "License Key"
+msgstr ""
+
+#: EventAppi/Settings.php:209
+msgid "Enter your License Key here."
+msgstr ""
+
+#: EventAppi/Settings.php:216
+msgid "EventAppi API Endpoint"
+msgstr ""
+
+#: EventAppi/Settings.php:217
+msgid "This can be found on your license key confirmation email."
+msgstr ""
+
+#: EventAppi/Settings.php:240
+msgid "Upgrade"
+msgstr ""
+
+#: EventAppi/Settings.php:241
+msgid ""
+"You can view upgrade and pricing plans availiable to you at: <a href="
+"\"http://eventappi.com/pricing\">http://eventappi.com/pricing</a>"
+msgstr ""
+
+#: EventAppi/Settings.php:248 EventAppi/Settings.php:285
+msgid "Gateway"
+msgstr ""
+
+#: EventAppi/Settings.php:249
+msgid "Here you can choose your gateway settings."
+msgstr ""
+
+#: EventAppi/Settings.php:253
+msgid "Select a payment gateway"
+msgstr ""
+
+#: EventAppi/Settings.php:254
+msgid "Choose your gateway."
+msgstr ""
+
+#: EventAppi/Settings.php:258
+msgid "2Checkout"
+msgstr ""
+
+#: EventAppi/Settings.php:259
+msgid "Authorize.Net"
+msgstr ""
+
+#: EventAppi/Settings.php:260
+msgid "Buckaroo"
+msgstr ""
+
+#: EventAppi/Settings.php:261
+msgid "CardSave"
+msgstr ""
+
+#: EventAppi/Settings.php:262
+msgid "Coinbase"
+msgstr ""
+
+#: EventAppi/Settings.php:263
+msgid "Dummy"
+msgstr ""
+
+#: EventAppi/Settings.php:264
+msgid "eWAY"
+msgstr ""
+
+#: EventAppi/Settings.php:265
+msgid "First Data"
+msgstr ""
+
+#: EventAppi/Settings.php:266
+msgid "GoCardless"
+msgstr ""
+
+#: EventAppi/Settings.php:267
+msgid "Manual"
+msgstr ""
+
+#: EventAppi/Settings.php:268
+msgid "Migs"
+msgstr ""
+
+#: EventAppi/Settings.php:269
+msgid "Mollie"
+msgstr ""
+
+#: EventAppi/Settings.php:270
+msgid "MultiSafepay"
+msgstr ""
+
+#: EventAppi/Settings.php:271
+msgid "Netaxept (BBS)"
+msgstr ""
+
+#: EventAppi/Settings.php:272
+msgid "Netbanx"
+msgstr ""
+
+#: EventAppi/Settings.php:273
+msgid "PayFast"
+msgstr ""
+
+#: EventAppi/Settings.php:274
+msgid "Payflow"
+msgstr ""
+
+#: EventAppi/Settings.php:275
+msgid "PaymentExpress (DPS)"
+msgstr ""
+
+#: EventAppi/Settings.php:276
+msgid "PayPal Rest"
+msgstr ""
+
+#: EventAppi/Settings.php:277
+msgid "Pin Payments"
+msgstr ""
+
+#: EventAppi/Settings.php:278
+msgid "Sage Pay"
+msgstr ""
+
+#: EventAppi/Settings.php:279
+msgid "SecurePay"
+msgstr ""
+
+#: EventAppi/Settings.php:280
+msgid "Stripe"
+msgstr ""
+
+#: EventAppi/Settings.php:281
+msgid "TargetPay"
+msgstr ""
+
+#: EventAppi/Settings.php:282
+msgid "WorldPay"
+msgstr ""
+
+#: EventAppi/Settings.php:284
+msgid "PayPal"
+msgstr ""
+
+#: EventAppi/Settings.php:292
+msgid "TwoCheckout"
+msgstr ""
+
+#: EventAppi/Settings.php:296
+msgid "Account number"
+msgstr ""
+
+#: EventAppi/Settings.php:297
+msgid "Your 2Checkout account number."
+msgstr ""
+
+#: EventAppi/Settings.php:304
+msgid "Secret word"
+msgstr ""
+
+#: EventAppi/Settings.php:305
+msgid "Your 2Checkout secret word"
+msgstr ""
+
+#: EventAppi/Settings.php:312 EventAppi/Settings.php:343
+#: EventAppi/Settings.php:382 EventAppi/Settings.php:485
+#: EventAppi/Settings.php:516 EventAppi/Settings.php:563
+#: EventAppi/Settings.php:648 EventAppi/Settings.php:679
+#: EventAppi/Settings.php:718 EventAppi/Settings.php:757
+#: EventAppi/Settings.php:804 EventAppi/Settings.php:858
+#: EventAppi/Settings.php:881 EventAppi/Settings.php:904
+#: EventAppi/Settings.php:943 EventAppi/Settings.php:1020
+msgid "Test mode"
+msgstr ""
+
+#: EventAppi/Settings.php:313 EventAppi/Settings.php:344
+msgid "Process all transactions on the test gateway"
+msgstr ""
+
+#: EventAppi/Settings.php:327
+msgid "API Login ID"
+msgstr ""
+
+#: EventAppi/Settings.php:328
+msgid "Authorize.net API login ID"
+msgstr ""
+
+#: EventAppi/Settings.php:335
+msgid "Transaction Key"
+msgstr ""
+
+#: EventAppi/Settings.php:336
+msgid "Authorize.net transaction key"
+msgstr ""
+
+#: EventAppi/Settings.php:351
+msgid "Developer mode"
+msgstr ""
+
+#: EventAppi/Settings.php:352
+msgid "Authorize.net Developer Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:366
+msgid "Website Key"
+msgstr ""
+
+#: EventAppi/Settings.php:367
+msgid "Your Buckaroo website key"
+msgstr ""
+
+#: EventAppi/Settings.php:374 EventAppi/Settings.php:873
+msgid "Secret Key"
+msgstr ""
+
+#: EventAppi/Settings.php:375
+msgid "Your Buckaroo secret key"
+msgstr ""
+
+#: EventAppi/Settings.php:383
+msgid "Buckaroo Developer Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:397 EventAppi/Settings.php:547
+#: EventAppi/Settings.php:578 EventAppi/Settings.php:663
+#: EventAppi/Settings.php:733 EventAppi/Settings.php:927
+msgid "Merchant ID"
+msgstr ""
+
+#: EventAppi/Settings.php:398
+msgid "Your Cardsave merchant ID"
+msgstr ""
+
+#: EventAppi/Settings.php:405 EventAppi/Settings.php:477
+#: EventAppi/Settings.php:671 EventAppi/Settings.php:780
+#: EventAppi/Settings.php:827 templates/login-frontend.php:15
+msgid "Password"
+msgstr ""
+
+#: EventAppi/Settings.php:406
+msgid "Your CardSave password"
+msgstr ""
+
+#: EventAppi/Settings.php:420 EventAppi/Settings.php:469
+#: EventAppi/Settings.php:609 EventAppi/Settings.php:958
+msgid "API Key"
+msgstr ""
+
+#: EventAppi/Settings.php:421
+msgid "Your Coinbase API key"
+msgstr ""
+
+#: EventAppi/Settings.php:428 EventAppi/Settings.php:850
+msgid "Secret"
+msgstr ""
+
+#: EventAppi/Settings.php:429
+msgid "Your Coinbase secret"
+msgstr ""
+
+#: EventAppi/Settings.php:436 EventAppi/Settings.php:624
+#: EventAppi/Settings.php:996
+msgid "Account ID"
+msgstr ""
+
+#: EventAppi/Settings.php:437
+msgid "Your Coinbase account ID"
+msgstr ""
+
+#: EventAppi/Settings.php:470
+msgid "Your eWAY API key"
+msgstr ""
+
+#: EventAppi/Settings.php:478
+msgid "Your eWAY password"
+msgstr ""
+
+#: EventAppi/Settings.php:486
+msgid "eWAY Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:493 EventAppi/Settings.php:702
+msgid "Store ID"
+msgstr ""
+
+#: EventAppi/Settings.php:494
+msgid "Your FirstData store ID"
+msgstr ""
+
+#: EventAppi/Settings.php:508
+msgid "Shared Secret"
+msgstr ""
+
+#: EventAppi/Settings.php:509
+msgid "Your FirstData shared secret"
+msgstr ""
+
+#: EventAppi/Settings.php:517
+msgid "First Data Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:531
+msgid "App ID"
+msgstr ""
+
+#: EventAppi/Settings.php:532
+msgid "Your GoCardless App ID"
+msgstr ""
+
+#: EventAppi/Settings.php:539
+msgid "App Secret"
+msgstr ""
+
+#: EventAppi/Settings.php:540
+msgid "Your GoCardless App secret"
+msgstr ""
+
+#: EventAppi/Settings.php:548
+msgid "Your GoCardless merchant ID"
+msgstr ""
+
+#: EventAppi/Settings.php:555
+msgid "Access Token"
+msgstr ""
+
+#: EventAppi/Settings.php:556
+msgid "Your GoCardless access token"
+msgstr ""
+
+#: EventAppi/Settings.php:564
+msgid "GoCardless Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:579
+msgid "Your MIGS merchant ID"
+msgstr ""
+
+#: EventAppi/Settings.php:586
+msgid "Merchant Access Code"
+msgstr ""
+
+#: EventAppi/Settings.php:587
+msgid "Your MIGS merchant access code"
+msgstr ""
+
+#: EventAppi/Settings.php:594
+msgid "Secure Hash"
+msgstr ""
+
+#: EventAppi/Settings.php:595
+msgid "Your MIGS secure hash"
+msgstr ""
+
+#: EventAppi/Settings.php:610
+msgid "Your Mollie API key"
+msgstr ""
+
+#: EventAppi/Settings.php:625
+msgid "Your MultiSafepay account ID"
+msgstr ""
+
+#: EventAppi/Settings.php:632
+msgid "Site ID"
+msgstr ""
+
+#: EventAppi/Settings.php:633
+msgid "Your MultiSafepay site ID"
+msgstr ""
+
+#: EventAppi/Settings.php:640
+msgid "Site Code"
+msgstr ""
+
+#: EventAppi/Settings.php:641
+msgid "Your MultiSafepay site code"
+msgstr ""
+
+#: EventAppi/Settings.php:649
+msgid "MultiSafepay Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:664
+msgid "Your Netaxept merchant ID"
+msgstr ""
+
+#: EventAppi/Settings.php:672
+msgid "Your Netaxept password"
+msgstr ""
+
+#: EventAppi/Settings.php:680
+msgid "Netaxept Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:694
+msgid "Account Number"
+msgstr ""
+
+#: EventAppi/Settings.php:695
+msgid "Your NetBanx account number"
+msgstr ""
+
+#: EventAppi/Settings.php:703
+msgid "Your NetBanx store ID"
+msgstr ""
+
+#: EventAppi/Settings.php:710
+msgid "Store Password"
+msgstr ""
+
+#: EventAppi/Settings.php:711
+msgid "Your NetBanx store password"
+msgstr ""
+
+#: EventAppi/Settings.php:719
+msgid "NetBanx Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:734
+msgid "Your PayFast merchant ID"
+msgstr ""
+
+#: EventAppi/Settings.php:741
+msgid "Merchant Key"
+msgstr ""
+
+#: EventAppi/Settings.php:742
+msgid "Your PayFast merchant key"
+msgstr ""
+
+#: EventAppi/Settings.php:749
+msgid "PDT Key"
+msgstr ""
+
+#: EventAppi/Settings.php:750
+msgid "Your PayFast PDT key"
+msgstr ""
+
+#: EventAppi/Settings.php:758
+msgid "PayFast Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:772 EventAppi/Settings.php:819
+#: templates/login-frontend.php:10
+msgid "Username"
+msgstr ""
+
+#: EventAppi/Settings.php:773
+msgid "Your Payflow username"
+msgstr ""
+
+#: EventAppi/Settings.php:781
+msgid "Your Payflow password"
+msgstr ""
+
+#: EventAppi/Settings.php:788 EventAppi/Settings.php:896
+msgid "Vendor"
+msgstr ""
+
+#: EventAppi/Settings.php:789
+msgid "Your Payflow vendor"
+msgstr ""
+
+#: EventAppi/Settings.php:796
+msgid "Partner"
+msgstr ""
+
+#: EventAppi/Settings.php:797
+msgid "Your Payflow partner"
+msgstr ""
+
+#: EventAppi/Settings.php:805
+msgid "Payflow Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:820
+msgid "Your PaymentExpress user name"
+msgstr ""
+
+#: EventAppi/Settings.php:828
+msgid "Your PaymentExpress password"
+msgstr ""
+
+#: EventAppi/Settings.php:842
+msgid "Client ID"
+msgstr ""
+
+#: EventAppi/Settings.php:843
+msgid "Your PayPal Rest client ID"
+msgstr ""
+
+#: EventAppi/Settings.php:851
+msgid "Your PayPal Rest secret"
+msgstr ""
+
+#: EventAppi/Settings.php:859
+msgid "PIN Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:874
+msgid "Your Pin secret key"
+msgstr ""
+
+#: EventAppi/Settings.php:882
+msgid "Pin Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:897
+msgid "Your Sage Pay vendor"
+msgstr ""
+
+#: EventAppi/Settings.php:905
+msgid "Sage Pay Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:912
+msgid "Simulator mode"
+msgstr ""
+
+#: EventAppi/Settings.php:913
+msgid "SagePay simulator mode"
+msgstr ""
+
+#: EventAppi/Settings.php:928
+msgid "Your Securepay merchant id"
+msgstr ""
+
+#: EventAppi/Settings.php:935
+msgid "Transaction Password"
+msgstr ""
+
+#: EventAppi/Settings.php:936
+msgid "Your Securepay transaction password"
+msgstr ""
+
+#: EventAppi/Settings.php:944
+msgid "Secure Pay Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:959
+msgid "Your Stripe API key"
+msgstr ""
+
+#: EventAppi/Settings.php:973
+msgid "Sub Account ID"
+msgstr ""
+
+#: EventAppi/Settings.php:974
+msgid "Your TargetPay sub-account ID"
+msgstr ""
+
+#: EventAppi/Settings.php:988
+msgid "Installation ID"
+msgstr ""
+
+#: EventAppi/Settings.php:989
+msgid "Your WorldPay installation ID"
+msgstr ""
+
+#: EventAppi/Settings.php:997
+msgid "Your WorldPay account id"
+msgstr ""
+
+#: EventAppi/Settings.php:1004
+msgid "Secret Word"
+msgstr ""
+
+#: EventAppi/Settings.php:1005
+msgid "Your Worldpay secret word"
+msgstr ""
+
+#: EventAppi/Settings.php:1012
+msgid "Callback Password"
+msgstr ""
+
+#: EventAppi/Settings.php:1013
+msgid "Your Worldpay callback password"
+msgstr ""
+
+#: EventAppi/Settings.php:1021
+msgid "WorldPay Test Mode"
+msgstr ""
+
+#: EventAppi/Settings.php:1036
+msgid "-- SELECT --"
+msgstr ""
+
+#: EventAppi/Settings.php:1056
+msgid "Pages"
+msgstr ""
+
+#: EventAppi/Settings.php:1057
+msgid "Here you can associate the pages to their right location."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:84
+msgid "Failed Login."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:87
+msgid ""
+"Your account was activated and the event published. Your login details were "
+"sent to your email address."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:90
+msgid ""
+"Your account was already activated. You can login below with the credentials "
+"that were sent to your email address."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:275
+msgid "Profile Updated."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:298
+msgid ""
+"Sorry, but \"New Password\" and \"Repeat New Password\" do not match. The "
+"profile was not updated."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:327
+msgid "Sorry, the profile could not be updated."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:332
+msgid "This email is already registered, please choose another one."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:352
+msgid "There was an error updating your details on the EventAppi API."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:450
+msgid "Claimed. This is your ticket."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:452
+#, php-format
+msgid "Claimed by %s"
+msgstr ""
+
+#: EventAppi/Shortcodes.php:454
+#, php-format
+msgid "This ticket is assigned to %s."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:456
+#, php-format
+msgid "This ticket has been sent to %s."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:459
+msgid "This ticket has been sent to you."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:479
+msgid "There is an error with this ticket."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:646
+msgid "The email address does not seem to be a valid one."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:652
+msgid ""
+"The START DATE does not seem to be valid. Please add it using the datepicker."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:657
+msgid ""
+"The END DATE does not seem to be valid. Please add it using the datepicker."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:662
+msgid "Please specify a start time."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:667
+msgid "Please specify an end time."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:672
+msgid ""
+"The event location was not set. Please select one from the drop-down below."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:682
+msgid "You have not uploaded a valid promo image. Please try again."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:719
+msgid "There was an error adding your event."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:760
+msgid "Your account needs activation"
+msgstr ""
+
+#: EventAppi/Shortcodes.php:771
+msgid ""
+"There was an error in creating your account. Please contact the "
+"administrator."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:851
+msgid "There was an error updating your event."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:857
+msgid "The event was updated. However, the promo image could not be removed."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:948
+msgid ""
+"No event ID was requested. Visit the event page and access the attendees "
+"list from there."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:988
+msgid ""
+"No event ID was requested. Visit your account page and access the purchases "
+"from there."
+msgstr ""
+
+#: EventAppi/Shortcodes.php:1052
+msgid "The coupon code was created. Click [link]here[/link] to view/edit it."
+msgstr ""
+
+#: EventAppi/Templates/CouponMetaBoxes.php:8
+msgid "Select one of more tickets..."
+msgstr ""
+
+#: EventAppi/Templates/CouponMetaBoxes.php:17
+#: EventAppi/Templates/Tickets/AddTicketArea.php:57
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:84
+#: EventAppi/Templates/Tickets/AppendRegFieldAccordion.php:7
+#: EventAppi/Templates/Tickets/AppendTicketAccordion.php:7
+#: EventAppi/Templates/Tickets/EditTicket.php:67
+#: templates/list-event-attendees.php:127
+msgid "Loading..."
+msgstr ""
+
+#: EventAppi/Templates/Events/EventTicketsMetaBox.php:5
+msgid "Please publish this event before adding tickets to it."
+msgstr ""
+
+#: EventAppi/Templates/Events/EventTicketsMetaBox.php:18
+msgid "+ Create New Ticket"
+msgstr ""
+
+#: EventAppi/Templates/Events/EventTicketsMetaBox.php:23
+msgid "The new ticket was added."
+msgstr ""
+
+#: EventAppi/Templates/Events/EventTicketsMetaBox.php:28
+#, php-format
+msgid "You have reached the maximum number of %d tickets per event."
+msgstr ""
+
+#: EventAppi/Templates/Events/EventsDdFIlter.php:8
+msgid "ALL EVENTS"
+msgstr ""
+
+#: EventAppi/Templates/Events/EventsMetaBox.php:5
+msgid ""
+"There are no EventAppi Events. Please add at least one event, before "
+"creating any tickets."
+msgstr ""
+
+#: EventAppi/Templates/Events/EventsMetaBox.php:10
+msgid "-- SELECT EVENT --"
+msgstr ""
+
+#: EventAppi/Templates/Events/EventsMetaBox.php:35
+msgid ""
+"Please choose another event as the selected one already has the maximum "
+"number of tickets allowed."
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:20
+#: templates/list-event-attendees.php:19
+msgid "Export Attendees"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:28
+msgid "Search Event Attendeess"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:37
+#: EventAppi/Templates/Events/ListEventAttendees.php:47
+#: EventAppi/Templates/Events/ListEventPurchases.php:27
+#: EventAppi/Templates/Events/ListEventPurchases.php:36
+#: templates/list-event-attendees.php:85 templates/list-event-purchases.php:79
+msgid "Purchaser First Name"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:38
+#: EventAppi/Templates/Events/ListEventAttendees.php:48
+#: EventAppi/Templates/Events/ListEventPurchases.php:28
+#: EventAppi/Templates/Events/ListEventPurchases.php:37
+#: templates/list-event-attendees.php:89 templates/list-event-purchases.php:80
+msgid "Purchaser Last Name"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:39
+#: EventAppi/Templates/Events/ListEventAttendees.php:49
+#: EventAppi/Templates/Events/ListEventPurchases.php:29
+#: EventAppi/Templates/Events/ListEventPurchases.php:38
+#: templates/list-event-attendees.php:93 templates/list-event-purchases.php:81
+msgid "Purchaser Email"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:41
+#: EventAppi/Templates/Events/ListEventAttendees.php:51
+#: templates/list-event-attendees.php:101
+msgid "Additional Attendee Data"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:42
+#: EventAppi/Templates/Events/ListEventAttendees.php:52
+#: templates/list-event-attendees.php:118
+msgid "Status"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventAttendees.php:64
+#: EventAppi/Templates/Events/ListEventPurchases.php:51
+#: templates/list-event-attendees.php:98
+msgid "CLAIMED"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventPurchases.php:21
+#: templates/list-event-purchases.php:21
+msgid "Search Purchases"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventPurchases.php:30
+#: EventAppi/Templates/Events/ListEventPurchases.php:39
+msgid "Assign To"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventPurchases.php:31
+#: EventAppi/Templates/Events/ListEventPurchases.php:40
+#: templates/list-event-purchases.php:82
+msgid "Action"
+msgstr ""
+
+#: EventAppi/Templates/Events/ListEventPurchases.php:65
+#: templates/list-event-purchases.php:95
+msgid "Send"
+msgstr ""
+
+#: EventAppi/Templates/PluginSettings.php:5
+msgid "Plugin Settings"
+msgstr ""
+
+#: EventAppi/Templates/PluginSettings.php:14
+msgid "Save Settings"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketArea.php:17
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:11
+#: EventAppi/Templates/Tickets/EditTicket.php:17
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:9
+#: templates/create-new-coupon.php:33 templates/edit-coupon.php:34
+msgid "Title"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketArea.php:36
+#: EventAppi/Templates/Tickets/EditTicket.php:32
+#: templates/create-new-coupon.php:48 templates/edit-coupon.php:49
+msgid "Description"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketArea.php:53
+msgid "+ Add Ticket"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:20
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:18
+msgid "Type"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:23
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:39
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:29
+msgid "[Select]"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:36
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:26
+msgid "Required"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:47
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:37
+msgid "Required Error"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:48
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:38
+msgid "(in case the field is not filled the text will show)"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:57
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:53
+msgid "Columns"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:66
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:68
+msgid "Options"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:67
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:69
+msgid "(put one option per line)"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:71
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:72
+msgid ""
+"Option 1\n"
+"Option 2\n"
+"Option 3 etc."
+msgstr ""
+
+#: EventAppi/Templates/Tickets/AddTicketRegFieldArea.php:80
+msgid "+ Add New Ticket Registration Field"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/EditTicket.php:54
+#: EventAppi/TicketPostType.php:328
+msgid "Update Ticket"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/EditTicket.php:59
+msgid "Are you sure you want to delete this ticket?"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/EditTicket.php:61
+msgid "Delete Ticket"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:88
+msgid "Are you sure you want to delete this field?"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/EditTicketRegFieldArea.php:90
+msgid "Delete Field"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/ManageRegFields.php:8
+msgid "Ticket Registraton Fields Management (Add / Edit / Delete)"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/ManageRegFields.php:18
+msgid "+ Add New Registration Field"
+msgstr ""
+
+#: EventAppi/Templates/Tickets/ManageRegFields.php:23
+msgid "The new registration field was added."
+msgstr ""
+
+#: EventAppi/Templates/Tickets/ManageRegFields.php:38
+msgid "PREVIEW Ticket Registration Fields FORM"
+msgstr ""
+
+#: EventAppi/Templates/UserNote.php:4
+msgid "EventAppi Notes"
+msgstr ""
+
+#: EventAppi/Templates/VenueUserInfo.php:15
+msgid "User ID:"
+msgstr ""
+
+#: EventAppi/Templates/VenueUserInfo.php:34
+msgid "* This event organiser does not have any email address on his account."
+msgstr ""
+
+#: EventAppi/Templates/VenueUserInfo.php:39
+msgid "Edit User"
+msgstr ""
+
+#: EventAppi/Templates/VenueUserInfo.php:43
+msgid "This venue is not associated with any event organiser."
+msgstr ""
+
+#: EventAppi/TicketPostType.php:107 EventAppi/TicketPostType.php:185
+msgid "On Sale From"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:113
+msgid "Now"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:119 EventAppi/TicketPostType.php:186
+msgid "On Sale To"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:125
+msgid "Event Start Date"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:131 EventAppi/TicketPostType.php:187
+msgid "Ticket Type"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:139 EventAppi/TicketPostType.php:188
+msgid "Ticket Price"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:144
+msgid "e.g. 50.00"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:149 EventAppi/TicketPostType.php:189
+msgid "Number available"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:154
+msgid "e.g. 1000"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:171
+msgid "For Sale"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:172
+msgid "Free"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:180 templates/list-all-events.php:59
+#: templates/list-event-purchases.php:111 templates/my-account.php:86
+#: templates/my-account.php:103 templates/my-account.php:124
+msgid "Name"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:198
+msgid "Date Created"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:318
+msgctxt "Post Type General Name"
+msgid " Tickets"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:319
+msgctxt "Post Type Singular Name"
+msgid " Ticket"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:321
+msgid "Ticket"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:322
+msgid "Parent Ticket:"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:323
+msgid "All Tickets"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:324
+msgid "Add New EventAppi Ticket"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:325
+msgid "Add New"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:327
+msgid "Edit Ticket"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:329
+msgid "View Ticket"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:330
+msgid "Search Ticket"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:331
+msgid "Not found"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:332
+msgid "Not found in Trash"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:336
+msgid "ticket"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:337
+msgid "Post Type Description"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:362
+#, php-format
+msgid "This ticket is for the following event: %s"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:368
+msgid "Ticket Details"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:383 templates/edit-event.php:51
+msgid "Tickets Management (Add / Edit / Remove)"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:563
+msgid "e.g. General Admission"
+msgstr ""
+
+#: EventAppi/TicketPostType.php:708
+msgid "The ticket information has been updated."
+msgstr ""
+
+#: EventAppi/TicketPostType.php:728
+msgid ""
+"The maximum number of tickets per event has been reached. You can not add "
+"further tickets."
+msgstr ""
+
+#: EventAppi/TicketPostType.php:785
+msgid "The ticket was added to the event."
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:57
+msgid "Manage Registration Fields (Add / Edit / Remove)"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:107
+msgid ""
+"Once the ticket is created, you will be able to manage its registration "
+"fields."
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:122
+msgid "Input Text"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:123
+msgid "Input Date"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:124
+msgid "Select"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:125
+msgid "Select (Multiple)"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:126
+msgid "Textarea"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:127
+msgid "Checkbox(es)"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:128
+msgid "Radio"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:129
+msgid "File (Upload)"
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:183
+msgid ""
+"There was a problem in adding the registration field. Please refresh this "
+"page and try again."
+msgstr ""
+
+#: EventAppi/TicketRegFields.php:257
+msgid "The registration field was added to the ticket."
+msgstr ""
+
+#: EventAppi/User.php:177
+msgid "Email already exists. The account can not be created."
+msgstr ""
+
+#: EventAppi/User.php:342
+msgid "Unable to set the user password."
+msgstr ""
+
+#: EventAppi/User.php:378
+msgid "Home Address"
+msgstr ""
+
+#: EventAppi/User.php:383
+msgid "Phone number"
+msgstr ""
+
+#: EventAppi/User.php:388
+msgid "Billing Address 1"
+msgstr ""
+
+#: EventAppi/User.php:390 EventAppi/User.php:396 EventAppi/User.php:402
+#: EventAppi/User.php:408 EventAppi/User.php:414 EventAppi/User.php:420
+msgid "Billing Info"
+msgstr ""
+
+#: EventAppi/User.php:394
+msgid "Billing Address 2"
+msgstr ""
+
+#: EventAppi/User.php:400
+msgid "Billing City"
+msgstr ""
+
+#: EventAppi/User.php:406
+msgid "Billing Zip / Postal code"
+msgstr ""
+
+#: EventAppi/User.php:412
+msgid "Billing Country Code"
+msgstr ""
+
+#: EventAppi/User.php:418
+msgid "Billing Telephone"
+msgstr ""
+
+#: templates/cart.php:10
+msgid "Your cart is empty."
+msgstr ""
+
+#: templates/cart.php:17
+msgid "Item"
+msgstr ""
+
+#: templates/cart.php:18 templates/single-event.php:75
+msgid "Price"
+msgstr ""
+
+#: templates/cart.php:19 templates/single-event.php:76
+msgid "Quantity"
+msgstr ""
+
+#: templates/cart.php:20
+msgid "Sub total"
+msgstr ""
+
+#: templates/cart.php:33
+msgid "e.g. 120"
+msgstr ""
+
+#: templates/cart.php:46
+msgid "Remove"
+msgstr ""
+
+#: templates/cart.php:56
+msgid "Total:"
+msgstr ""
+
+#: templates/cart.php:65
+msgid "Proceed to checkout"
+msgstr ""
+
+#: templates/checkout.php:24
+msgid "Total: $"
+msgstr ""
+
+#: templates/checkout.php:34
+msgid "Billing Address line 1"
+msgstr ""
+
+#: templates/checkout.php:39
+msgid "Billing Address line 2"
+msgstr ""
+
+#: templates/checkout.php:44 templates/create-new-event.php:171
+#: templates/edit-event.php:106
+msgid "City"
+msgstr ""
+
+#: templates/checkout.php:50 templates/create-new-event.php:176
+#: templates/edit-event.php:109
+msgid "Zip / Postal code"
+msgstr ""
+
+#: templates/checkout.php:55 templates/create-new-event.php:181
+#: templates/edit-event.php:112
+msgid "Country"
+msgstr ""
+
+#: templates/checkout.php:74
+msgid "Credit card number"
+msgstr ""
+
+#: templates/checkout.php:79
+msgid "First name on card"
+msgstr ""
+
+#: templates/checkout.php:84
+msgid "Last name on card"
+msgstr ""
+
+#: templates/checkout.php:89
+msgid "CVV"
+msgstr ""
+
+#: templates/checkout.php:94
+msgid "Start date (if applicable)"
+msgstr ""
+
+#: templates/checkout.php:99
+msgid "Expiry date"
+msgstr ""
+
+#: templates/checkout.php:104
+msgid "Issue number (if applicable)"
+msgstr ""
+
+#: templates/checkout.php:114
+msgid "Pay"
+msgstr ""
+
+#: templates/create-new-coupon.php:21 templates/edit-coupon.php:22
+msgid "View Coupons"
+msgstr ""
+
+#: templates/create-new-coupon.php:69 templates/edit-coupon.php:21
+msgid "+ Add Coupon"
+msgstr ""
+
+#: templates/create-new-event.php:16
+#, php-format
+msgid ""
+"A message was sent to %s asking you to activate your account. Once you do, "
+"the event will get published."
+msgstr ""
+
+#: templates/create-new-event.php:20
+msgid "Event created successfully. Click here to see your event."
+msgstr ""
+
+#: templates/create-new-event.php:50
+msgid "Create New Category"
+msgstr ""
+
+#: templates/create-new-event.php:87
+msgid "Your E-Mail Address"
+msgstr ""
+
+#: templates/create-new-event.php:97 templates/edit-event.php:32
+msgid "Event name"
+msgstr ""
+
+#: templates/create-new-event.php:105 templates/edit-event.php:37
+msgid "Event description"
+msgstr ""
+
+#: templates/create-new-event.php:116 templates/edit-event.php:60
+msgid "Choose one or more categories"
+msgstr ""
+
+#: templates/create-new-event.php:139 templates/edit-event.php:89
+msgid "+ Add a category"
+msgstr ""
+
+#: templates/create-new-event.php:148
+msgid "(Select existing venue instead)"
+msgstr ""
+
+#: templates/create-new-event.php:155
+msgid "Type a venue location and other details below"
+msgstr ""
+
+#: templates/create-new-event.php:156 templates/edit-event.php:97
+msgid "Location name"
+msgstr ""
+
+#: templates/create-new-event.php:161 templates/edit-event.php:100
+msgid "Address line 1"
+msgstr ""
+
+#: templates/create-new-event.php:166 templates/edit-event.php:103
+msgid "Address line 2"
+msgstr ""
+
+#: templates/create-new-event.php:197 templates/edit-event.php:125
+msgid "Event location"
+msgstr ""
+
+#: templates/create-new-event.php:199 templates/edit-event.php:127
+msgid "-- Select --"
+msgstr ""
+
+#: templates/create-new-event.php:206 templates/edit-event.php:143
+msgid "+ Add a location"
+msgstr ""
+
+#: templates/create-new-event.php:216 templates/edit-event.php:152
+msgid "All day event"
+msgstr ""
+
+#: templates/create-new-event.php:222 templates/edit-event.php:158
+#: templates/list-all-events.php:61
+msgid "Start date"
+msgstr ""
+
+#: templates/create-new-event.php:226 templates/edit-event.php:162
+#: templates/list-all-events.php:62
+msgid "Start time"
+msgstr ""
+
+#: templates/create-new-event.php:232 templates/edit-event.php:168
+msgid "End date"
+msgstr ""
+
+#: templates/create-new-event.php:236 templates/edit-event.php:172
+msgid "End time"
+msgstr ""
+
+#: templates/create-new-event.php:244 templates/edit-event.php:180
+msgid "Event promo image"
+msgstr ""
+
+#: templates/create-new-event.php:251 templates/edit-event.php:186
+msgid "Select image"
+msgstr ""
+
+#: templates/create-new-event.php:265 templates/edit-event.php:191
+msgid ""
+"Upload an image to promote your event. It will appear as the 'featured' "
+"image on your public event page."
+msgstr ""
+
+#: templates/create-new-event.php:268
+msgid ""
+"Once you will create the event, you will be able to assign tickets to it."
+msgstr ""
+
+#: templates/create-new-event.php:272 templates/edit-event.php:212
+msgid "Time Zone"
+msgstr ""
+
+#: templates/edit-coupon.php:16
+msgid "Coupon updated successfully."
+msgstr ""
+
+#: templates/edit-coupon.php:73
+msgid "Update Coupon"
+msgstr ""
+
+#: templates/edit-event.php:9
+msgid "Event updated successfully. Click here to see your event."
+msgstr ""
+
+#: templates/edit-event.php:14
+msgid "Create new Category"
+msgstr ""
+
+#: templates/edit-event.php:182
+msgid "Click to change"
+msgstr ""
+
+#: templates/edit-event.php:198
+msgid "(if you tick this box, the promo image will be removed from this event)"
+msgstr ""
+
+#: templates/edit-event.php:222
+msgid "Update Event"
+msgstr ""
+
+#: templates/edit-user.php:8 templates/my-account.php:14
+msgid "Profile:"
+msgstr ""
+
+#: templates/edit-user.php:32 templates/my-account.php:28
+msgid "E-mail"
+msgstr ""
+
+#: templates/edit-user.php:32 templates/my-account.php:28
+msgid "(required)"
+msgstr ""
+
+#: templates/edit-user.php:48 templates/my-account.php:44
+msgid "Password Change"
+msgstr ""
+
+#: templates/edit-user.php:50 templates/my-account.php:46
+msgid "New Password"
+msgstr ""
+
+#: templates/edit-user.php:54 templates/my-account.php:50
+msgid "Repeat New Password"
+msgstr ""
+
+#: templates/edit-user.php:63
+msgid "Notes"
+msgstr ""
+
+#: templates/edit-user.php:67 templates/my-account.php:57
+msgid "Update Profile"
+msgstr ""
+
+#: templates/list-all-coupons.php:17 templates/list-all-events.php:33
+#: templates/list-event-attendees.php:58 templates/list-event-purchases.php:54
+msgid "&#8656; Previous"
+msgstr ""
+
+#: templates/list-all-coupons.php:21 templates/list-all-events.php:37
+#: templates/list-event-attendees.php:62 templates/list-event-purchases.php:58
+#, php-format
+msgid "Page %s of %d"
+msgstr ""
+
+#: templates/list-all-coupons.php:27 templates/list-all-events.php:43
+#: templates/list-event-attendees.php:68 templates/list-event-purchases.php:64
+msgid "Next &#8658;"
+msgstr ""
+
+#: templates/list-all-coupons.php:43
+msgid "Coupon"
+msgstr ""
+
+#: templates/list-all-coupons.php:44
+msgid "Last Updated"
+msgstr ""
+
+#: templates/list-all-coupons.php:54 templates/list-all-events.php:77
+msgid "Edit"
+msgstr ""
+
+#: templates/list-all-coupons.php:55
+msgid "Delete"
+msgstr ""
+
+#: templates/list-all-coupons.php:63
+msgid "There are no coupons to manage."
+msgstr ""
+
+#: templates/list-all-events.php:7
+msgid "Add New Event"
+msgstr ""
+
+#: templates/list-all-events.php:10
+msgid "List of your Events:"
+msgstr ""
+
+#: templates/list-all-events.php:15
+msgid "Upcoming"
+msgstr ""
+
+#: templates/list-all-events.php:16
+msgid "Past"
+msgstr ""
+
+#: templates/list-all-events.php:86
+msgid "There are no upcoming events."
+msgstr ""
+
+#: templates/list-all-events.php:88
+msgid "There are no past events."
+msgstr ""
+
+#: templates/list-event-attendees.php:30
+msgid "Search Event Attendees"
+msgstr ""
+
+#: templates/list-event-attendees.php:124
+#, php-format
+msgid "Are you sure you want to do a check-out for `%s`?"
+msgstr ""
+
+#: templates/list-event-purchases.php:106 templates/my-account.php:81
+msgid "Send Ticket"
+msgstr ""
+
+#: templates/list-event-purchases.php:107 templates/my-account.php:82
+msgid "Where should I send this ticket?"
+msgstr ""
+
+#: templates/login-frontend.php:21
+msgid "Remember Me"
+msgstr ""
+
+#: templates/login-frontend.php:25
+msgid "Log In"
+msgstr ""
+
+#: templates/my-account.php:10
+msgid "Logout"
+msgstr ""
+
+#: templates/my-account.php:67
+msgid "Tickets:"
+msgstr ""
+
+#: templates/my-account.php:96
+msgid "Assign Ticket"
+msgstr ""
+
+#: templates/my-account.php:97
+msgid "Who should I assign this ticket to?"
+msgstr ""
+
+#: templates/my-account.php:99 templates/my-account.php:120
+#, php-format
+msgid "The ticket will be emailed to %s"
+msgstr ""
+
+#: templates/my-account.php:117
+msgid "Claim Ticket"
+msgstr ""
+
+#: templates/my-account.php:118
+msgid "Please complete the form to claim your ticket."
+msgstr ""
+
+#: templates/single-event.php:26
+msgid "(Edit Event)"
+msgstr ""
+
+#: templates/single-event.php:33
+msgid "Start Date:"
+msgstr ""
+
+#: templates/single-event.php:35
+msgid "Start Time:"
+msgstr ""
+
+#: templates/single-event.php:39
+msgid "End Date:"
+msgstr ""
+
+#: templates/single-event.php:41
+msgid "End Time:"
+msgstr ""
+
+#: templates/single-event.php:74
+msgid "Ticket name"
+msgstr ""
+
+#: templates/single-event.php:87
+#, php-format
+msgid "%s available"
+msgstr ""
+
+#: templates/single-event.php:99
+msgid "View Cart"
+msgstr ""
+
+#: templates/single-event.php:103
+msgid "Add to Cart"
+msgstr ""
+
+#: templates/single-event.php:115
+msgid "Map"
+msgstr ""
+
+#: templates/ticket-reg-fields.php:103
+msgid "There are no registration fields associated with the ticket."
+msgstr ""
+
+#: templates/ticket-reg-fields.php:108
+#, php-format
+msgid ""
+"You can not preview any registration fields without appending the "
+"`ticket_id` parameter to the URL (e.g. /eventappi-preview-ticket-"
+"registration-fields/?ticket_id=%sTICKET_ID_HERE%s)."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "EventAppi - Happy Event Management"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://eventappi.com/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"The EventAppi WordPress plugin streamlines all facets of event planning, "
+"from online registration to event ticketing, all within your WordPress site."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "EventAppi Development Team"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.eventappi.com"
+msgstr ""
