@@ -1,6 +1,41 @@
+#eventappi-wrapper div.alignleft.title h3 {
+  margin-top: 5px;
+}
+#eventappi-wrapper input.page-box {
+  width: 50px;
+}
+#eventappi-wrapper ul.subsubsub li {
+  display: inline;
+}
+#eventappi-wrapper h2.event-title {
+  margin: -10px 0 25px 0 !important;
+}
+#eventappi-wrapper table.attendee {
+  margin-bottom: 35px;
+}
+#eventappi-wrapper .event-type-area {
+  margin-bottom: 20px;
+}
+#eventappi-wrapper .loading.changing-status {
+  display: none;
+}
 #eventappi-wrapper .process-credit-card,
 #eventappi-wrapper .pay-with-paypal {
   width: 49.5%;
+}
+#eventappi-wrapper .ea-add-to-cart {
+  background-color: #007dc1;
+}
+#eventappi-wrapper a.ea-delete {
+  color: #cc0000;
+  border-bottom: 1px solid #cc0000;
+}
+#eventappi-wrapper a.ea-delete:hover {
+  color: #cc0000;
+  border-bottom: 1px solid transparent;
+}
+#eventappi-wrapper .alignright.del-event {
+  margin-bottom: 7px;
 }
 #eventappi-wrapper .remove,
 #eventappi-wrapper .go-back,
@@ -15,6 +50,16 @@
 #eventappi-wrapper .clear {
   width: 100%;
   clear: both;
+}
+#eventappi-wrapper .alert.alert-success {
+  border: 1px solid green;
+  padding: 10px;
+  margin: 10px 0;
+}
+#eventappi-wrapper .alert.alert-error {
+  border: 1px solid #cc0000;
+  padding: 10px;
+  margin: 10px 0;
 }
 #eventappi-wrapper #important-info {
   font-weight: bold;
@@ -119,4 +164,127 @@
 }
 #eventappi-wrapper #eventappi-checkout input[type=submit] {
   float: right;
+}
+#eventappi-wrapper #eventappi-email-error {
+  display: none;
+  color: #cc0000;
+  margin: 7px 0;
+}
+#eventappi-wrapper #ea-banner-image-preview-area {
+  margin: 15px 0 0 0;
+}
+#eventappi-wrapper #ea-banner-image-preview {
+  display: none;
+  max-width: 500px;
+  max-height: 500px;
+}
+#eventappi-wrapper #ea-select-existing-venue-area {
+  display: none;
+  margin: 0 0 15px 0;
+}
+.cmb_metabox div.field {
+  margin: 15px 0;
+}
+.cmb_metabox div.field .field-item {
+  margin: 10px 0 5px 0;
+}
+.cmb_metabox div.field div.cmb_metabox_description {
+  font-size: 12px;
+  font-style: italic;
+}
+.wrap.edit-user {
+  margin-top: -45px;
+}
+.entry-title {
+  margin-bottom: 10px !important;
+}
+.ea-note-ok {
+  border: 1px solid green;
+  padding: 10px;
+  margin: 0 0 20px 0;
+}
+.ea-note-ok ul {
+  margin: 0 0 0 15px;
+  list-style: none;
+}
+.ea-note-ok ul li:last-child {
+  margin-bottom: 0;
+}
+.ea-note-error {
+  border: 1px solid #cc0000;
+  padding: 10px;
+  margin: 0 0 20px 0;
+}
+.ea-note-error ul {
+  margin: 0 0 0 15px;
+  list-style: none;
+}
+.ea-note-error ul li:last-child {
+  margin-bottom: 0;
+}
+#ea-event-no-tickets-error {
+  margin: 20px 0 !important;
+  display: none;
+}
+input.datepicker,
+input.ea-date {
+  background-image: url('data:image/gif;base64,R0lGODdhEAAPAPQAAHdTUalbV7xeWd1jXO1lXu5tZe9zbPB6c/GDfTFpzjlx3lqK53Oe7/KIgvKNh/OYkvSblvSinfWrp/awq/e1sYyq7/vh3/3r6v3y8f729f/8/P///wAAAAAAAAAAAAAAACwAAAAAEAAPAAAFh+AEiCQAjehUIFvRvu6wCbM1TZIURY/jIECDgUCYXI7IW24ZKSp1j6gvOJRsNo9rFqvRPDKZgHXTuJbJ5oxFLGkcHm54hbFQwMXa/IbRVVwmARBmZl0LGhgJf4Ftb3ENCgoJCT2BeV5gD0cPFhSVZBpkYA1HDZyLDwcSqKqpqBMNgQGys7S1IQA7');
+  background-position: 99% 50%;
+  background-repeat: no-repeat;
+}
+#ea-reg-fields-wrap {
+  /* Radios Area */
+}
+#ea-reg-fields-wrap label.ea-label-for {
+  display: inline-block;
+  font-weight: normal;
+  float: none !important;
+  padding: 0 0 0 5px !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+#ea-reg-fields-wrap .req {
+  color: #cc0000;
+}
+#ea-reg-fields-wrap div.ea-radios-area-col,
+#ea-reg-fields-wrap div.ea-checkboxes-area-col {
+  display: block;
+  float: left;
+  font-weight: normal;
+  font-style: normal;
+}
+#ea-reg-fields-wrap div.ea-radios-area-col input.chck,
+#ea-reg-fields-wrap div.ea-checkboxes-area-col input.chck {
+  cursor: pointer;
+  top: 0 !important;
+  clear: both;
+  margin: 3px 1px 0 0 !important;
+  padding: 2px !important;
+}
+#ea-reg-fields-wrap div.ea-radios-area-col input.rad,
+#ea-reg-fields-wrap div.ea-checkboxes-area-col input.rad {
+  clear: both;
+  cursor: pointer;
+  margin: 3px 1px 0 0 !important;
+  padding: 2px !important;
+}
+#ea-reg-fields-wrap div.ea-radios-area-col ul,
+#ea-reg-fields-wrap div.ea-checkboxes-area-col ul {
+  float: none;
+  list-style: none outside none;
+  margin: 5px 0 5px;
+  display: block;
+  padding: 0 25px 0 0;
+}
+#ea-reg-fields-wrap div.ea-radios-area-col ul li,
+#ea-reg-fields-wrap div.ea-checkboxes-area-col ul li {
+  list-style-type: none;
+  margin: 3px 0 3px 0;
+  padding: 6px 0 0 5px;
+}
+#ea-reg-fields-wrap .field-wrap {
+  margin: 0 0 17px 0;
+}
+#ea-reg-fields-wrap .field-wrap label {
+  cursor: pointer;
 }

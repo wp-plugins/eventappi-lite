@@ -38,81 +38,65 @@ class ShoppingCart
 
     public function init()
     {
+        add_action('init', array($this, 'addToCart'));
     }
-
-    public function ajaxAddToCartHandler()
+    
+    public function addToCart()
     {
-        //check token if fails it dies.
-        check_ajax_referer(EVENTAPPI_PLUGIN_NAME . '_world');
+        // TODO: TOKEN TO BE ADDED HERE
+        
+        if (! isset($_POST['ticket_api_id'])) {
+            return;
+        }
+                
         $data = $_POST;
-
-        header('Content-Type: text/plain');
+                
         global $wpdb;
-        $table_name = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_cart';
-        $items      = count($data['id']);
-
+        
+        $tableName = PluginManager::instance()->tables['cart'];
+        $items     = count($data['ticket_api_id']);
+        
         $session = session_id();
+                
+        for ($i = 0; $i < $items; $i++) {
+            $quantity    = intval($data['quantity'][$i]);
+            $ticketApiId = intval($data['ticket_api_id'][$i]); // API Ticket ID
+            $ticketId    = intval($data['ticket_id'][$i]); // Ticket Post ID
+            $ticketName  = stripslashes($data['ticket_name'][$i]);
 
-        for ($i = 0; $i < $items; $i ++) {
+            $isPurchasable = TicketPostType::instance()->isPurchasable(
+                array('id' => $ticketId, 'qty' => $quantity, 'api_id' => $ticketApiId)
+            );
 
-            $id       = intval($data['id'][$i]); // API Ticket ID
-            $event    = intval($data['event'][$i]); // API Event ID
-            $post     = intval($data['post_id'][$i]); // the WP post ID
-            $quantity = intval($data['quantity'][$i]);
-            $price    = intval($data['price'][$i]); // Price for one ticket
-            $term     = intval($data['term'][$i]); // the meta term ID
-            $name     = stripslashes($data['name'][$i]);
-
-            if ($quantity === 0) {
+            if (! $isPurchasable) {
                 continue;
             }
-
-            if (strlen($id) > 10 || $id === 0) {
+            
+            $price = get_post_meta($ticketId, EVENTAPPI_TICKET_POST_NAME.'_price', true); // Price for one ticket
+                        
+            if ((strlen($ticketApiId) > 10 || $ticketApiId === 0)
+               || (strlen($quantity) > 10 || strlen($price) > 10 || strlen($ticketName) > 255) ) {
                 exit();
             }
-
-            if (strlen($id) > 10 || $event === 0) {
-                exit();
-            }
-
-            if (strlen($quantity) > 10) {
-                exit();
-            }
-
-            if (strlen($price) > 10) {
-                exit();
-            }
-
-            if (strlen($name) > 255) {
-                exit();
-            }
-
-            //delete all outdated(longer than 10 minutes) items from cart
-            $sql = <<<DELETESQL
-DELETE FROM {$table_name}
-WHERE timestamp < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 10 MINUTE))
-DELETESQL;
-            $wpdb->query($sql);
-
+            
             $sql = <<<INSERTSQL
-INSERT INTO {$table_name}
-    (`session`, `event_id`, `post_id`, `term`, `ticket_id`, `ticket_name`, `ticket_quantity`, `ticket_price`, `timestamp`)
+INSERT INTO {$tableName}
+    (`session`, `ticket_id`, `ticket_api_id`, `ticket_name`, `ticket_quantity`, `ticket_price`, `timestamp`)
 VALUES
-    (%s, %d, %d, %d, %d, %s, %d, %d, UNIX_TIMESTAMP(NOW()) )
+    (%s, %d, %d, %s, %d, %d, UNIX_TIMESTAMP(NOW()) )
 ON DUPLICATE KEY UPDATE
     ticket_quantity = VALUES(ticket_quantity),
     ticket_price = VALUES(ticket_price),
     timestamp = VALUES(timestamp)
 INSERTSQL;
+
             $wpdb->query(
                 $wpdb->prepare(
                     $sql,
                     $session,
-                    $event,
-                    $post,
-                    $term,
-                    $id,
-                    $name,
+                    $ticketId,
+                    $ticketApiId,
+                    $ticketName,
                     $quantity,
                     $price
                 )
@@ -120,7 +104,7 @@ INSERTSQL;
 
             //update all tickets timestamp for that user
             $sql = <<<TIMESTAMPSQL
-UPDATE {$table_name}
+UPDATE {$tableName}
 SET timestamp = UNIX_TIMESTAMP(NOW())
 WHERE `session` = %s
 TIMESTAMPSQL;
@@ -130,35 +114,40 @@ TIMESTAMPSQL;
                     $session
                 )
             );
-
         }
 
-        echo '1';
-        exit();
+        $_SESSION[EVENTAPPI_PLUGIN_NAME.'_empty_cart'] = false;
+        
+        // Redirect the user/guest to the Cart Page
+        if (! Settings::instance()->isPage('cart')) {
+            wp_redirect(get_permalink(Settings::instance()->getPageId('cart')));
+            exit;
+        }
     }
 
     public function ajaxRemoveFromCartHandler()
     {
         //check token if fails it dies.
-        check_ajax_referer(EVENTAPPI_PLUGIN_NAME . '_world');
+        check_ajax_referer(EVENTAPPI_PLUGIN_NAME . '_ajax_mode');
 
         $session = session_id();
 
         header('Content-Type: text/plain');
+        
         global $wpdb;
-        $table_name = $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_cart';
-        $data       = $_POST;
+        
+        $tableName = PluginManager::instance()->tables['cart'];
+        $data      = $_POST;
 
         if (isset($data['id'])) {
+            $ticketId = intval($data['id']);
 
-            $ticket_id = intval($data['id']);
-
-            if (strlen($ticket_id) > 10) {
+            if (strlen($ticketId) > 10) {
                 exit();
             }
 
             $sql = <<<REMOVESQL
-DELETE FROM {$table_name}
+DELETE FROM {$tableName}
 WHERE session = %s
 AND ticket_id = %d
 REMOVESQL;
@@ -166,10 +155,28 @@ REMOVESQL;
                 $wpdb->prepare(
                     $sql,
                     $session,
-                    $ticket_id
+                    $ticketId
                 )
             );
-
+            
+            // See if the cart is empty
+            $countItemsSql = <<<COUNTSQL
+SELECT COUNT(*) FROM `'.$tableName.'` WHERE session = %s and ticket_id = %d
+COUNTSQL;
+            
+            $totalCartItems = $wpdb->get_var(
+                $wpdb->prepare(
+                    $countItemsSql,
+                    $session,
+                    $ticketId
+                )
+            );
+            
+            // The cart is empty
+            if ($totalCartItems < 1) {
+                $_SESSION[EVENTAPPI_PLUGIN_NAME.'_empty_cart'] = true;
+            }
+            
             echo '1';
             exit();
         }

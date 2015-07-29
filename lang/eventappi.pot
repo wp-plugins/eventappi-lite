@@ -1,2 +1,0 @@
-# Copyright (C) 2014 eventappi
-# WE NEED TO REBUILD THIS FILE

@@ -38,16 +38,15 @@ class Analytics
 
     public function init()
     {
-        add_shortcode(EVENTAPPI_PLUGIN_NAME . '_analytics', array($this, 'analyticsPage'));
     }
 
     public function analyticsPage()
     {
-        if ( ! is_user_logged_in()) {
+        if (! is_user_logged_in()) {
             return Shortcodes::instance()->loginPage();
         }
 
-        if ( ! current_user_can('manage_' . EVENTAPPI_PLUGIN_NAME)) {
+        if (! current_user_can('manage_' . EVENTAPPI_PLUGIN_NAME)) {
             wp_die(__('You do not have sufficient permissions to view this page.', EVENTAPPI_PLUGIN_NAME));
         }
 
@@ -61,7 +60,7 @@ class Analytics
      */
     public function ajaxApiStatsTicketSalesHandler()
     {
-        check_ajax_referer(EVENTAPPI_PLUGIN_NAME . '_world');
+        check_ajax_referer(Parser::instance()->nonceAjaxAction);
 
         $dateStart = $_GET['date_start'];
         $dateEnd   = $_GET['date_end'];
@@ -84,7 +83,7 @@ class Analytics
     {
         global $wpdb;
 
-        check_ajax_referer(EVENTAPPI_PLUGIN_NAME . '_world');
+        check_ajax_referer(Parser::instance()->nonceAjaxAction);
 
         $result = ApiClient::instance()->showEventStats();
 

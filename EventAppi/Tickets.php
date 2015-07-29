@@ -39,29 +39,31 @@ class Tickets
 
     public function ajaxSendTicketHandler()
     {
-        // $user = new WP_User( get_current_user_id() );
-        if ( ! is_email($_POST['recipient']) || empty($_POST['name'])) {
+        if (! is_email($_POST['recipient']) || empty($_POST['name'])) {
             return false;
         }
 
         $data = array(
             'recipient_email' => $_POST['recipient'],
             'recipient_name'  => $_POST['name'],
-            'login_url'       => PluginManager::instance()->getPageId('eventappi-my-account')
+            'login_url'       => get_permalink(Settings::instance()->getPageId('my-account'))
         );
+        
         $hash = substr($_POST['hash'], 1);
-
+                        
         $result = ApiClient::instance()->sendTicketToThirdParty($hash, $data);
+        
         if ($result['message'] !== 'OK') {
             return false;
         }
 
         global $wpdb;
+        
         $wpdb->update(
             $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases',
             array(
-                'isSent' => '1',
-                'sentTo' => stripslashes($_POST['recipient'])
+                'is_sent' => '1',
+                'sent_to' => stripslashes($_POST['recipient'])
             ),
             array(
                 // not always done by purchaser - admin can do too
@@ -71,77 +73,6 @@ class Tickets
         );
 
         User::instance()->addNewEventAppiUser($_POST['recipient']);
-
-        return true;
-    }
-
-    public function ajaxAssignTicketHandler()
-    {
-        $user = new WP_User(get_current_user_id());
-        $data = array(
-            'recipient_email' => $user->data->user_email,
-            'recipient_name'  => $_POST['name']
-        );
-        $hash = substr($_POST['hash'], 1);
-
-        $result = ApiClient::instance()->emailPurchasedTicket($hash, $data);
-        if ($result['message'] !== 'OK') {
-            return false;
-        }
-
-        global $wpdb;
-        $extraMethods = User::instance()->getAdditionalContactMethods(true);
-        $extraData    = array();
-        foreach ($extraMethods as $dataKey) {
-            $extraData[$dataKey['id']] = $_POST[$dataKey['id']];
-        }
-        $extraData = serialize($extraData);
-        $wpdb->update(
-            $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases',
-            array(
-                'isAssigned'             => '1',
-                'assignedTo'             => stripslashes($_POST['name']),
-                'additionalAttendeeData' => $extraData
-            ),
-            array(
-                'purchased_ticket_hash' => $hash
-            )
-        );
-
-        return true;
-    }
-
-    public function ajaxClaimTicketHandler()
-    {
-        $user = new WP_User(get_current_user_id());
-        $data = array(
-            'recipient_email' => $user->data->user_email,
-            'recipient_name'  => $user->data->display_name
-        );
-        $hash = substr($_POST['hash'], 1);
-
-        $result = ApiClient::instance()->emailPurchasedTicket($hash, $data);
-        if ($result['message'] !== 'OK') {
-            return false;
-        }
-
-        global $wpdb;
-        $extraMethods = User::instance()->getAdditionalContactMethods(true);
-        $extraData    = array();
-        foreach ($extraMethods as $dataKey) {
-            $extraData[$dataKey['id']] = $_POST[$dataKey['id']];
-        }
-        $extraData  = serialize($extraData);
-        $wpdb->update(
-            $wpdb->prefix . EVENTAPPI_PLUGIN_NAME . '_purchases',
-            array(
-                'isClaimed' => '1',
-                'additionalAttendeeData' => $extraData
-            ),
-            array(
-                'purchased_ticket_hash' => $hash
-            )
-        );
 
         return true;
     }

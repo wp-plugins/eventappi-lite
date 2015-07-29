@@ -107,10 +107,10 @@ class Logger
     public function log($file, $function, $message, $logLevel = self::LOG_LEVEL_ERROR)
     {
         $logThreshold = Options::instance()->getLogEnabled();
+        
         if ($logThreshold > self::LOG_LEVEL_DISABLED) {
             if (is_writable($this->file)) {
-
-                $logFile = fopen($this->file, 'a') or wp_die('Cannot open EventAppi log file: ' . $this->file);
+                $logFile = fopen($this->file, 'a') or wp_die( sprintf(__('Cannot open EventAppi log file: %s', EVENTAPPI_PLUGIN_NAME), $this->file) );
 
                 $file = ! empty($file) ? basename($file) : '';
 
@@ -147,7 +147,7 @@ class Logger
     public function __clone()
     {
         trigger_error(
-            'Cloning of the EventAppi singleton objects is not permitted.',
+            __('Cloning of the EventAppi singleton objects is not permitted.', EVENTAPPI_PLUGIN_NAME),
             E_USER_ERROR
         );
     }

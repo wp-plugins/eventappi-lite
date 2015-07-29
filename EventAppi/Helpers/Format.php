@@ -9,30 +9,16 @@ class Format
 {
 
     /**
-     * @var null
-     */
-    private static $singleton = null;
-
-    /**
+     * @param $dateFormatString
      *
+     * @return mixed
      */
-    private function __construct()
+    public static function getJSCompatibleDateFormatString($dateFormatString)
     {
+        return str_replace('S', '', $dateFormatString);
     }
 
-    /**
-     * @return Format|null
-     */
-    public static function instance()
-    {
-        if (is_null(self::$singleton)) {
-            self::$singleton = new self();
-        }
-
-        return self::$singleton;
-    }
-
-    public function formatDate($dateString)
+    public static function getJSDateFormatString($dateFormatString)
     {
         // Native PHP
         $pattern = array(
@@ -78,7 +64,6 @@ class Format
             $p = '/' . $p . '/';
         }
 
-        return preg_replace($pattern, $replace, $dateString);
+        return preg_replace($pattern, $replace, $dateFormatString);
     }
-
 }

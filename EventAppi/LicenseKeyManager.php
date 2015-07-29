@@ -72,11 +72,11 @@ class LicenseKeyManager
             return false;
         }
 
-        if ( ! $this->keyCheckRequired()) {
+        if (! $this->keyCheckRequired()) {
             return (bool) $options->getPluginOption('license_key_status');
         }
 
-        Logger::instance()->log(__FILE__, __FUNCTION__, 'Check License Key on the API.', Logger::LOG_LEVEL_INFO);
+        Logger::instance()->log(__FILE__, __FUNCTION__, __('Check License Key on the API.', EVENTAPPI_PLUGIN_NAME), Logger::LOG_LEVEL_INFO);
 
         $apiClient = ApiClient::instance();
         $apiClient->setApiEndpoint($apiEndpoint);

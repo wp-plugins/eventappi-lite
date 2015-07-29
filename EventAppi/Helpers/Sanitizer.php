@@ -59,4 +59,11 @@ class Sanitizer
 
         return $data;
     }
+    
+    function arrayMapRecursive(callable $func, array $arr) {
+        array_walk_recursive($arr, function(&$v) use ($func) {
+            $v = $func($v);
+        });
+        return $arr;
+    }    
 }

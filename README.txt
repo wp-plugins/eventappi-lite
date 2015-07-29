@@ -3,8 +3,8 @@ Contributors: EventAppi Development Team
 URL: http://EventAppi.com/
 Tags: wordpress, events, plugin
 Requires at least: 4.0
-Tested up to: 4.2.1
-Stable tag: 1.0.4 LITE
+Tested up to: 4.2.3
+Stable tag: 1.0.8
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,13 +56,27 @@ Installing the EventAppi WordPress plugin can be done by using the following ste
 1. If your system unzips the plugin, please re-zip it.
 1. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard
 1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Enter your [EventAppi.com API key](http://eventappi.com/pricing)
+1. Make sure the API Endpoint is set to https://rest.eventappi.com/api/v1
+1. Save your settings to start using EventAppi
+
+
+_EventAppi requires at least_:
+
+* PHP version 5.4
+* WordPress version 4.0
+
+== Upgrade Notice ==
+
+= 1.0.8 =
+Better compatibility. Better plugin organization. Easier event management. WIN!
 
 == Screenshots ==
 
 1. Creating your event couldn't be more simple
 2. Add Event details, add tickets. DONE!
 
-== FAQs ==
+== Frequently Asked Questions ==
 
 **What is EventAppi Lite?**
 
@@ -133,6 +147,34 @@ Payment gateways included:
 == Change Log ==
 
 
+= 1.0.8 =
+
+* Improved compatibility with the WordPress Theme Customizer.
+* You can now specify how many days, before an event, your attendees will receive their event reminder email.
+* We have turned tickets into custom post types for even more flexibility and better cross-plugin compatibility.
+* We have cleaned up the code to reduce the size of the plugin.
+
+
+= 1.0.7 =
+
+* Store dates internally as unix timestamps to improve i18n
+* Fixed an issue where multiple copies of events were being sent to the EventAppi API
+
+
+= 1.0.6 =
+
+* Check for other instances of the plugin on activation to prevent errors
+
+
+= 1.0.5 =
+
+* Improved activation process
+* More page flexibility for you to customise to your heart's content
+* Prepare code for translation [for multi-language support]
+* New settings tab for page associations
+* Remove test code from the release
+* PSR-2 code improvements
+
 = 1.0.4 =
 
 * Initial WordPress.org release
@@ -163,4 +205,3 @@ Payment gateways included:
 = 1.0.0 =
 
 * Limited audience public release (MVP)
-
